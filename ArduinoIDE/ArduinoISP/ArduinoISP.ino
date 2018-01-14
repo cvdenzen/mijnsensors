@@ -6,11 +6,14 @@
 // This sketch turns the Arduino into a AVRISP
 // using the following arduino pins:
 //
-// pin name:    not-mega:         mega(1280 and 2560)
-// slave reset: 10:               53 
-// MOSI:        11:               51 
-// MISO:        12:               50 
-// SCK:         13:               52 
+// For Leonardo: connect the icsp pins, NOT pins 11..13.
+//       Do use pin 10 for reset (also see #define RESET)
+//
+// pin name:    not-mega: mega(1280 and 2560)
+// slave reset: 10:       53 
+// MOSI:        11:       51 
+// MISO:        12:       50 
+// SCK:         13:       52 
 //
 // Put an LED (with resistor) on the following pins:
 // 9: Heartbeat   - shows the programmer is running
