@@ -1,3 +1,4 @@
+// NOT USED BY ME (Carl). Not yet an Arduino in V1_NW room, only a Raspberry Pi.
 /**
 * The MySensors Arduino library handles the wireless radio link and protocol
 * between your home built sensors/actuators and HA controller of choice.
