@@ -1,0 +1,9 @@
+Raspberry Pi2 of 3.
+V1_NW_MySensors_RPi:
+V1=verdieping 1
+NW=Noord-West, dat is de kleine (logeer)kamer
+
+Software:
+pilight voor zenden/ontvangen KlikAanKlikUit, inclusief filter in ATTiny85
+Config in /etc/pilight
+MQTT (Mosquitto).
