@@ -5,5 +5,18 @@ NW=Noord-West, dat is de kleine (logeer)kamer
 
 Software:
 pilight voor zenden/ontvangen KlikAanKlikUit, inclusief filter in ATTiny85
+Sender  pin #0, gpio ..  wiringPi ..
+Receiver pin #1, gpio .. wiringPi ..
+pir op pin #7
 Config in /etc/pilight
-MQTT (Mosquitto).
+MQTT (Mosquitto). Setting up mosquitto (1.4.14-0mosquitto2)
+Topics:
+/v1/nw/se/temperature (nw=north-west, se=south-east part of room)
+
+
+Done:
+mosquitto en mosquitto-clients geinstalleerd
+Todo:
+python implementeren voor pilight, zie ook https://forum.pilight.org/showthread.php?tid=2229
+draadje van pir vastmaken aan pin #7
+pir instellen in pilight config
