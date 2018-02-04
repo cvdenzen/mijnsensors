@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0de688d0-17aa-44e6-a2e9-1599d4f7fb67" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/V1_NW_MySensors_ino/V1_NW_MySensors_ino.ino" afterPath="$PROJECT_DIR$/V1_NW_MySensors_ino/V1_NW_MySensors_ino.ino" />
-    </list>
+    <list default="true" id="0de688d0-17aa-44e6-a2e9-1599d4f7fb67" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
