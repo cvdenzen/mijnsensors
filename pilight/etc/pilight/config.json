@@ -12,6 +12,7 @@
 	"rules": {},
 	"gui": {},
 	"settings": {
+		"port": 5017,
 		"log-level": 6,
 		"pid-file": "/var/run/pilight.pid",
 		"log-file": "/var/log/pilight.log",

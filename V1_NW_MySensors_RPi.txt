@@ -16,6 +16,14 @@ Topics:
 
 Done:
 mosquitto en mosquitto-clients geinstalleerd
+python3.5 as default alternative
+python voor pilight, cloned https://github.com/mcdeck/pilight2mqtt.git
+apt-get install python3-pip (with errors...)
+pip install pilight2mqtt
+python setup.py install
+pilight2mqtt --help
+python -m pilight2mqtt --help
+rc.local
 Todo:
 python implementeren voor pilight, zie ook https://forum.pilight.org/showthread.php?tid=2229
 draadje van pir vastmaken aan pin #7
