@@ -8,6 +8,14 @@
 				"unit": 0
 			}],
 			"state": "on"
+		},
+		"kaku_d_2": {
+			"protocol": [ "arctech_switch_old" ],
+			"id": [{
+				"id": 3,
+				"unit": 2
+			}],
+			"state": "on"
 		}
 	},
 	"rules": {},
