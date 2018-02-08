@@ -1,5 +1,6 @@
 {
-	"devices": {
+	"devices":
+	{
 		"kaku_d_0": {
 			"protocol": [ "kaku_switch_old" ],
 			"id": [{
