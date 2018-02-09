@@ -15,13 +15,27 @@
     },
     {
       "plugin": "mobile-frontend"
-    },
-    {
-      "plugin": "pilight",
-      "port": 5017
+    }{
+      "plugin": "homeduino",
+      "driver": "gpio",
+      "driverOptions": {},
+      "receiverPin": 1,
+      "transmitterPin": 0
     }
   ],
   "devices": [
+    {
+      "id": "rfswitch",
+      "name": "RFSwitch",
+      "class": "HomeduinoRFSwitch",
+      "protocols": [{
+        "name": "switch1",
+        "options": {
+          "id": 3,
+          "unit": 0
+        }
+      }]
+    }
 
   ],
   "rules": [

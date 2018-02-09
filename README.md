@@ -18,3 +18,4 @@ git pull
 (of git clone https://github.com/cvdenzen/mijnsensors.git)
 cp -a pimatic-app/config.json ~/pimatic-app
 service pimatic-app restart
+plugin homeduino laden (eenmalig). Geen pilight (wordt niet meer ondersteund).
