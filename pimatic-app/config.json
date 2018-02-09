@@ -15,7 +15,8 @@
     },
     {
       "plugin": "mobile-frontend"
-    }{
+    },
+    {
       "plugin": "homeduino",
       "driver": "gpio",
       "driverOptions": {},
