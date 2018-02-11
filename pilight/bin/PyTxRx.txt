@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+#Example Call python ./TxRx.py topic 1 950	
+#V1.01 M.C. - 2017	
+
+import paho.mqtt.client as mqtt
+import time
+import sys
+import os
+
+
+if (len(sys.argv) < 3):
+   print("Wrong count of arguments, 1 = MQTT-Topic, 2 = MQTT-Message, 3 = Pilight-ID (Optional)")
+   sys.exit(1)
+   
+def on_connect_sub(client, userdata, flags, rc):
+    print("Connected sub with result code " + str(rc))
+    ClientSub.subscribe(sInTopic + "/#")
+
+
+def on_connect_pub(client, userdata, flags, rc):
+    print("Connected pub with result code " + str(rc))	
+	
+	
+def on_message_sub(client, userdata, msg):
+    print("MQTT receive " + msg.topic + " " + str(msg.payload))
+    global RetVal
+    global count            
+    RetVal = int (msg.payload)
+    if (RetVal < 5):       
+       count = 5
+
+
+   
+#Arguments
+sTopic      = sys.argv[1]
+sMessage    = sys.argv[2]
+sPilightID  = "NONE"
+
+if (len(sys.argv) > 3):
+   sPilightID  = sys.argv[3]
+
+#Variables	   
+RetVal      = 99	
+count       = 0
+bashCommand = "sudo pilight-send -p generic_label -i " + sPilightID + " -l Off -c red"
+# Out is In on SONOFF
+sOutTopic   = sTopic + "Rx"
+sInTopic    = sTopic + "Tx"
+
+
+#Publisher
+ClientPub = mqtt.Client()
+ClientPub.on_connect = on_connect_pub
+ClientPub.connect("localhost", 1883, 60)
+ClientPub.loop_start()
+	
+#Subscriber
+ClientSub = mqtt.Client()
+ClientSub.on_connect = on_connect_sub
+ClientSub.on_message = on_message_sub
+ClientSub.connect("localhost", 1883, 60)
+
+#Wait after connect
+#time.sleep(1)
+
+#Publish
+ClientPub.publish(sOutTopic, sys.argv[2]) 
+
+#Subscribe
+while ( count < 5 ):
+ ClientSub.loop()
+ count = count + 1
+
+#Stop loops
+ClientSub.loop_stop()
+ClientPub.loop_stop() 
+
+#Pilight control
+if sPilightID != "NONE":
+ if RetVal == 0:   
+  bashCommand = "sudo pilight-send -p generic_label -i " + sPilightID + " -l Off -c red"
+  
+ if RetVal == 1: 
+  bashCommand = "sudo pilight-send -p generic_label -i " + sPilightID + " -l On -c blue"
+   
+ os.system(bashCommand) 
+ print(bashCommand)
+ 
+ 

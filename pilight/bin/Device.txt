@@ -1,0 +1,12 @@
+"GarageLight5min": {
+			"protocol": [ "program" ],
+			"id": [{
+				"name": "GarageLight5min"
+			}],
+			"program": "/home/pi/MQTT/TxRx.py ",
+			"arguments": "",
+			"stop-command": "",
+			"start-command": "python /home/pi/MQTT/TxRx.py Home/GarageLight d5",
+			"state": "stopped",
+			"pid": 0
+		},
