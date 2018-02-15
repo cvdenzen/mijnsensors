@@ -32,15 +32,14 @@
 package nl.vandenzen.mijnsensors.mqttpilight;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
 import org.apache.commons.cli.*;
 import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.internal.ClientComms;
 
 import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Set;
 
 public class MqttPilight implements MqttCallback {
     public MqttPilight(String[] args) {
@@ -96,27 +95,36 @@ public class MqttPilight implements MqttCallback {
         if (mqtt_topic == null) {
             mqtt_topic = "pilight";
         }
+        finalTopic = mqtt_topic;
+
         // get an option value
         String pilight_server = cmd.getOptionValue("pilight_server");
         if (pilight_server == null) {
             pilight_server = "localhost";
         }
+        finalPilightServer = pilight_server;
         // get an option value
         String pilight_port = cmd.getOptionValue("pilight_port");
         if (pilight_port == null) {
             pilight_port = "5000";
         }
-        boolean debug = false;
+        int tempPort = 0;
+        try {
+            tempPort = Integer.parseInt(pilight_port);
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Error in pilight port number, option pilight_port", ex);
+        }
+        finalPilightPort = tempPort;
         if (cmd.hasOption("d")) {
             // automatically generate the help statement
             debug = true;
 
         }
-        boolean verbose = false;
         if (cmd.hasOption("V")) {
             // automatically generate the help statement
             verbose = true;
         }
+
         // but only if both pilight server and mqtt server are defined, to
         // make it easier to do unit tests
         //
@@ -127,143 +135,46 @@ public class MqttPilight implements MqttCallback {
             // form pilight-mqtt 2 connections
             //m2pMSocket=new Socket(mqqt_server,mqtt_port);
             try {
-                Socket m2pPSocket = new Socket(InetAddress.getByName(pilight_server), Integer.parseInt(pilight_port));
+                m2pPSocket = new Socket(InetAddress.getByName(pilight_server), Integer.parseInt(pilight_port));
             } catch (Exception ex) {
                 LOGGER.log(Level.SEVERE, "Create socket", ex);
             }
-            MqttClient client = null;
             // Start mqtt->pilight thread
             try {
-                client = new MqttClient("tcp://" + mqtt_server + ":" + mqtt_port, "Pilight2MqttGateway");
+                mqttClient = new MqttClient("tcp://" + mqtt_server + ":" + mqtt_port, "Pilight2MqttGateway");
             } catch (Exception ex) {
                 LOGGER.log(Level.SEVERE, "new MqttClient", ex);
             }
+            final MqttClient finalClient = mqttClient;
 
-            final MqttClient finalClient = client;
             try {
-                client.connect();
+                mqttClient.connect();
             } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "client.connect", ex);
+                LOGGER.log(Level.SEVERE, "mqttClient.connect", ex);
             }
             try {
-                client.setCallback(this);
+                mqttClient.setCallback(this);
             } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "client.connect", ex);
+                LOGGER.log(Level.SEVERE, "mqttClient.connect", ex);
             }
             try {
-                client.subscribe(mqtt_topic);
+                mqttClient.subscribe(mqtt_topic);
             } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "client.connect", ex);
+                LOGGER.log(Level.SEVERE, "mqttClient.connect", ex);
             }
-
-
-            // Make final vars to use in thread
-            final String finalTopic = mqtt_topic;
-            final String finalPilightServer = pilight_server;
-            int tempPort = 0;
+            Socket pilightSocket = null;
             try {
-                tempPort = Integer.parseInt(pilight_port);
+                pilightSocket = new Socket(finalPilightServer, finalPilightPort);
             } catch (Exception ex) {
-                LOGGER.log(Level.SEVERE, "Error in pilight port number, option pilight_port", ex);
+                LOGGER.log(Level.SEVERE, "Exception", ex);
             }
-            final int finalPilightPort = tempPort;
-            //
-            // Start thread to read pilight
-            Thread readPilight = new Thread() {
-                public void run() {
-                    PrintWriter out = null;
-                    BufferedReader in = null;
-                    // open pilight
-                    Socket pilightSocket = null;
-                    try {
-                        pilightSocket = new Socket(finalPilightServer, finalPilightPort);
-                    } catch (Exception ex) {
-                        LOGGER.log(Level.SEVERE, "Exception", ex);
-                    }
-                    try {
-                        out = new PrintWriter(pilightSocket.getOutputStream(), true);
-                        in = new BufferedReader(new InputStreamReader(pilightSocket.getInputStream()));
-                    } catch (Exception ex) {
-                        LOGGER.log(Level.SEVERE, "Exception", ex);
-                    }
-                    // Read input json
-                    String s;
-                    StringBuilder s1 = new StringBuilder();
-                    try {
-                        while ((s = in.readLine()) != null) {
-                            String payload = mqttPayload(s);
-
-
-                            int qos = 0;
-                            boolean retain = false;
-                            try {
-                                finalClient.publish(finalTopic, payload.getBytes("utf-8"), qos, retain);
-                            } catch (MqttException ex) {
-                                LOGGER.log(Level.SEVERE, "While publishing to mqtt", ex);
-                            }
-                        }
-                    } catch (IOException ex) {
-                        LOGGER.log(Level.SEVERE, "Exception", ex);
-                    }
-
-                }
-
-                ;
-
-            };
+            Thread readPilight = new ReadPilight(pilightSocket, mqttClient, mqtt_topic);
             readPilight.start(); // start the thread
         } else {
             LOGGER.warning("Not starting because not both mqtt-server and pilight-server are defined");
         }
 
     }
-
-    String mqttPayload(String s) {
-        //s1.append(s);
-        // Try whether we have a valid json object
-        // It should be, pilight always ends with new line
-        String jsonInput = s;
-        LOGGER.info("jsonInput=" + s);
-
-        GsonBuilder builder = new GsonBuilder();
-        builder.setLenient();
-        //JsonReader reader=builder.create().newJsonReader(new StringReader(jsonInput));
-        JsonStreamParser parser = new JsonStreamParser(jsonInput);
-
-        while (parser.hasNext()) {
-            JsonElement jelement = parser.next();
-            JsonObject jobject = jelement.getAsJsonObject();
-            JsonElement jsonOrigin = jobject.get("origin");
-            JsonElement jsonProtocol = jobject.get("protocol");
-            String sProtocol = jsonProtocol.getAsString();
-            LOGGER.info(" sProtocol=" +sProtocol);
-            // loop over code array (id, unit, off, ...)
-            //
-//            evt_dct = json.loads(evt.decode('utf-8'))
-//            if evt_dct.get('origin', '') == 'update':
-//                evt_type = evt_dct.get('type', None)
-//                if evt_type == 1: # switch
-//                    for device in evt_dct.get('devices', []):
-//                        self._send_mqtt_msg(device,
-//                                            self._mktopic(device, 'STATE'),
-//                                            evt_dct['values']['state'])
-//                elif evt_type == 3:
-//                    for device in evt_dct.get('devices', []):
-//                        self._send_mqtt_msg(device,
-//                                            self._mktopic(device, 'HUMIDITY'),
-//                                            evt_dct['values']['humidity'])
-//                        self._send_mqtt_msg(device,
-//                                            self._mktopic(device, 'TEMPERATURE'),
-//                                            evt_dct['values']['temperature'])
-//                else:
-//                    raise RuntimeError('Unsupported event type %d' % evt_type)
-//        except Exception as ex:  # pylint: disable=broad-except
-//            self.log.error('%s: %s', ex.__class__.__name__, ex)
-        }
-        return " test";
-    }
-
-    final static Logger LOGGER = Logger.getLogger("nl.vandenzen.mijnsensors.MqttPilight");
 
     public static void main(String[] args) {
         new MqttPilight(args);
@@ -283,4 +194,15 @@ public class MqttPilight implements MqttCallback {
     public void deliveryComplete(IMqttDeliveryToken token) {
 
     }
+
+    // Make final vars to use in thread
+    boolean debug = false;
+    boolean verbose = false;
+    final String finalTopic;
+    final String finalPilightServer;
+    final int finalPilightPort;
+
+    Socket m2pPSocket;
+    MqttClient mqttClient = null;
+    final static Logger LOGGER = Logger.getLogger("nl.vandenzen.mijnsensors.MqttPilight");
 }

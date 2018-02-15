@@ -1,7 +1,16 @@
+Status 20180215: UNDER DEVELOPMENT
+Try to make pilight to mqtt gateway, something like pilight2mqtt. But there is a problem with pilight2mqtt: it cannot
+handle multiple top level json objects and crashes. Because I prefer Java over Python, I decided to rebuild pilight2mqtt
+in Java. I called it mqttPilight.
+It will only do what I need:
+- pass received codes from Pilight to mqtt
+- pass set commands from mqtt to Pilight (don't know yet how to do this)
+
 Status 20180209:
 pimatic (no more openhab2 for now: 2.2 no sitemap, rules are difficult to edit, OH2 is going to use Microsofts Visual Studio).
 
 pimatic heeft een config file. https://pimatic.org/guide/getting-started/configuration/
+
 
 
 On iMac:
