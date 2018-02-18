@@ -16,8 +16,8 @@
  * Address of the MQTT server to talk to.
  * --mqtt-port MQTT_PORT
  * Port of the MQTT server to talk to.
- * --mqtt-finalTopic MQTT_TOPIC
- * MQTT finalTopic to use.
+ * --mqtt-topic MQTT_TOPIC
+ * MQTT topic to use.
  * --pilight-server PILIGHT_SERVER
  * Set the address of the pilight server to use. If not
  * specified will try to auto discover
@@ -40,20 +40,21 @@ import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.Handler;
 
 public class MqttPilight implements MqttCallback {
     public MqttPilight(String[] args) {
         // Parse parameters, 'stolen' from Oliver van Porten, pilight2mqtt
         // create Options object
-        String mqtt_topic;
         Options options = new Options();
+        String mqtt_topic;
 
 
         options.addOption("h", "help", false, "display help message");
         options.addOption("v", "version", false, "display version");
         options.addOption("s", "mqtt-server", true, "Address of th MQTT server to talk to.");
         options.addOption("x", "mqtt-port", true, "Port of the MQTT server to talk to.");
-        options.addOption("t", "mqtt-finalTopic", true, "MQTT finalTopic to use.");
+        options.addOption("t", "mqtt-topic", true, "MQTT topic to use.");
         options.addOption("p", "pilight-server", true, "Set the address of the pilight server to use.");
         options.addOption("y", "pilight-port", true, "Port of the pilight server. Only used when pilight-\n" +
                 " server is also specified");
@@ -91,7 +92,7 @@ public class MqttPilight implements MqttCallback {
             mqtt_port = "1883";
         }
         // get an option value
-        mqtt_topic = cmd.getOptionValue("mqtt-finalTopic");
+        mqtt_topic = cmd.getOptionValue("mqtt-topic");
         if (mqtt_topic == null) {
             mqtt_topic = "pilight";
         }
@@ -121,8 +122,11 @@ public class MqttPilight implements MqttCallback {
 
         }
         if (cmd.hasOption("V")) {
-            // automatically generate the help statement
             verbose = true;
+            LOGGER.setLevel(Level.FINEST);
+            for (Handler h:LOGGER.getHandlers()) {
+                h.setLevel(Level.FINEST);
+            }
         }
 
         // but only if both pilight server and mqtt server are defined, to

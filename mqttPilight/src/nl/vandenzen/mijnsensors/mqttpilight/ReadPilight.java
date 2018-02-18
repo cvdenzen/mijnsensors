@@ -3,10 +3,7 @@ package nl.vandenzen.mijnsensors.mqttpilight;
 import com.google.gson.*;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,44 +26,45 @@ public class ReadPilight extends Thread {
         PrintWriter out = null;
         BufferedReader in = null;
         // open pilight
-        try {
-            out = new PrintWriter(pilightSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(pilightSocket.getInputStream()));
-        } catch (Exception ex) {
-            LOGGER.log(Level.SEVERE, "Exception", ex);
+        if (pilightSocket != null) {
+            try {
+                out = new PrintWriter(pilightSocket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(pilightSocket.getInputStream()));
+            } catch (Exception ex) {
+                LOGGER.log(Level.SEVERE, "Exception", ex);
+            }
+            // Send identification to Pilight
+            out.println(new JsonIdentification("identify", 0, 1, 0, 0, "0000-7c-dd-90-a8e0c2", "all"));
+            out.flush();
+        } else {
+            LOGGER.log(Level.INFO, "No connection. Test mode?");
         }
-        // Send identification to Pilight
-        out.println(new JsonIdentification("identify", 0, 1, 0, 0, "0000-7c-dd-90-a8e0c2", "all");
-        out.flush();
         // Read input json
         String s;
         StringBuilder s1;
         while (true) {
             s1 = new StringBuilder();
             try {
-                while (in.ready()) {
-                    // This readLine call is not guaranteed not to block, but
-                    // we might hope that Pilight always adds a new line to the end of
-                    // a message.
-                    s = in.readLine();
-                    s1.append(s);
+                if (in != null) {
+                    while (in.ready()) {
+                        // This readLine call is not guaranteed not to block, but
+                        // we might hope that Pilight always adds a new line to the end of
+                        // a message.
+                        s = in.readLine();
+                        s1.append(s);
+                    }
+                } else {
+                    s1.append("{}");
                 }
                 // Split the responses from Pilight in separate Json elements
-                ArrayList<JsonElement> jsonElements = mqttSplit(s1.toString());
+                ArrayList<JsonElement> jsonElements = pilightJsonSplit(s1.toString());
                 //String mqttTopic = mqttTopic(s1.toString());
                 // String payload = parsePilightJson(s1.toString());
-
-
-                int qos = 0;
-                boolean retain = false;
                 for (JsonElement jsonElement : jsonElements) {
-
-                    try {
-                        mqttClient.publish(mqttTopic, payload.getBytes("utf-8"), qos, retain);
-                    } catch (MqttException ex) {
-                        LOGGER.log(Level.SEVERE, "While publishing to mqtt", ex);
-                    }
+                    // parse pilight receiver and publish to mqtt
+                    parsePilightJson(jsonElement);
                 }
+
             } catch (IOException ex) {
                 LOGGER.log(Level.SEVERE, "Exception", ex);
             }
@@ -82,7 +80,7 @@ public class ReadPilight extends Thread {
      * @param jsonInput
      * @return
      */
-    ArrayList<JsonElement> mqttSplit(String jsonInput) {
+    public ArrayList<JsonElement> pilightJsonSplit(String jsonInput) {
         LOGGER.fine("jsonInput=" + jsonInput);
 
         ArrayList<JsonElement> jsonElements = new ArrayList<>();
@@ -96,7 +94,6 @@ public class ReadPilight extends Thread {
             JsonElement jelement = parser.next();
             jsonElements.add(jelement);
             LOGGER.finest("toplevelelement=" + jelement.toString());
-            parsePilightJson(jelement);
         }
         return jsonElements;
     }
@@ -109,16 +106,32 @@ public class ReadPilight extends Thread {
 
         // Try messages
         JsonReceiverResponse jsonReceiverResponse = new Gson().fromJson(jsonInput, JsonReceiverResponse.class);
-        if ("receiver".equals(jsonReceiverResponse.origin)) {
-            mqttTopic = String.format("home/pilight/status/kaku_%s_%s", jsonReceiverResponse.message.unit,jsonReceiverResponse.message.id);
-            mqttPayload = jsonReceiverResponse.message.state;
+        if ("receiver".equals(jsonReceiverResponse.origin) && (jsonReceiverResponse.message != null)) {
+            mqttTopic = String.format(mqttTopic + "/status/" + jsonReceiverResponse.protocol + "_%s_%s", jsonReceiverResponse.message.unit, jsonReceiverResponse.message.id);
+            String mqttPayload = jsonReceiverResponse.message.state;
+            publishToMqtt(mqttTopic, mqttPayload);
         }
         return " test";
     }
 
+    void publishToMqtt(String mqttTopic, String mqttPayload) {
+
+
+        int qos = 0;
+        boolean retain = false;
+
+        try {
+            mqttClient.publish(mqttTopic, mqttPayload.getBytes("utf-8"), qos, retain);
+        } catch (MqttException ex) {
+            LOGGER.log(Level.SEVERE, "While publishing to mqtt", ex);
+        } catch (UnsupportedEncodingException ex) {
+            LOGGER.log(Level.SEVERE, "While publishing to mqtt", ex);
+        }
+    }
+
     // json objects
-    // From https://manual.pilight.org/development/api.html
-    // To Pilight
+// From https://manual.pilight.org/development/api.html
+// To Pilight
     class JsonRequestIdentification {
         String action; // value for request from Pilisht will be "identify"
     }
@@ -172,7 +185,7 @@ public class ReadPilight extends Thread {
     }
 
     // To Pilight
-    // send action: send low level code
+// send action: send low level code
     class JsonActionSend {
         String action;
         ActionCode code;
@@ -186,7 +199,7 @@ public class ReadPilight extends Thread {
     }
 
     // To Pilight
-    // control action: send high level code to device
+// control action: send high level code to device
     class JsonActionControl {
         String action;
         ControlCode code;
@@ -200,9 +213,9 @@ public class ReadPilight extends Thread {
                 Integer dimlevel;
             }
         }
+
     }
 
-    private String mqttTopic;
     private String mqttPayload;
     final static Logger LOGGER = Logger.getLogger("nl.vandenzen.mijnsensors.MqttPilight");
 
