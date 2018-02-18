@@ -1,7 +1,10 @@
 package nl.vandenzen.mijnsensors.mqttpilight;
 
 
+import com.google.gson.JsonElement;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 class MqttPilightTest {
     @Test
@@ -9,7 +12,7 @@ class MqttPilightTest {
 
         MqttPilight mqttPilight = new MqttPilight(new String[]{});
 
-        String[] json = {"{" +
+        String[] json = {"{" + // this is from (old) api docs?
                 "  \"origin\": \"receiver\"," +
                 "  \"protocol\": \"kaku_switch\"," +
                 "  \"code\": {" +
@@ -29,7 +32,7 @@ class MqttPilightTest {
                 "}"
 
 
-                // Message as received from a remote control, received by pilight
+                // Message as received from a remote control, received by pilight, as of year 2018.
 
                 + " {\n"
                 + "    \"message\": {\n"
@@ -59,8 +62,12 @@ class MqttPilightTest {
         };
 
 
+        ReadPilight rp=new ReadPilight(null,null,null);
+        MqttPilight mp=new MqttPilight(null);
         for (String s : json) {
-            String payload = mqttPilight.mqttPayload(s);
+            ArrayList<JsonElement> e=rp.mqttSplit(s);
+                                     //mqttSplit(String jsonInput)
+            String payload = rp.parsePilightJson(s);
         }
 
     }
