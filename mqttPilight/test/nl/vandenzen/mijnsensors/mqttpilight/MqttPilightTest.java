@@ -1,10 +1,11 @@
 package nl.vandenzen.mijnsensors.mqttpilight;
 
 
-import com.google.gson.JsonElement;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class MqttPilightTest {
     @Test
@@ -64,4 +65,19 @@ class MqttPilightTest {
 
 
     }
+
+    @Test
+    void messageArrived() {
+        MqttMessage m=new MqttMessage("on".getBytes());
+        MqttPilight mp=new MqttPilight(new String[] {});
+        try {
+            mp.messageArrived("home/test/devicename_3_0", m);
+        }
+        catch (Exception ex) {
+            LOGGER.log(Level.SEVERE,"Fout");
+        }
+
+    }
+
+    final static Logger LOGGER = Logger.getLogger("nl.vandenzen.mijnsensors.MqttPilight");
 }

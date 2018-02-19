@@ -32,6 +32,7 @@
 package nl.vandenzen.mijnsensors.mqttpilight;
 
 import com.google.gson.*;
+import nl.vandenzen.mijnsensors.mqttpilight.json.JsonActionControl;
 import org.apache.commons.cli.*;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.internal.ClientComms;
@@ -191,7 +192,40 @@ public class MqttPilight implements MqttCallback {
 
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
-        LOGGER.info("Message arrived:" + message.toString());
+        LOGGER.info("Mqtt message arrived:" + message.toString());
+
+        // Assume message is mqttTopic + "/" + protocol + "_" + id "_" + unit
+        // mqttTopic as specified in paramater --mqtt_topic=
+        // protocol as specified in /etc/pilight/config.json for the device
+        // In /etc/pilight/config.json the device should have the same name! (protocol_[id]_[unit])
+        // id=0: group A
+        // id=1: group B
+        // id=2: group C
+        // id=3: group D
+        // unit=0: first etc.
+
+        // Remove topic from string
+        String topic1=finalTopic;
+        if (topic1==null) {
+            topic1="home/test/";
+        }
+        String s1=topic.replaceFirst(finalTopic,"");
+        // Remove starting slash
+        String device=s1.replaceFirst("^/?(.*)" ,"$1");
+        // Split into device, id, unit
+        // Not needed:
+        String[] sa1=s1.split("_");
+        if (sa1.length!=3) {
+            LOGGER.log(Level.SEVERE,"Splitting mqtt topic does not give device_id_unit, topic=" +topic);
+
+        } else {
+            String protocol=sa1[0];
+            String id=sa1[1];
+            String unit=sa1[2];
+            String state=message.getPayload().toString();
+            JsonActionControl actionControl=new JsonActionControl("control",device,state,null);
+
+        }
     }
 
     @Override

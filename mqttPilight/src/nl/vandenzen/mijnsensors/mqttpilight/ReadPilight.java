@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import java.util.ArrayList;
 
 import org.eclipse.paho.client.mqttv3.*;
-
+import nl.vandenzen.mijnsensors.mqttpilight.json.*;
 
 public class ReadPilight extends Thread {
 
@@ -110,13 +110,21 @@ public class ReadPilight extends Thread {
             mqttTopic = String.format(mqttTopic + "/status/" + jsonReceiverResponse.protocol + "_%s_%s", jsonReceiverResponse.message.unit, jsonReceiverResponse.message.id);
             String mqttPayload = jsonReceiverResponse.message.state;
             publishToMqtt(mqttTopic, mqttPayload);
+        } else {
+            JsonStatusResponse jsonStatusResponse = new Gson().fromJson(jsonInput,JsonStatusResponse.class);
+            if ("status".equals(jsonStatusResponse)) {
+                // Only log failure. Ignore "success" response
+                if (!"success".equals(jsonStatusResponse.status)) {
+                    LOGGER.log(Level.SEVERE,"Pilight sent non-success status:" +jsonStatusResponse.status);
+                } else {
+                    LOGGER.log(Level.INFO,"Pilight sent status:" +jsonStatusResponse.status);
+                }
+            }
         }
         return " test";
     }
 
     void publishToMqtt(String mqttTopic, String mqttPayload) {
-
-
         int qos = 0;
         boolean retain = false;
 
@@ -129,92 +137,6 @@ public class ReadPilight extends Thread {
         }
     }
 
-    // json objects
-// From https://manual.pilight.org/development/api.html
-// To Pilight
-    class JsonRequestIdentification {
-        String action; // value for request from Pilisht will be "identify"
-    }
-
-    // To Pilight
-    class JsonIdentification {
-        public JsonIdentification(String action, Integer core, Integer receiver, Integer config, Integer forward, String uuid, String media) {
-            this.action = action;
-            this.options.core = core;
-            this.options.receiver = receiver;
-            this.options.config = config;
-            this.options.forward = forward;
-            this.options = options;
-            this.uuid = uuid;
-            this.media = media;
-        }
-
-        String action;
-        IdentificationOptions options;
-        String uuid;
-        String media;
-
-        class IdentificationOptions {
-            Integer core;
-            Integer receiver;
-            Integer config;
-            Integer forward;
-        }
-    }
-
-    // From Pilight
-    class JsonStatusResponse {
-        String status; // either "success" or "failure"
-    }
-
-    // From Pilight
-    class JsonReceiverResponse {
-        Message message;
-        String origin;
-        String protocol;
-        String uuid;
-        Integer repeats;
-
-        class Message {
-            Integer id;
-            Integer unit;
-            String state;
-        }
-
-
-    }
-
-    // To Pilight
-// send action: send low level code
-    class JsonActionSend {
-        String action;
-        ActionCode code;
-
-        class ActionCode {
-            String[] protocol;
-            Integer id;
-            Integer unit;
-            Integer off;
-        }
-    }
-
-    // To Pilight
-// control action: send high level code to device
-    class JsonActionControl {
-        String action;
-        ControlCode code;
-
-        class ControlCode {
-            String device;
-            String state; // on of off
-            ControlCodes values;
-
-            class ControlCodes {
-                Integer dimlevel;
-            }
-        }
-
-    }
 
     private String mqttPayload;
     final static Logger LOGGER = Logger.getLogger("nl.vandenzen.mijnsensors.MqttPilight");
