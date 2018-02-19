@@ -62,16 +62,6 @@ class MqttPilightTest {
         };
 
 
-        ReadPilight rp = new ReadPilight(null, null, null);
-        MqttPilight mp = new MqttPilight(null);
-        for (String s : json) {
-            ArrayList<JsonElement> e = rp.pilightJsonSplit(s);
-            //pilightJsonSplit(String jsonInput)
-            for (JsonElement jsonElement : e) {
-                String payload = rp.parsePilightJson(jsonElement);
-            }
-            ;
-        }
 
     }
 }
