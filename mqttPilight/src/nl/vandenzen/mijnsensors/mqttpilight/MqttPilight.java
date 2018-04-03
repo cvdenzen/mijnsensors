@@ -31,13 +31,11 @@
  */
 package nl.vandenzen.mijnsensors.mqttpilight;
 
-import com.google.gson.*;
 import nl.vandenzen.mijnsensors.mqttpilight.json.JsonActionControl;
+import org.apache.camel.main.Main;
 import org.apache.commons.cli.*;
 import org.eclipse.paho.client.mqttv3.*;
-import org.eclipse.paho.client.mqttv3.internal.ClientComms;
 
-import java.io.*;
 import java.net.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -140,7 +138,7 @@ public class MqttPilight implements MqttCallback {
             // form pilight-mqtt 2 connections
             //m2pMSocket=new Socket(mqqt_server,mqtt_port);
             try {
-                m2pPSocket = new Socket(InetAddress.getByName(pilight_server), Integer.parseInt(pilight_port));
+                pilightSocket = new Socket(InetAddress.getByName(pilight_server), Integer.parseInt(pilight_port));
             } catch (Exception ex) {
                 LOGGER.log(Level.SEVERE, "Create socket", ex);
             }
@@ -183,6 +181,18 @@ public class MqttPilight implements MqttCallback {
 
     public static void main(String[] args) {
         new MqttPilight(args);
+
+
+        // Start camel
+
+        Main main = new Main();
+        //main.addRouteBuilder(new MyRouteBuilder());
+        try {
+            main.run(args);
+        }
+        catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "In camel main.run()", ex);
+        }
     }
 
     @Override
@@ -240,7 +250,7 @@ public class MqttPilight implements MqttCallback {
     final String finalPilightServer;
     final int finalPilightPort;
 
-    Socket m2pPSocket;
+    Socket pilightSocket;
     MqttClient mqttClient = null;
     final static Logger LOGGER = Logger.getLogger("nl.vandenzen.mijnsensors.MqttPilight");
 }

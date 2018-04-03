@@ -12,6 +12,9 @@ import org.apache.camel.impl.PropertyPlaceholderDelegateRegistry;
 import org.apache.camel.impl.SimpleRegistry;
 import org.apache.camel.model.dataformat.XStreamDataFormat;
 import org.apache.camel.spi.Registry;
+import org.apache.camel.component.netty4.*;
+import org.apache.camel.component.stream.*;
+
 
 /**
  * A Camel Java DSL Router
@@ -42,23 +45,24 @@ public class MyRouteBuilder {
         try {
             // activemq is http mqtt
             context.addComponent("activemq", ActiveMQComponent.activeMQComponent("vm://localhost?broker.persistent=false"));
-            
-            
+
+
             context.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
-                    
+
                     //from("netty4:tcp://localhost:1883?textline=true")
-                      //      .to("stream:out");
-                    
+                    //from("netty4:tcp://192.168.2.9:5017?textline=true")
+                    //        .to("stream:out");
+
                     from("activemq:queue:test.queue")
-                            //.to("stream:out")
+                            .to("stream:out")
                             .unmarshal().json(JsonLibrary.Gson, JsonReceiverResponse.class)
                             .to("stream:out")
                             //.marshal().json(JsonLibrary.Gson)
                             .to("stream:out")
                             //.filter().simple("${bodyAs(JsonReceiverResponse.class)}")
-                            .bean(otaProtocolExtractor , "storeMqttTopic")
+                            .bean(otaProtocolExtractor, "storeMqttTopic")
                             // Try to extract protocol, message.id, message.unit and message.state ("down" "up" ? )
                             .to("stream:out")
                             // set command in exchange
@@ -71,10 +75,21 @@ public class MyRouteBuilder {
             });
             ProducerTemplate template = context.createProducerTemplate();
             context.start();
-            template.sendBody("activemq:test.queue", json[1]);
+            String msg = "main: context started";
+            System.out.println(msg);
             Thread.sleep(2000);
+            template.sendBody("activemq:test.queue", json[0]);
+            msg = "main: sendBody done";
+            System.out.println(msg);
+            Thread.sleep(2000);
+        } catch (Exception ex) {
+            String msg=ex.toString();
+            System.out.println(msg);
         } finally {
             context.stop();
+            String msg = "main: context stopped";
+            System.out.println(msg);
+
         }
     }
 
