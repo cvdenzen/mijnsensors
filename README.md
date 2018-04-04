@@ -1,4 +1,9 @@
 Status 20180215: UNDER DEVELOPMENT
+
+The pilightMqttOsgi project:
+- karaf, install camel and camel-blueprint
+
+
 Try to make pilight to mqtt gateway, something like pilight2mqtt. But there is a problem with pilight2mqtt: it cannot
 handle multiple top level json objects and crashes. Because I prefer Java over Python, I decided to rebuild pilight2mqtt
 in Java. I called it mqttPilight.
