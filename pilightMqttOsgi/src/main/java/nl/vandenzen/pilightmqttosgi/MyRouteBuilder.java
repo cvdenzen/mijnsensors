@@ -14,6 +14,9 @@ import org.apache.camel.model.dataformat.XStreamDataFormat;
 import org.apache.camel.spi.Registry;
 import org.apache.camel.component.netty4.*;
 import org.apache.camel.component.stream.*;
+import org.apache.camel.model.dataformat.JsonDataFormat;
+import org.apache.camel.model.dataformat.JsonLibrary;
+import java.util.Collections;
 
 
 /**
@@ -44,8 +47,15 @@ public class MyRouteBuilder {
         //org.eclipse.paho.client.mqttv3.MqttClient a=new org.eclipse.paho.client.mqttv3.MqttClient("","").
         try {
             // activemq is http mqtt
-            context.addComponent("activemq", ActiveMQComponent.activeMQComponent("vm://localhost?broker.persistent=false"));
+            context.addComponent("activemq", ActiveMQComponent.activeMQComponent("vm://localhost?broker.persistent=false&password=karaf&user=karaf"));
+            context.addComponent("stream",new org.apache.camel.component.stream.StreamComponent());
+            //context.addComponent("json-gson",new org.apache.camel.model.dataformat.);
 
+            //Populate data formats
+            JsonDataFormat jsonDataFormat = new JsonDataFormat(JsonLibrary.Gson);
+            jsonDataFormat.setUseList(true);
+            //context.setDataFormats(Collections.singletonMap("json", jsonDataFormat));
+            context.setDataFormats(Collections.singletonMap("json", jsonDataFormat));
 
             context.addRoutes(new RouteBuilder() {
                 @Override
@@ -78,7 +88,7 @@ public class MyRouteBuilder {
             String msg = "main: context started";
             System.out.println(msg);
             Thread.sleep(2000);
-            template.sendBody("activemq:test.queue", json[0]);
+            template.sendBody("activemq:queue:test.queue", json[0]);
             msg = "main: sendBody done";
             System.out.println(msg);
             Thread.sleep(2000);

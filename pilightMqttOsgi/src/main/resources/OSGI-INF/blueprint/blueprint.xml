@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+xmlns:osgixxx="https://www.osgi.org/xmlns/scr/v1.2.0">
+
+    <!-- test met security 17 april 2018 http://activemq.apache.org/security.html -->
+
+
+    <!-- https://apache.googlesource.com/servicemix5/+/81dced6a7c89f0ba288c7803e9540412cc45e41e/examples/activemq/activemq-camel-blueprint/src/main/resources/OSGI-INF/blueprint/blueprint.xml
+    -->
+
+    <!-- configure the camel activemq component to use the current broker -->
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+        <property name="connectionFactory">
+            <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+                <property name="brokerURL" value="vm://localhost?create=false&amp;waitForStart=10000"/>
+                <property name="userName" value="system"/>
+                <property name="password" value="manager"/>
+            </bean>
+        </property>
+    </bean>
+    <!-- reference id="activemq" interface="org.apache.camel.Component"/ -->
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="simple">
         <routeBuilder ref="myBuilder"/>
     </camelContext>
 
-    <bean id="myBuilder" class="nl.vandenzen.pilightmqttosgi.MyRouteBuilder" />
+    <bean id="myBuilder" class="nl.vandenzen.pilightmqttosgi.MyBlueprintRouteBuilder"/>
+    <service ref="activemq" interface="org.apache.camel.Component"/>
 </blueprint>
