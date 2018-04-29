@@ -2,6 +2,18 @@ Status 20180215: UNDER DEVELOPMENT
 
 The pilightMqttOsgi project:
 - karaf, install camel and camel-blueprint
+- In karaf: repo-add activemq <version>
+feature:install camel-jms
+feature:install camel-pano
+feature:install activemq
+feature:install activemq-camel
+feature:install activemq-cf (connection factory)
+feature:install activemq-blueprint (no idea why)
+
+feature:install camel-gson
+feature:install camel-stream
+
+
 
 
 Try to make pilight to mqtt gateway, something like pilight2mqtt. But there is a problem with pilight2mqtt: it cannot

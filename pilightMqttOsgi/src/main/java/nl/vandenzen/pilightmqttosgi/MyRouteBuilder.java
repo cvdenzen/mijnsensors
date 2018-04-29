@@ -1,6 +1,7 @@
 package nl.vandenzen.pilightmqttosgi;
 
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.CamelContext;
@@ -16,7 +17,13 @@ import org.apache.camel.component.netty4.*;
 import org.apache.camel.component.stream.*;
 import org.apache.camel.model.dataformat.JsonDataFormat;
 import org.apache.camel.model.dataformat.JsonLibrary;
+
+import javax.jms.ConnectionFactory;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
+import java.util.logging.Logger;
 
 
 /**
@@ -27,9 +34,12 @@ public class MyRouteBuilder {
     public static void main(String[] args) throws Exception {
         //JsonDataFormat jsonDataFormat = new JacksonDataFormat(JsonReceiverResponse.class);
         XStreamDataFormat xStreamDataFormat = new XStreamDataFormat(); // (JsonReceiverResponse.class);
-        GsonDataFormat gsonDataFormat = new GsonDataFormat(); // (JsonReceiverResponse.class);
+        //GsonDataFormat gsonDataFormat = new GsonDataFormat(); // (JsonReceiverResponse.class);
         //CamelContext context = new DefaultCamelContext();
 
+        String msg=dateFormat.format(new Date()) + " Start MyRouteBuilder.main()";
+        System.out.println(msg);
+        logger.info(msg);
         CamelContext context = new DefaultCamelContext(new SimpleRegistry());
 
         Registry registry = context.getRegistry();
@@ -47,15 +57,26 @@ public class MyRouteBuilder {
         //org.eclipse.paho.client.mqttv3.MqttClient a=new org.eclipse.paho.client.mqttv3.MqttClient("","").
         try {
             // activemq is http mqtt
-            context.addComponent("activemq", ActiveMQComponent.activeMQComponent("vm://localhost?broker.persistent=false&password=karaf&user=karaf"));
+
+            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost");
+            ActiveMQComponent ac=ActiveMQComponent.activeMQComponent();
+            ac.setConnectionFactory(connectionFactory);
+            ac.setUsername("karaf");
+            ac.setPassword("karaf");
+            context.addComponent("activemq", ac);
             context.addComponent("stream",new org.apache.camel.component.stream.StreamComponent());
+            context.addComponent("paho",new org.apache.camel.component.paho.PahoComponent());
             //context.addComponent("json-gson",new org.apache.camel.model.dataformat.);
 
             //Populate data formats
-            JsonDataFormat jsonDataFormat = new JsonDataFormat(JsonLibrary.Gson);
-            jsonDataFormat.setUseList(true);
+            // (a) JsonDataFormat jsonDataFormat = new JsonDataFormat(JsonLibrary.Gson);
+            // (a) jsonDataFormat.setUseList(true);
             //context.setDataFormats(Collections.singletonMap("json", jsonDataFormat));
-            context.setDataFormats(Collections.singletonMap("json", jsonDataFormat));
+            // (a) context.setDataFormats(Collections.singletonMap("json", jsonDataFormat));
+
+
+            final GsonDataFormat gsonDataFormat = new GsonDataFormat();
+            gsonDataFormat.setUnmarshalType(JsonReceiverResponse.class);
 
             context.addRoutes(new RouteBuilder() {
                 @Override
@@ -67,7 +88,8 @@ public class MyRouteBuilder {
 
                     from("activemq:queue:test.queue")
                             .to("stream:out")
-                            .unmarshal().json(JsonLibrary.Gson, JsonReceiverResponse.class)
+                            .to("stream:out")
+                            .unmarshal(gsonDataFormat)
                             .to("stream:out")
                             //.marshal().json(JsonLibrary.Gson)
                             .to("stream:out")
@@ -85,23 +107,29 @@ public class MyRouteBuilder {
             });
             ProducerTemplate template = context.createProducerTemplate();
             context.start();
-            String msg = "main: context started";
+            msg = dateFormat.format(new Date()) + " main: context started";
+            logger.info(msg);
             System.out.println(msg);
             Thread.sleep(2000);
             template.sendBody("activemq:queue:test.queue", json[0]);
-            msg = "main: sendBody done";
+            msg = dateFormat.format(new Date()) + "main: sendBody done";
             System.out.println(msg);
             Thread.sleep(2000);
         } catch (Exception ex) {
-            String msg=ex.toString();
+            msg=dateFormat.format(new Date()) + " " + ex.toString();
             System.out.println(msg);
+            ex.printStackTrace();
         } finally {
-            context.stop();
-            String msg = "main: context stopped";
+            //context.stop();
+            msg = dateFormat.format(new Date()) + " main: End of main, Camel context should still be running";
             System.out.println(msg);
 
         }
     }
+
+    static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
+    // Better:
+    final static Logger logger=Logger.getLogger(MyRouteBuilder.class.toString());
 
     static String[] json = {"{"
         + // this is from (old) api docs?

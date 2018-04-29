@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
                 }
             }
         };
-        msg = "Hallo, dit is voor thread.starrt pilight-mqtt";
+        msg = "Hallo, dit is voor thread.start pilight-mqtt";
         System.out.println(msg);
         if (!useBlueprint) {
             thread.start();
