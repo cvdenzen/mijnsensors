@@ -12,6 +12,7 @@ feature:install activemq-blueprint (no idea why)
 
 feature:install camel-gson
 feature:install camel-stream
+feature:install camel-netty4
 
 
 

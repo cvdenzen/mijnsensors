@@ -1,5 +1,7 @@
 package nl.vandenzen.pilightmqttosgi;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.model.dataformat.JsonLibrary;
@@ -37,7 +39,7 @@ public class MyRouteBuilder {
         //GsonDataFormat gsonDataFormat = new GsonDataFormat(); // (JsonReceiverResponse.class);
         //CamelContext context = new DefaultCamelContext();
 
-        String msg=dateFormat.format(new Date()) + " Start MyRouteBuilder.main()";
+        String msg = dateFormat.format(new Date()) + " Start MyRouteBuilder.main()";
         System.out.println(msg);
         logger.info(msg);
         CamelContext context = new DefaultCamelContext(new SimpleRegistry());
@@ -49,23 +51,24 @@ public class MyRouteBuilder {
         }
 
         // bean in simple map
-        ((SimpleRegistry)registry).put("jsonReceiverResponse", new JsonReceiverResponse());
-        
+        ((SimpleRegistry) registry).put("jsonReceiverResponse", new JsonReceiverResponse());
+
         // over the air protocol (433 MHz protocol name, used in mqtt topic name)
-        final OTAProtocolExtractor otaProtocolExtractor=new OTAProtocolExtractor();
-        ((SimpleRegistry)registry).put("otaProtocolExtractor",otaProtocolExtractor);
+        final OTAProtocolExtractor otaProtocolExtractor = new OTAProtocolExtractor();
+        ((SimpleRegistry) registry).put("otaProtocolExtractor", otaProtocolExtractor);
         //org.eclipse.paho.client.mqttv3.MqttClient a=new org.eclipse.paho.client.mqttv3.MqttClient("","").
         try {
             // activemq is http mqtt
 
             ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost");
-            ActiveMQComponent ac=ActiveMQComponent.activeMQComponent();
+            ActiveMQComponent ac = ActiveMQComponent.activeMQComponent();
             ac.setConnectionFactory(connectionFactory);
             ac.setUsername("karaf");
             ac.setPassword("karaf");
             context.addComponent("activemq", ac);
-            context.addComponent("stream",new org.apache.camel.component.stream.StreamComponent());
-            context.addComponent("paho",new org.apache.camel.component.paho.PahoComponent());
+            context.addComponent("stream", new org.apache.camel.component.stream.StreamComponent());
+            context.addComponent("paho", new org.apache.camel.component.paho.PahoComponent());
+            context.addComponent("netty4", new org.apache.camel.component.netty4.NettyComponent());
             //context.addComponent("json-gson",new org.apache.camel.model.dataformat.);
 
             //Populate data formats
@@ -75,21 +78,27 @@ public class MyRouteBuilder {
             // (a) context.setDataFormats(Collections.singletonMap("json", jsonDataFormat));
 
 
-            final GsonDataFormat gsonDataFormat = new GsonDataFormat();
-            gsonDataFormat.setUnmarshalType(JsonReceiverResponse.class);
+            Gson gson= new GsonBuilder().setLenient().create();
+            final GsonDataFormat gsonDataFormatReceiverResponse = new GsonDataFormat(gson,JsonReceiverResponse.class);
 
             context.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
 
                     //from("netty4:tcp://localhost:1883?textline=true")
-                    //from("netty4:tcp://192.168.2.9:5017?textline=true")
-                    //        .to("stream:out");
+                    //
+                    // Read pilight receiver (the 433 MHz receiver connected to
+                    // Raspberry Pi
+                    from("activemq:queue:test1.queue")
+                            .to("stream:out")
+                            .to("netty4:tcp://192.168.2.9:5017?textline=true&clientMode=true")
+                            .to("stream:out")
+                            .to("activemq:queue:test.queue");
 
                     from("activemq:queue:test.queue")
                             .to("stream:out")
                             .to("stream:out")
-                            .unmarshal(gsonDataFormat)
+                            .unmarshal(gsonDataFormatReceiverResponse)
                             .to("stream:out")
                             //.marshal().json(JsonLibrary.Gson)
                             .to("stream:out")
@@ -111,12 +120,13 @@ public class MyRouteBuilder {
             logger.info(msg);
             System.out.println(msg);
             Thread.sleep(2000);
+            template.sendBody("activemq:queue:test1.queue", pilightIdentify);
             template.sendBody("activemq:queue:test.queue", json[0]);
             msg = dateFormat.format(new Date()) + "main: sendBody done";
             System.out.println(msg);
             Thread.sleep(2000);
         } catch (Exception ex) {
-            msg=dateFormat.format(new Date()) + " " + ex.toString();
+            msg = dateFormat.format(new Date()) + " " + ex.toString();
             System.out.println(msg);
             ex.printStackTrace();
         } finally {
@@ -129,52 +139,63 @@ public class MyRouteBuilder {
 
     static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
     // Better:
-    final static Logger logger=Logger.getLogger(MyRouteBuilder.class.toString());
+    final static Logger logger = Logger.getLogger(MyRouteBuilder.class.toString());
 
     static String[] json = {"{"
-        + // this is from (old) api docs?
-        "  \"origin\": \"receiver\","
-        + "  \"protocol\": \"kaku_switch\","
-        + "  \"code\": {"
-        + "    \"id\": 1234,"
-        + "    \"unit\": 0,"
-        + "    \"off\": 1"
-        + "  }"
-        + "}\n"
-        + "{"
-        + "  \"origin\": \"sender\","
-        + "  \"protocol\": \"kaku_switch\","
-        + "  \"code\": {"
-        + "    \"id\": 1234,"
-        + "    \"unit\": 0,"
-        + "    \"off\": 1"
-        + "  }"
-        + "}"
-        // Message as received from a remote control, received by pilight, as of year 2018.
+            + // this is from (old) api docs?
+            "  \"origin\": \"receiver\","
+            + "  \"protocol\": \"kaku_switch\","
+            + "  \"code\": {"
+            + "    \"id\": 1234,"
+            + "    \"unit\": 0,"
+            + "    \"off\": 1"
+            + "  }"
+            + "}\n"
+            + "{"
+            + "  \"origin\": \"sender\","
+            + "  \"protocol\": \"kaku_switch\","
+            + "  \"code\": {"
+            + "    \"id\": 1234,"
+            + "    \"unit\": 0,"
+            + "    \"off\": 1"
+            + "  }"
+            + "}"
+            // Message as received from a remote control, received by pilight, as of year 2018.
 
-        + " {\n"
-        + "    \"message\": {\n"
-        + "\"id\": 2,\n"
-        + "        \"unit\": 3,\n"
-        + "       \"state\": \"off\"\n"
-        + "},\n"
-        + "\"origin\": \"receiver\",\n"
-        + "    \"protocol\": \"arctech_switch_old\",\n"
-        + "    \"uuid\": \"0000-7c-dd-90-a8e0c1\",\n"
-        + "    \"repeats\": 3\n"
-        + "}\n",
-        " {\n"
-        + "    \"message\": {\n"
-        + "\"id\": 2,\n"
-        + "        \"unit\": 3,\n"
-        + "       \"state\": \"down\"\n"
-        + "},\n"
-        + "\"origin\": \"receiver\",\n"
-        + "    \"protocol\": \"arctech_screen_old\",\n"
-        + "    \"uuid\": \"0000-7c-dd-90-a8e0c1\",\n"
-        + "    \"repeats\": 3\n"
-        + "}\n"
+            + " {\n"
+            + "    \"message\": {\n"
+            + "\"id\": 2,\n"
+            + "        \"unit\": 3,\n"
+            + "       \"state\": \"off\"\n"
+            + "},\n"
+            + "\"origin\": \"receiver\",\n"
+            + "    \"protocol\": \"arctech_switch_old\",\n"
+            + "    \"uuid\": \"0000-7c-dd-90-a8e0c1\",\n"
+            + "    \"repeats\": 3\n"
+            + "}\n",
+            " {\n"
+                    + "    \"message\": {\n"
+                    + "\"id\": 2,\n"
+                    + "        \"unit\": 3,\n"
+                    + "       \"state\": \"down\"\n"
+                    + "},\n"
+                    + "\"origin\": \"receiver\",\n"
+                    + "    \"protocol\": \"arctech_screen_old\",\n"
+                    + "    \"uuid\": \"0000-7c-dd-90-a8e0c1\",\n"
+                    + "    \"repeats\": 3\n"
+                    + "}\n"
 
     };
+    final static String pilightIdentify = "{\n" +
+            "  \"action\": \"identify\",\n" +
+            "  \"options\": {\n" +
+            "    \"core\": 1,\n" +
+            "    \"receiver\": 1,\n" +
+            "    \"config\": 1,\n" +
+            "    \"forward\": 0\n" +
+            "  },\n" +
+            "  \"uuid\": \"0000-d0-63-00-000000\",\n" +
+            "  \"media\": \"all\"\n" +
+            "}";
 
 }
