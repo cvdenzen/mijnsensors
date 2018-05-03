@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.CamelContext;
@@ -91,9 +92,9 @@ public class MyRouteBuilder {
                     // Raspberry Pi
                     from("activemq:queue:test1.queue")
                             .to("stream:out")
-                            .to("netty4:tcp://192.168.2.9:5017?textline=true&clientMode=true")
+                            .from("netty4:tcp://192.168.2.9:5018?textline=true&clientMode=true")
                             .to("stream:out")
-                            .to("activemq:queue:test.queue");
+                            .to(ExchangePattern.InOnly,"activemq:queue:test.queue");
 
                     from("activemq:queue:test.queue")
                             .to("stream:out")
