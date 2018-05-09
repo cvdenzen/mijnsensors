@@ -77,9 +77,16 @@ public class JsonReceiverResponse extends JsonDataFormat {
         public void setState(String state) {
             this.state = state;
         }
+
         public Integer unit;
         public String state;
     }
 
-
+    @Override
+    public String toString() {
+        return (this.getClass().getName() + "{ origin=" + getOrigin() + "; protocol=" + getProtocol() + "; uuid=" + getUuid() + "; repeats=" + getRepeats()
+                + ((this.getMessage()!=null?
+                "; id=" + this.getMessage().getId() + "; unit=" + this.getMessage().getUnit() + "; state=" + this.getMessage().getState()
+        :"Message is null") + "}"));
+    }
 }

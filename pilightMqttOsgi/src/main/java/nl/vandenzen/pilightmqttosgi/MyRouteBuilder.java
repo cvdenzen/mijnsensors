@@ -4,17 +4,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.camel.ExchangePattern;
+import org.apache.camel.*;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.activemq.camel.component.ActiveMQComponent;
-import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.gson.GsonDataFormat;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.PropertyPlaceholderDelegateRegistry;
 import org.apache.camel.impl.SimpleRegistry;
 import org.apache.camel.model.dataformat.XStreamDataFormat;
+import org.apache.camel.processor.ExchangePatternProcessor;
 import org.apache.camel.spi.Registry;
 import org.apache.camel.component.netty4.*;
 import org.apache.camel.component.stream.*;
@@ -79,8 +78,10 @@ public class MyRouteBuilder {
             // (a) context.setDataFormats(Collections.singletonMap("json", jsonDataFormat));
 
 
-            Gson gson= new GsonBuilder().setLenient().create();
-            final GsonDataFormat gsonDataFormatReceiverResponse = new GsonDataFormat(gson,JsonReceiverResponse.class);
+            Gson gson = new GsonBuilder().setLenient().create();
+            final GsonDataFormat gsonDataFormatReceiverResponse = new GsonDataFormat(gson, JsonReceiverResponse.class);
+
+            final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&reuseChannel=true";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
@@ -92,12 +93,34 @@ public class MyRouteBuilder {
                     // Raspberry Pi
                     from("activemq:queue:test1.queue")
                             .to("stream:out")
-                            .from("netty4:tcp://192.168.2.9:5018?textline=true&clientMode=true")
+                            .process(new Processor() {
+                                public void process(Exchange exchange) {
+                                    String message = (String) exchange.getIn().getBody();
+                                    String messageIn = message + " hoiIn1 ";
+                                    exchange.getIn().setBody(messageIn);
+                                    String messageOut = message + " hoiOut1 ";
+                                    exchange.getOut().setBody(messageOut);
+                                }
+                            })
                             .to("stream:out")
-                            .to(ExchangePattern.InOnly,"activemq:queue:test.queue");
+                            .to(netty4Uri)
+                    ;
+
+                    from(netty4Uri + "&textline=true")
+                            .process(new Processor() {
+                                public void process(Exchange exchange) {
+                                    String message = (String) exchange.getIn().getBody();
+                                    String messageIn = message + " hoiIn ";
+                                    exchange.getIn().setBody(messageIn);
+                                    String messageOut = message + " hoiOut ";
+                                    exchange.getOut().setBody(messageOut);
+                                }
+                            })
+                            .to("stream:out")
+                            .setExchangePattern(ExchangePattern.InOnly)
+                            .to(ExchangePattern.InOnly, "activemq:queue:test.queue");
 
                     from("activemq:queue:test.queue")
-                            .to("stream:out")
                             .to("stream:out")
                             .unmarshal(gsonDataFormatReceiverResponse)
                             .to("stream:out")
@@ -112,7 +135,7 @@ public class MyRouteBuilder {
                             .to("stream:out")
                             .toF("paho:test/%s/some/target/queue?brokerUrl=tcp://192.168.2.9:1883",
                                     "${header.mqttTopic}")
-                            .to("stream:out");
+                            .to(ExchangePattern.InOnly, "stream:out");
                 }
             });
             ProducerTemplate template = context.createProducerTemplate();
@@ -121,9 +144,9 @@ public class MyRouteBuilder {
             logger.info(msg);
             System.out.println(msg);
             Thread.sleep(2000);
-            template.sendBody("activemq:queue:test1.queue", pilightIdentify);
-            template.sendBody("activemq:queue:test.queue", json[0]);
-            msg = dateFormat.format(new Date()) + "main: sendBody done";
+            template.sendBody("activemq:queue:test1.queue", pilightIdentify+"\n");
+            //template.sendBody("activemq:queue:test.queue", json[0]);
+            msg = dateFormat.format(new Date()) + " main: sendBody done";
             System.out.println(msg);
             Thread.sleep(2000);
         } catch (Exception ex) {
@@ -187,16 +210,20 @@ public class MyRouteBuilder {
                     + "}\n"
 
     };
-    final static String pilightIdentify = "{\n" +
-            "  \"action\": \"identify\",\n" +
-            "  \"options\": {\n" +
-            "    \"core\": 1,\n" +
-            "    \"receiver\": 1,\n" +
-            "    \"config\": 1,\n" +
-            "    \"forward\": 0\n" +
-            "  },\n" +
-            "  \"uuid\": \"0000-d0-63-00-000000\",\n" +
-            "  \"media\": \"all\"\n" +
+    /**
+     * pilightIdentify without newlines because it is input to pilight. I am not
+     * sure whether newlines are allowed.
+     */
+    final static String pilightIdentify = "{" +
+            "\"action\":\"identify\"," +
+            "\"options\":{" +
+            "\"core\":1," +
+            "\"receiver\": 1," +
+            "\"config\":1," +
+            "\"forward\":0" +
+            "}," +
+            "\"uuid\":\"0000-d0-63-03-000000\"," +
+            "\"media\":\"all\"" +
             "}";
 
 }
