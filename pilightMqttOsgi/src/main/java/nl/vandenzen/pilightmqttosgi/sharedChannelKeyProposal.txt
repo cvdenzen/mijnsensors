@@ -1,0 +1,24 @@
+I want to do this in Camel:
+
+    send an identifying (subscription) packet to a server
+    consume the result(s)
+
+A use case is Camel as a client to a pilight server.
+
+The proposed solution is:
+
+Create an option to specify what Channel to use, e.g. sharedChannel=pilightchannel.
+
+An Endpoint that uses this option should lookup the key in the CamelContext registry and if found, it should use the SocketChannel that is saved with this key. If it cannot find its sharedChannel key in the registry, it should create a new SocketChannel and put it into the registry with the key name. (this should be an atomic action).
+
+With this feature it is possible to do the following:
+
+    from("direct:identification")
+
+    .to("netty4:tcp:host:port?sharedChannel=pilightchannel");
+
+    from("netty4:tcp:host:port?sharedChannel=pilightchannel")
+
+    .process...;
+
+The option reuseChannel can not be used in the described scenario. The Channel is saved in the Exchange, thus limited to one route. If this one route starts with the producer in clientMode=true

@@ -34,6 +34,32 @@ import java.util.logging.Logger;
 public class MyRouteBuilder {
 
     public static void main(String[] args) throws Exception {
+
+        MyRouteBuilder myRouteBuilder = new MyRouteBuilder();
+        myRouteBuilder.start();
+    }
+    public MyRouteBuilder() {
+    }
+
+    public CamelContext getContext() {
+        return context;
+    }
+
+    public void setContext(CamelContext context) {
+        this.context = context;
+    }
+
+    public Registry getRegistry() {
+        return registry;
+    }
+
+    public void setRegistry(Registry registry) {
+        this.registry = registry;
+    }
+
+    CamelContext context;
+    Registry registry;
+    public void start() {
         //JsonDataFormat jsonDataFormat = new JacksonDataFormat(JsonReceiverResponse.class);
         XStreamDataFormat xStreamDataFormat = new XStreamDataFormat(); // (JsonReceiverResponse.class);
         //GsonDataFormat gsonDataFormat = new GsonDataFormat(); // (JsonReceiverResponse.class);
@@ -42,9 +68,9 @@ public class MyRouteBuilder {
         String msg = dateFormat.format(new Date()) + " Start MyRouteBuilder.main()";
         System.out.println(msg);
         logger.info(msg);
-        CamelContext context = new DefaultCamelContext(new SimpleRegistry());
+        context = new DefaultCamelContext(new SimpleRegistry());
 
-        Registry registry = context.getRegistry();
+        registry = context.getRegistry();
         if (registry instanceof PropertyPlaceholderDelegateRegistry) {
             registry
                     = ((PropertyPlaceholderDelegateRegistry) registry).getRegistry();
@@ -104,9 +130,9 @@ public class MyRouteBuilder {
                             })
                             .to("stream:out")
                             .to(netty4Uri)
-                    ;
 
-                    from(netty4Uri + "&textline=true")
+
+                    .from(netty4Uri + "&textline=true")
                             .process(new Processor() {
                                 public void process(Exchange exchange) {
                                     String message = (String) exchange.getIn().getBody();
@@ -158,6 +184,13 @@ public class MyRouteBuilder {
             msg = dateFormat.format(new Date()) + " main: End of main, Camel context should still be running";
             System.out.println(msg);
 
+        }
+    }
+    public void stop() {
+        try {
+            context.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
