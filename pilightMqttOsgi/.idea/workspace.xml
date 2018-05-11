@@ -1,16 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="start/stop verbeterd">
       <change beforePath="$PROJECT_DIR$/../mqttPilight/pilightMqttOsgi/.idea/workspace.xml" afterPath="$PROJECT_DIR$/../mqttPilight/pilightMqttOsgi/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse.java" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse.java" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/Activator$1.class" afterPath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/Activator$1.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/Activator.class" afterPath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/Activator.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/MyRouteBuilder$1.class" afterPath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/MyRouteBuilder$1.class" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.class" afterPath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.class" />
-      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/Activator$1.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/Activator.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/MyRouteBuilder$1.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionControl$ControlCode.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionControl$ControlCodes.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionControl.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionSend$ActionCode.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionSend.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonIdentification$IdentificationOptions.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonIdentification.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse$Message.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonRequestIdentification.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonStatusResponse.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/META-INF/MANIFEST.MF" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/Activator$1.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/Activator.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/MyRouteBuilder$1.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonActionControl$ControlCode.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonActionControl$ControlCodes.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonActionControl.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonActionSend$ActionCode.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonActionSend.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonIdentification$IdentificationOptions.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonIdentification.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse$Message.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonRequestIdentification.class" afterPath="" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT/nl/vandenzen/pilightmqttosgi/json/JsonStatusResponse.class" afterPath="" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,8 +52,18 @@
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="207">
-              <caret line="68" column="32" lean-forward="false" selection-start-line="68" selection-start-column="32" selection-end-line="68" selection-end-column="32" />
+            <state relative-caret-position="780">
+              <caret line="52" column="35" lean-forward="false" selection-start-line="52" selection-start-column="30" selection-end-line="52" selection-end-column="35" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="blueprint.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT 3/OSGI-INF/blueprint/blueprint.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="19" lean-forward="false" selection-start-line="8" selection-start-column="19" selection-end-line="8" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -45,8 +82,8 @@
       <file leaf-file-name="MyRouteBuilder.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1007">
-              <caret line="152" column="69" lean-forward="false" selection-start-line="152" selection-start-column="39" selection-end-line="152" selection-end-column="69" />
+            <state relative-caret-position="534">
+              <caret line="120" column="34" lean-forward="false" selection-start-line="120" selection-start-column="34" selection-end-line="120" selection-end-column="34" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1475#1476#0" expanded="true" />
@@ -64,31 +101,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OTAProtocolExtractor.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="35" column="0" lean-forward="true" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sharedChannelKeyProposal.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/sharedChannelKeyProposal.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="23" column="193" lean-forward="false" selection-start-line="23" selection-start-column="193" selection-end-line="23" selection-end-column="193" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="JsonReceiverResponse.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+            <state relative-caret-position="795">
+              <caret line="93" column="0" lean-forward="false" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -107,8 +124,8 @@
       <file leaf-file-name="Activator.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/Activator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="12" column="34" lean-forward="false" selection-start-line="12" selection-start-column="34" selection-end-line="12" selection-end-column="34" />
+            <state relative-caret-position="465">
+              <caret line="36" column="44" lean-forward="false" selection-start-line="36" selection-start-column="44" selection-end-line="36" selection-end-column="44" />
               <folding />
             </state>
           </provider>
@@ -117,7 +134,7 @@
       <file leaf-file-name="MyBlueprintRouteBuilder.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyBlueprintRouteBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
+            <state relative-caret-position="225">
               <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -301,11 +318,6 @@
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="pilightmqttosgi" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -504,9 +516,9 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329" sideWeight="0.5214286" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329" sideWeight="0.53571427" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329" sideWeight="0.46666667" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329" sideWeight="0.4642857" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -519,12 +531,32 @@
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.329" sideWeight="0.5214286" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32912722" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329" sideWeight="0.47857141" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329" sideWeight="0.46666667" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -989,7 +1021,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyBlueprintRouteBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
+        <state relative-caret-position="225">
           <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1009,14 +1041,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
           <caret line="23" column="193" lean-forward="false" selection-start-line="23" selection-start-column="193" selection-end-line="23" selection-end-column="193" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/Activator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="12" column="34" lean-forward="false" selection-start-line="12" selection-start-column="34" selection-end-line="12" selection-end-column="34" />
+        <state relative-caret-position="465">
+          <caret line="36" column="44" lean-forward="false" selection-start-line="36" selection-start-column="44" selection-end-line="36" selection-end-column="44" />
           <folding />
         </state>
       </provider>
@@ -1039,24 +1070,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        <state relative-caret-position="795">
+          <caret line="93" column="0" lean-forward="false" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="68" column="32" lean-forward="false" selection-start-line="68" selection-start-column="32" selection-end-line="68" selection-end-column="32" />
+        <state relative-caret-position="780">
+          <caret line="52" column="35" lean-forward="false" selection-start-line="52" selection-start-column="30" selection-end-line="52" selection-end-column="35" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1007">
-          <caret line="152" column="69" lean-forward="false" selection-start-line="152" selection-start-column="39" selection-end-line="152" selection-end-column="69" />
+        <state relative-caret-position="534">
+          <caret line="120" column="34" lean-forward="false" selection-start-line="120" selection-start-column="34" selection-end-line="120" selection-end-column="34" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1475#1476#0" expanded="true" />
