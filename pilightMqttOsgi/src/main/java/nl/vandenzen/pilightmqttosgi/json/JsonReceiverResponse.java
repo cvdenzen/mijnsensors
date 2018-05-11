@@ -5,6 +5,7 @@ package nl.vandenzen.pilightmqttosgi.json;
 import org.apache.camel.model.dataformat.JsonDataFormat;
 
 public class JsonReceiverResponse extends JsonDataFormat {
+
     public Message message;
     public String origin;
     public String protocol;
