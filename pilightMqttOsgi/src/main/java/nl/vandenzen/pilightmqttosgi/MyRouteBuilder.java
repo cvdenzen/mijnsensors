@@ -5,19 +5,17 @@ import com.google.gson.GsonBuilder;
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.*;
-import org.apache.camel.model.dataformat.JsonLibrary;
+import org.apache.camel.model.dataformat.*;
 import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.gson.GsonDataFormat;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.PropertyPlaceholderDelegateRegistry;
 import org.apache.camel.impl.SimpleRegistry;
-import org.apache.camel.model.dataformat.XStreamDataFormat;
 import org.apache.camel.processor.ExchangePatternProcessor;
 import org.apache.camel.spi.Registry;
 import org.apache.camel.component.netty4.*;
 import org.apache.camel.component.stream.*;
-import org.apache.camel.model.dataformat.JsonDataFormat;
 import org.apache.camel.model.dataformat.JsonLibrary;
 
 import javax.jms.ConnectionFactory;
@@ -95,18 +93,18 @@ public class MyRouteBuilder {
             context.addComponent("stream", new org.apache.camel.component.stream.StreamComponent());
             context.addComponent("paho", new org.apache.camel.component.paho.PahoComponent());
             context.addComponent("netty4", new org.apache.camel.component.netty4.NettyComponent());
-            //context.addComponent("json-gson",new org.apache.camel.model.dataformat.JsonDataFormat);
 
             //Populate data formats
-//            JsonDataFormat jsonDataFormat = new JsonDataFormat(JsonLibrary.Gson);
-//            jsonDataFormat.setUseList(true);
-//            context.setDataFormats(Collections.singletonMap("json", jsonDataFormat));
-
+            //JsonDataFormat jsonDataFormat = new JsonDataFormat(JsonLibrary.Gson);
+            //jsonDataFormat.setUseList(true);
 
             Gson gson = new GsonBuilder().setLenient().create();
             final GsonDataFormat gsonDataFormatReceiverResponse = new GsonDataFormat(gson, JsonReceiverResponse.class);
+            context.setDataFormats(Collections.singletonMap(gsonDataFormatReceiverResponse.getDataFormatName(), (DataFormatsDefinition)gsonDataFormatReceiverResponse));
 
-            final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&reuseChannel=true";
+
+
+            final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&disconnect=false";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
