@@ -17,6 +17,7 @@ import org.apache.camel.spi.Registry;
 import org.apache.camel.component.netty4.*;
 import org.apache.camel.component.stream.*;
 import org.apache.camel.model.dataformat.JsonLibrary;
+import org.apache.camel.model.DataFormatDefinition;
 
 import javax.jms.ConnectionFactory;
 import java.text.DateFormat;
@@ -94,13 +95,22 @@ public class MyRouteBuilder {
             context.addComponent("paho", new org.apache.camel.component.paho.PahoComponent());
             context.addComponent("netty4", new org.apache.camel.component.netty4.NettyComponent());
 
-            //Populate data formats
-            //JsonDataFormat jsonDataFormat = new JsonDataFormat(JsonLibrary.Gson);
-            //jsonDataFormat.setUseList(true);
 
+            //Populate data formats
+            JsonDataFormat jsonDataFormat = new JsonDataFormat(JsonLibrary.Gson);
+            jsonDataFormat.setUseList(true);
+
+            /* This part is not easily integrated in a Camel context
             Gson gson = new GsonBuilder().setLenient().create();
             final GsonDataFormat gsonDataFormatReceiverResponse = new GsonDataFormat(gson, JsonReceiverResponse.class);
-            context.setDataFormats(Collections.singletonMap(gsonDataFormatReceiverResponse.getDataFormatName(), (DataFormatsDefinition)gsonDataFormatReceiverResponse));
+            DataFormatDefinition dataFormatDefinition=new DataFormatDefinition();
+            */
+
+
+
+            context.setDataFormats(Collections.singletonMap(jsonDataFormat.getDataFormatName(), jsonDataFormat));
+            msg = dateFormat.format(new Date()) + " " + "jsonDataFormat.getDataFormatName() is " + jsonDataFormat.getDataFormatName();
+            System.out.println(msg);
 
 
 
@@ -147,8 +157,8 @@ public class MyRouteBuilder {
 
                     from("activemq:queue:test.queue")
                             .to("stream:out")
-                            //.unmarshal().json(JsonLibrary.Gson,JsonReceiverResponse.class)
-                            .unmarshal(gsonDataFormatReceiverResponse)
+                            .unmarshal().json(JsonLibrary.Gson,JsonReceiverResponse.class)
+                            //.unmarshal(gsonDataFormatReceiverResponse)
                             .to("stream:out")
                             //.marshal().json(JsonLibrary.Gson)
                             .to("stream:out")
