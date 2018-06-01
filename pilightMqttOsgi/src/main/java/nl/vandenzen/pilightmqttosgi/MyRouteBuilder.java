@@ -28,6 +28,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 
@@ -86,6 +87,11 @@ public class MyRouteBuilder {
         final OTAProtocolExtractor otaProtocolExtractor = new OTAProtocolExtractor();
         ((SimpleRegistry) registry).put("otaProtocolExtractor", otaProtocolExtractor);
         //org.eclipse.paho.client.mqttv3.MqttClient a=new org.eclipse.paho.client.mqttv3.MqttClient("","").
+
+        // Default timeout is 300s (5 mins), which is too long to wait for in testing situations. Shutdown takes too long.
+        getContext().getShutdownStrategy().setTimeUnit(TimeUnit.SECONDS);
+        getContext().getShutdownStrategy().setTimeout(5);
+        getContext().getShutdownStrategy().setShutdownNowOnTimeout(true);
         try {
             // activemq is http mqtt
 
@@ -106,17 +112,23 @@ public class MyRouteBuilder {
 
 
 
-            final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&disconnect=false";
+            final String netty4Uri = "netty4:tcp://192.168.2.9:5017?disconnect=false";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
 
+                    //
+                    // June 2018. custom Endpoint PilightEndpoint
+                    //
+                    from(new Consumer(new Processor() {}));
                     //from("netty4:tcp://localhost:1883?textline=true")
                     //
                     // Read pilight receiver (the 433 MHz receiver connected to
                     // Raspberry Pi
                     from("activemq:queue:test1.queue")
+                            .to("stream:out")
+                            .to(netty4Uri)
                             .to("stream:out")
                             .process(new Processor() {
                                 public void process(Exchange exchange) {
@@ -130,9 +142,8 @@ public class MyRouteBuilder {
                             .to("stream:out")
                             .to(ExchangePattern.InOnly, netty4Uri);
 
-/*
 
-                    .from(netty4Uri + "&textline=true")
+                    from(netty4Uri + "&textline=true&clientMode=true")
                             .process(new Processor() {
                                 public void process(Exchange exchange) {
                                     String message = (String) exchange.getIn().getBody();
@@ -145,7 +156,6 @@ public class MyRouteBuilder {
                             .to("stream:out")
                             .setExchangePattern(ExchangePattern.InOnly)
                             .to(ExchangePattern.InOnly, "activemq:queue:test.queue");
-*/
 
                     from("activemq:queue:test.queue")
                             .to("stream:out")
