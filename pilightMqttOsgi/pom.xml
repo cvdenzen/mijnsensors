@@ -15,6 +15,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <camel.version>2.21.1</camel.version>
         <activemq.version>5.15.4</activemq.version>
+        <netty-version>4.1.24.Final</netty-version>
     </properties>
   <repositories>
     <repository>
@@ -53,6 +54,11 @@
             <artifactId>camel-netty4-http</artifactId>
             <version>${camel.version}</version>
                 <type>jar</type>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty-version}</version>
+            </dependency>
                 <!-- use the same version as your Camel core version -->
         </dependency>
         <dependency>

@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import org.apache.camel.component.netty4.NettyServerBootstrapConfiguration;
 
 /**
  * A Camel Java DSL Router
@@ -110,25 +111,25 @@ public class MyRouteBuilder {
             Type genericType = new TypeToken<List<JsonReceiverResponse>>() { }.getType();
             formatPojo.setUnmarshalGenericType(genericType);
 
+            // Configure the pilight listener (a netty4 consumer) to make it send a subscribe (identify) message
+            // to the pilight server. Use a custom bootstrapConfiguration to define a custom ServerBootstrapFactory
 
 
-            final String netty4Uri = "netty4:tcp://192.168.2.9:5017?disconnect=false";
+            NettyServerBootstrapConfiguration bootstrapConfiguration=new NettyServerBootstrapConfiguration();
+            ((SimpleRegistry) registry).put("bsc", bootstrapConfiguration);
+
+
+            final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&bootstrapConfiguration=#bsc";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
 
-                    //
-                    // June 2018. custom Endpoint PilightEndpoint
-                    //
-                    from(new Consumer(new Processor() {}));
                     //from("netty4:tcp://localhost:1883?textline=true")
                     //
                     // Read pilight receiver (the 433 MHz receiver connected to
                     // Raspberry Pi
-                    from("activemq:queue:test1.queue")
-                            .to("stream:out")
-                            .to(netty4Uri)
+                    from(netty4Uri)
                             .to("stream:out")
                             .process(new Processor() {
                                 public void process(Exchange exchange) {
