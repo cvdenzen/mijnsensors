@@ -117,6 +117,10 @@ public class MyRouteBuilder {
 
             NettyServerBootstrapConfiguration bootstrapConfiguration=new NettyServerBootstrapConfiguration();
             ((SimpleRegistry) registry).put("bsc", bootstrapConfiguration);
+            bootstrapConfiguration.setPort(5017);
+            PilightServerBootstrapFactory pilightServerBootstrapFactory=new PilightServerBootstrapFactory();
+            bootstrapConfiguration.setNettyServerBootstrapFactory(pilightServerBootstrapFactory);
+            pilightServerBootstrapFactory.init(getContext(),bootstrapConfiguration,null);
 
 
             final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&bootstrapConfiguration=#bsc";
@@ -129,22 +133,7 @@ public class MyRouteBuilder {
                     //
                     // Read pilight receiver (the 433 MHz receiver connected to
                     // Raspberry Pi
-                    from(netty4Uri)
-                            .to("stream:out")
-                            .process(new Processor() {
-                                public void process(Exchange exchange) {
-                                    String message = (String) exchange.getIn().getBody();
-                                    String messageIn = message + " hoiIn1 ";
-                                    exchange.getIn().setBody(messageIn);
-                                    String messageOut = message + " hoiOut1 ";
-                                    exchange.getOut().setBody(messageOut);
-                                }
-                            })
-                            .to("stream:out")
-                            .to(ExchangePattern.InOnly, netty4Uri);
-
-
-                    from(netty4Uri + "&textline=true&clientMode=true")
+                    from(netty4Uri + "&textline=true")
                             .process(new Processor() {
                                 public void process(Exchange exchange) {
                                     String message = (String) exchange.getIn().getBody();

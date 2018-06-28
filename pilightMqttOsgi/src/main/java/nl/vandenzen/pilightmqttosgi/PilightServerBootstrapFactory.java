@@ -11,8 +11,10 @@ public class PilightServerBootstrapFactory extends ClientModeTCPNettyServerBoots
     protected Channel openChannel(ChannelFuture cf) throws Exception {
         Channel channel=super.openChannel(cf);
         // And now send subscription data to the pilight server
-        ChannelFuture channelFuture=channel.writeAndFlush(pilightIdentify);
-
+        ChannelFuture channelFuture=channel.writeAndFlush(pilightIdentify+" \r" );
+        if (channelFuture==null) {
+            throw new IllegalArgumentException("channelFuture is null after channel.writerAndFlush in " + this);
+        }
         return channelFuture.channel();
 
     }
