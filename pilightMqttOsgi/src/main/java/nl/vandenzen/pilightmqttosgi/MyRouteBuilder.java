@@ -115,15 +115,18 @@ public class MyRouteBuilder {
             // to the pilight server. Use a custom bootstrapConfiguration to define a custom ServerBootstrapFactory
 
 
-            NettyServerBootstrapConfiguration bootstrapConfiguration=new NettyServerBootstrapConfiguration();
-            ((SimpleRegistry) registry).put("bsc", bootstrapConfiguration);
-            bootstrapConfiguration.setPort(5017);
-            PilightServerBootstrapFactory pilightServerBootstrapFactory=new PilightServerBootstrapFactory();
-            bootstrapConfiguration.setNettyServerBootstrapFactory(pilightServerBootstrapFactory);
-            pilightServerBootstrapFactory.init(getContext(),bootstrapConfiguration,null);
+            //NettyServerBootstrapConfiguration bootstrapConfiguration=new NettyServerBootstrapConfiguration();
+            //((SimpleRegistry) registry).put("bsc", bootstrapConfiguration); // 2018-07-02 not used
+            ServerInitializerFactory pilightServerInitializerFactory=new PilightServerInitializerFactory();
+            ((SimpleRegistry) registry).put("sif", pilightServerInitializerFactory); // Server Initializer Factory
+            //bootstrapConfiguration.setPort(5017);
+
+            // misschien beter om hier te kijken: https://stackoverflow.com/questions/49682080/netty-message-on-connect
+            // onderstaande code is daar niet op gebaseerd.
 
 
-            final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&bootstrapConfiguration=#bsc";
+            //final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&serverInitializerFactory=#sif";
+            final String netty4Uri = "netty4:tcp://localhost:5019?clientMode=true&serverInitializerFactory=#sif";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
