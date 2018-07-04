@@ -38,6 +38,6 @@ public class SubscribeHandler extends ChannelInboundHandlerAdapter {
         });
 
     }
-    final Logger LOG=Logger.getLogger(nl.vandenzen.pilightmqttosgi.SubscribeHandler.class.toString());
+    final static Logger LOG=Logger.getLogger(SubscribeHandler.class.toString());
 
 }

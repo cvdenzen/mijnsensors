@@ -108,7 +108,8 @@ public class MyRouteBuilder {
 
 
             GsonDataFormat formatPojo = new GsonDataFormat();
-            Type genericType = new TypeToken<List<JsonReceiverResponse>>() { }.getType();
+            //Type genericType = new TypeToken<List<JsonReceiverResponse>>() { }.getType();
+            Type genericType = new TypeToken<JsonReceiverResponse>() { }.getType();
             formatPojo.setUnmarshalGenericType(genericType);
 
             // Configure the pilight listener (a netty4 consumer) to make it send a subscribe (identify) message
@@ -153,7 +154,7 @@ public class MyRouteBuilder {
                     from("activemq:queue:test.queue")
                             .to("stream:out")
                             .unmarshal(formatPojo)
-                            //.unmarshal(gsonDataFormatReceiverResponse)
+                            //.unmarshal().json(JsonLibrary.Gson(formatPojo)) // setLenient not possible? Not needed if we parse on cr
                             .to("stream:out")
                             //.marshal().json(JsonLibrary.Gson)
                             .to("stream:out")

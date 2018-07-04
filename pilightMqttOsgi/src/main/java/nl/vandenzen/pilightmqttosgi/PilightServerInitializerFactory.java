@@ -19,6 +19,7 @@ public class PilightServerInitializerFactory extends ServerInitializerFactory {
         channelPipeline.addLast("encoder-SD", new StringEncoder(CharsetUtil.UTF_8));
         channelPipeline.addLast("decoder-DELIM", new DelimiterBasedFrameDecoder(maxLineSize, true, Delimiters.lineDelimiter()));
         channelPipeline.addLast("decoder-SD", new StringDecoder(CharsetUtil.UTF_8));
+        // here we add the handler that emits the subscribe/initialise message to Pilight
         channelPipeline.addLast("subscribe-handler",new SubscribeHandler());
         // here we add the default Camel ServerChannelHandler for the consumer, to allow Camel to route the message etc.
         channelPipeline.addLast("handler", new ServerChannelHandler(consumer));
