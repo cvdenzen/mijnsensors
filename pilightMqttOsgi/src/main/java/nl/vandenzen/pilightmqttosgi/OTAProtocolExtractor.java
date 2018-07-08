@@ -19,9 +19,11 @@ public class OTAProtocolExtractor {
     }
 
     public void storeMqttTopic(Exchange exchange) {
+        // f0=floor 0
         JsonReceiverResponse jrr = ((JsonReceiverResponse) (exchange.getIn().getBody()));
-        String otaProtocol = jrr.getProtocol();
-        exchange.getIn().setHeader("mqttTopic", otaProtocol);
+        if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getId()!=null) && (jrr.getMessage().getUnit()!=null)) {
+            exchange.getIn().setHeader("mqttTopic", "f0/kaku/" + jrr.getMessage().getId() + "/" + jrr.getMessage().getUnit());
+        }
     }
     
     // Set on/off command in body

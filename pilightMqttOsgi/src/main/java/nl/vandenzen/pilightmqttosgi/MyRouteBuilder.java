@@ -9,6 +9,7 @@ import java.util.List;
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.camel.*;
+import org.apache.camel.component.properties.PropertiesComponent;
 import org.apache.camel.model.dataformat.*;
 import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.builder.RouteBuilder;
@@ -110,7 +111,7 @@ public class MyRouteBuilder {
             GsonDataFormat formatPojo = new GsonDataFormat();
             //Type genericType = new TypeToken<List<JsonReceiverResponse>>() { }.getType();
             Type genericType = new TypeToken<JsonReceiverResponse>() { }.getType();
-            formatPojo.setUnmarshalGenericType(genericType);
+            formatPojo.setUnmarshalGenericType(genericType); // no idea as what the effect is of this
 
             // Configure the pilight listener (a netty4 consumer) to make it send a subscribe (identify) message
             // to the pilight server. Use a custom bootstrapConfiguration to define a custom ServerBootstrapFactory
@@ -126,8 +127,12 @@ public class MyRouteBuilder {
             // onderstaande code is daar niet op gebaseerd.
 
 
+            // Make pilight server configurable in properties file in karaf etc/pilightmqttosgi.properties
+            PropertiesComponent pc= new PropertiesComponent();
+            pc.setLocation("file:${karaf.home}/etc/pilightmqttosgi.properties");
+            context.addComponent("properties", pc);
             //final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&serverInitializerFactory=#sif";
-            final String netty4Uri = "netty4:tcp://localhost:5019?clientMode=true&serverInitializerFactory=#sif";
+            final String netty4Uri = "netty4:tcp://{{pilightserver}}:{{pilightport}}?clientMode=true&serverInitializerFactory=#sif";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
@@ -138,15 +143,6 @@ public class MyRouteBuilder {
                     // Read pilight receiver (the 433 MHz receiver connected to
                     // Raspberry Pi
                     from(netty4Uri + "&textline=true")
-                            .process(new Processor() {
-                                public void process(Exchange exchange) {
-                                    String message = (String) exchange.getIn().getBody();
-                                    String messageIn = message + " hoiIn ";
-                                    exchange.getIn().setBody(messageIn);
-                                    String messageOut = message + " hoiOut ";
-                                    exchange.getOut().setBody(messageOut);
-                                }
-                            })
                             .to("stream:out")
                             .setExchangePattern(ExchangePattern.InOnly)
                             .to(ExchangePattern.InOnly, "activemq:queue:test.queue");
@@ -165,7 +161,7 @@ public class MyRouteBuilder {
                             // set command in exchange
                             .bean(otaProtocolExtractor, "replaceInBodyWithCommand")
                             .to("stream:out")
-                            .toF("paho:test/%s/some/target/queue?brokerUrl=tcp://192.168.2.9:1883",
+                            .toF("paho:test/%s/some/target/queue?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}",
                                     "${header.mqttTopic}")
                             .to(ExchangePattern.InOnly, "stream:out");
                 }
