@@ -28,6 +28,20 @@ It will only do what I need:
 - pass received codes from Pilight to mqtt
 - pass set commands from mqtt to Pilight (don't know yet how to do this)
 
+Camel custom setting file (for pilight server ip address, pilight port and other settings): karaf home etc/pilightmqttosgi.properties:
+# this property file should exist in a camel property file path, e.g. karaf/etc
+pilightserver=192.168.2.9
+pilightport=5017
+mqttserver=192.168.2.9
+mqttport=1883
+
+
+Additional feature: use ActiveMQ as MQTT broker. Add a connector to activemq.xml (that is: karaf home etc/activemq.xml)
+ <transportConnectors>
+   <transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
+   <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
+ </transportConnectors>
+
 Status 20180209:
 pimatic (no more openhab2 for now: 2.2 no sitemap, rules are difficult to edit, OH2 is going to use Microsofts Visual Studio).
 

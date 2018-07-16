@@ -22,6 +22,7 @@ public class OTAProtocolExtractor {
         // f0=floor 0
         JsonReceiverResponse jrr = ((JsonReceiverResponse) (exchange.getIn().getBody()));
         if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getId()!=null) && (jrr.getMessage().getUnit()!=null)) {
+            // f0=floor 0
             exchange.getIn().setHeader("mqttTopic", "f0/kaku/" + jrr.getMessage().getId() + "/" + jrr.getMessage().getUnit());
         }
     }
@@ -30,8 +31,10 @@ public class OTAProtocolExtractor {
     public void replaceInBodyWithCommand(Exchange exchange) {
         JsonReceiverResponse jrr = ((JsonReceiverResponse) (exchange.getIn().getBody()));
         // Message is a subclass of the json message as sent by pilight
-        String otaCommand = jrr.getMessage().getState();
-        //exchange.getIn().setHeader("messageState", otaCommand);
-        exchange.getIn().setBody(otaCommand);
+        if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getId()!=null) && (jrr.getMessage().getUnit()!=null)) {
+            String otaCommand = jrr.getMessage().getState();
+            //exchange.getIn().setHeader("messageState", otaCommand);
+            exchange.getIn().setBody(otaCommand);
+        }
     }
 }
