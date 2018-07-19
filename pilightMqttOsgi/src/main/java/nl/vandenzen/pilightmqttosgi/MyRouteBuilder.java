@@ -143,11 +143,15 @@ public class MyRouteBuilder {
                     // Read pilight receiver (the 433 MHz receiver connected to
                     // Raspberry Pi
                     from(netty4Uri + "&textline=true")
+                            .routeId("PilightToActivemq")
+                            .startupOrder(1)
                             .to("stream:out")
                             .setExchangePattern(ExchangePattern.InOnly)
                             .to(ExchangePattern.InOnly, "activemq:queue:test.queue");
 
                     from("activemq:queue:test.queue")
+                            .routeId("ActivemqToPaho")
+                            .autoStartup(false)
                             .to("stream:out")
                             .unmarshal(formatPojo)
                             //.unmarshal().json(JsonLibrary.Gson(formatPojo)) // setLenient not possible? Not needed if we parse on cr
@@ -177,6 +181,8 @@ public class MyRouteBuilder {
             msg = dateFormat.format(new Date()) + " main: sendBody done";
             System.out.println(msg);
             Thread.sleep(2000);
+            // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
+            context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
         } catch (Exception ex) {
             msg = dateFormat.format(new Date()) + " " + ex.toString();
             System.out.println(msg);

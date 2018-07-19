@@ -3,22 +3,22 @@ Status 20180215: UNDER DEVELOPMENT
 The pilightMqttOsgi project:
 - karaf, install camel and camel-blueprint:
 repo-add camel
-feature:install camel (this installs latest version, 2.21.1 on 2018-05-28)
-- In karaf:
-repo-add activemq <version>
+feature:install camel
+
+repo-add activemq
 feature:install camel-jms
 feature:install camel-paho
 feature:install activemq
 feature:install activemq-camel
-feature:install activemq-cf (connection factory)
-feature:install activemq-blueprint (no idea why)
+feature:install activemq-cf # (connection factory)
+feature:install activemq-blueprint # (no idea why)
+feature:install activemq-broker # (for mqtt?)
 
 feature:install camel-gson
 feature:install camel-stream
 feature:install camel-netty4
+feature:install camel-mqtt
 
-On Raspberry pi, run:
-/usr/local/bin/pilight-receive --port=5017 --server=127.0.0.1 | nc -l 5018
 
 
 Try to make pilight to mqtt gateway, something like pilight2mqtt. But there is a problem with pilight2mqtt: it cannot
@@ -32,7 +32,7 @@ Camel custom setting file (for pilight server ip address, pilight port and other
 # this property file should exist in a camel property file path, e.g. karaf/etc
 pilightserver=192.168.2.9
 pilightport=5017
-mqttserver=192.168.2.9
+mqttserver=192.168.2.9 (localhost?)
 mqttport=1883
 
 
@@ -47,6 +47,9 @@ pimatic (no more openhab2 for now: 2.2 no sitemap, rules are difficult to edit, 
 
 pimatic heeft een config file. https://pimatic.org/guide/getting-started/configuration/
 
+
+On Raspberry pi, run:
+/usr/local/bin/pilight-receive --port=5017 --server=127.0.0.1 | nc -l 5018
 
 
 On iMac:

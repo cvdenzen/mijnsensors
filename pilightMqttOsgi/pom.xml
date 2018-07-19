@@ -13,17 +13,17 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <camel.version>2.21.1</camel.version>
+        <camel.version>2.22.0</camel.version>
         <activemq.version>5.15.4</activemq.version>
         <netty-version>4.1.24.Final</netty-version>
     </properties>
-  <repositories>
-    <repository>
-      <id>my-repo1</id>
-      <name>https://mvnrepository.com/</name>
-      <url>https://mvnrepository.com</url>
-    </repository>
-  </repositories>
+    <repositories>
+        <repository>
+            <id>my-repo1</id>
+            <name>https://mvnrepository.com/</name>
+            <url>https://mvnrepository.com</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -53,13 +53,13 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-netty4-http</artifactId>
             <version>${camel.version}</version>
-                <type>jar</type>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
-                <version>${netty-version}</version>
-            </dependency>
-                <!-- use the same version as your Camel core version -->
+            <type>jar</type>
+            <!-- use the same version as your Camel core version -->
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>${netty-version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -70,17 +70,25 @@
         </dependency>
         <!-- for activmq ? -->
         <dependency>
-        <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-gson</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-stream</artifactId> <version>${camel.version}</version>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-stream</artifactId>
+            <version>${camel.version}</version>
         </dependency><!-- https://mvnrepository.com/artifact/com.box/json-schema-core -->
         <dependency>
             <groupId>com.box</groupId>
             <artifactId>json-schema-core</artifactId>
             <version>1.2.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-mqtt</artifactId>
+            <version>${camel.version}</version>
+            <!-- use the same version as your Camel core version -->
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.fge/jackson-coreutils -->
         <dependency>
@@ -135,27 +143,27 @@
             <artifactId>pax-logging-api</artifactId>
             <version>1.10.1</version>
         </dependency>
-<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14 -->
-<dependency>
-    <groupId>org.slf4j</groupId>
-    <artifactId>slf4j-jdk14</artifactId>
-    <version>1.7.25</version>
-    <scope>test</scope>
-</dependency>
-<!-- https://mvnrepository.com/artifact/com.sun.mail/all -->
-<dependency>
-    <groupId>com.sun.mail</groupId>
-    <artifactId>all</artifactId>
-    <version>1.6.1</version>
-    <type>pom</type>
-</dependency>
-<!-- https://mvnrepository.com/artifact/org.iq80.leveldb/leveldb-project -->
-<dependency>
-    <groupId>org.iq80.leveldb</groupId>
-    <artifactId>leveldb-project</artifactId>
-    <version>0.10</version>
-    <type>pom</type>
-</dependency>
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.25</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.sun.mail/all -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>all</artifactId>
+            <version>1.6.1</version>
+            <type>pom</type>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.iq80.leveldb/leveldb-project -->
+        <dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb-project</artifactId>
+            <version>0.10</version>
+            <type>pom</type>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -231,10 +239,12 @@
                                             </mapper>
                                         </pathconvert>
                                         <propertyfile file="${project.build.directory}/config.properties">
-                                            <entry key="felix.auto.start" value="${bundles} file:modules/${project.build.finalName}.jar"/>
+                                            <entry key="felix.auto.start"
+                                                   value="${bundles} file:modules/${project.build.finalName}.jar"/>
                                             <entry key="org.osgi.framework.bootdelegation" value="*"/>
                                         </propertyfile>
-                                        <copy file="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}" tofile="${project.build.directory}/felix.jar"/>
+                                        <copy file="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}"
+                                              tofile="${project.build.directory}/felix.jar"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -294,11 +304,14 @@
                                 <propertyfile file="${project.build.directory}/run.properties">
                                     <entry key="felix.auto.start" value="${urls}"/>
                                     <entry key="felix.auto.deploy.action" value="uninstall,install,update,start"/>
-                                    <entry key="org.osgi.framework.storage" value="${project.build.directory}${file.separator}felix-cache"/>
+                                    <entry key="org.osgi.framework.storage"
+                                           value="${project.build.directory}${file.separator}felix-cache"/>
                                     <entry key="org.osgi.framework.bootdelegation" value="*"/>
                                 </propertyfile>
-                                <makeurl property="run.properties.url" file="${project.build.directory}/run.properties"/>
-                                <java fork="true" jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
+                                <makeurl property="run.properties.url"
+                                         file="${project.build.directory}/run.properties"/>
+                                <java fork="true"
+                                      jar="${maven.dependency.org.apache.felix.org.apache.felix.main.jar.path}">
                                     <sysproperty key="felix.config.properties" value="${run.properties.url}"/>
                                     <jvmarg line="${vm.args}"/>
                                 </java>
