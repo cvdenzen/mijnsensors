@@ -8,6 +8,14 @@ feature:install camel
 repo-add activemq
 feature:install camel-jms
 feature:install camel-paho
+
+# since karaf 4.2 needs next features for activemq
+feature:install aries-blueprint
+#and add the spring-legacy repo: (or not?)
+feature:repo-add spring-legacy
+# and
+feature:install shell-compat
+
 feature:install activemq
 feature:install activemq-camel
 feature:install activemq-cf # (connection factory)
@@ -18,6 +26,8 @@ feature:install camel-gson
 feature:install camel-stream
 feature:install camel-netty4
 feature:install camel-mqtt
+
+feature:install jms
 
 
 
@@ -30,10 +40,6 @@ It will only do what I need:
 
 Camel custom setting file (for pilight server ip address, pilight port and other settings): karaf home etc/pilightmqttosgi.properties:
 # this property file should exist in a camel property file path, e.g. karaf/etc
-pilightserver=192.168.2.9
-pilightport=5017
-mqttserver=192.168.2.9 (localhost?)
-mqttport=1883
 
 
 Additional feature: use ActiveMQ as MQTT broker. Add a connector to activemq.xml (that is: karaf home etc/activemq.xml)

@@ -8,6 +8,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.TransportConnection;
+import org.apache.activemq.broker.TransportConnector;
 import org.apache.camel.*;
 import org.apache.camel.component.properties.PropertiesComponent;
 import org.apache.camel.model.dataformat.*;
@@ -170,6 +173,12 @@ public class MyRouteBuilder {
                             .to(ExchangePattern.InOnly, "stream:out");
                 }
             });
+            BrokerService broker = new BrokerService();
+            TransportConnector tc=broker.addConnector("mqtt+nio://localhost:1883");
+            tc.setName("mqtt");
+            broker.start();
+            System.out.println(broker.toString());
+            Thread.sleep(2000);
             ProducerTemplate template = context.createProducerTemplate();
             context.start();
             msg = dateFormat.format(new Date()) + " main: context started";
