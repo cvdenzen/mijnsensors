@@ -169,16 +169,18 @@ public class MyRouteBuilder {
                             .bean(otaProtocolExtractor, "replaceInBodyWithCommand")
                             .to("stream:out")
                             .toF("paho:test/%s/some/target/queue?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}",
-                                    "${header.mqttTopic}")
+                                    "temptopic" /*"${header.mqttTopic}"*/)
                             .to(ExchangePattern.InOnly, "stream:out");
                 }
             });
-            BrokerService broker = new BrokerService();
-            TransportConnector tc=broker.addConnector("mqtt+nio://localhost:1883");
-            tc.setName("mqtt");
-            broker.start();
-            System.out.println(broker.toString());
-            Thread.sleep(2000);
+            // Broker started via karaf, feature activemq-broker
+            //BrokerService broker = new BrokerService();
+            //TransportConnector tc=broker.addConnector("mqtt+nio://localhost:1883");
+            //tc.setName("mqtt");
+            //broker.start();
+            //System.out.println(broker.toString());
+            //Thread.sleep(2000);
+
             ProducerTemplate template = context.createProducerTemplate();
             context.start();
             msg = dateFormat.format(new Date()) + " main: context started";

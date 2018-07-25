@@ -51,8 +51,28 @@
         </persistenceAdapter>
 
         <plugins>
-            <jaasAuthenticationPlugin configuration="karaf" />
-        </plugins>
+            <!-- jaasAuthenticationPlugin configuration="karaf" / -->
+            <simpleAuthenticationPlugin anonymousAccessAllowed="true">
+                <users>
+                    <authenticationUser username="smx" password="pwd" groups="users,admins"/>
+                    <authenticationUser username="karaf" password="karaf" groups="users,admins"/>
+                    <authenticationUser username="system" password="pwd" groups="users,admins"/>
+                    <authenticationUser username="user" password="pwd" groups="users,admins"/>
+                    <authenticationUser username="defaultUser" password="pwd" groups="users,admins"/>
+                </users>
+            </simpleAuthenticationPlugin>
+
+            <authorizationPlugin>
+                <map>
+                    <authorizationMap>
+                        <authorizationEntries>
+                            <authorizationEntry queue=">" write="users,admins,anonymous" read="users,admins,anonymous" admin="users,admins,anonymous" />
+                            <authorizationEntry topic=">" write="users,admins,anonymous" read="users,admins,anonymous" admin="users,admins,anonymous" />
+                            <authorizationEntry topic="ActiveMQ.Advisory.>" read="users,admins,anonymous" write="users,admins,anonymous" admin="users,admins,anonymous"/>
+                        </authorizationEntries>
+                    </authorizationMap>
+                </map>
+            </authorizationPlugin>        </plugins>
 
         <systemUsage>
             <systemUsage>

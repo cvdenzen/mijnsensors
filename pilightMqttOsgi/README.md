@@ -1,14 +1,7 @@
 Status 20180215: UNDER DEVELOPMENT
 
 The pilightMqttOsgi project:
-- karaf, install camel and camel-blueprint:
-repo-add camel
-feature:install camel
-
 repo-add activemq
-feature:install camel-jms
-feature:install camel-paho
-
 # since karaf 4.2 needs next features for activemq
 feature:install aries-blueprint
 #and add the spring-legacy repo: (or not?)
@@ -17,10 +10,18 @@ feature:repo-add spring-legacy
 feature:install shell-compat
 
 feature:install activemq
+feature:install activemq-broker # (for mqtt?)
+
+# karaf, install camel and camel-blueprint:
+repo-add camel
+feature:install camel
+
+feature:install camel-jms
+feature:install camel-paho
+
 feature:install activemq-camel
 feature:install activemq-cf # (connection factory)
 feature:install activemq-blueprint # (no idea why)
-feature:install activemq-broker # (for mqtt?)
 
 feature:install camel-gson
 feature:install camel-stream
@@ -29,6 +30,10 @@ feature:install camel-mqtt
 
 feature:install jms
 
+# pilight, in a unix shell:
+cp -avv ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties ~/Downloads/apache-karaf-4.2.0/etc/
+cp -avv ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml ~/Downloads/apache-karaf-4.2.0/etc/
+cp -avvv ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar ~/Downloads/apache-karaf-4.2.0/deploy/;ls -l ~/Downloads/apache-karaf-4.2.0/deploy/
 
 
 Try to make pilight to mqtt gateway, something like pilight2mqtt. But there is a problem with pilight2mqtt: it cannot
