@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.apache.camel.component.netty4.NettyServerBootstrapConfiguration;
 
@@ -148,26 +149,25 @@ public class MyRouteBuilder {
                     from(netty4Uri + "&textline=true")
                             .routeId("PilightToActivemq")
                             .startupOrder(1)
-                            .to("stream:out")
+                            .log(LoggingLevel.INFO, log1, "${body}")
                             .setExchangePattern(ExchangePattern.InOnly)
                             .to(ExchangePattern.InOnly, "activemq:queue:test.queue");
 
                     from("activemq:queue:test.queue")
                             .routeId("ActivemqToPaho")
                             .autoStartup(false)
-                            .to("stream:out")
+                            .log(LoggingLevel.INFO, log1, "${body}")
                             .unmarshal(formatPojo)
                             //.unmarshal().json(JsonLibrary.Gson(formatPojo)) // setLenient not possible? Not needed if we parse on cr
-                            .to("stream:out")
+                            //.to("stream:out")
                             //.marshal().json(JsonLibrary.Gson)
-                            .to("stream:out")
                             //.filter().simple("${bodyAs(JsonReceiverResponse.class)}")
                             .bean(otaProtocolExtractor, "storeMqttTopic")
                             // Try to extract protocol, message.id, message.unit and message.state ("down" "up" ? )
-                            .to("stream:out")
                             // set command in exchange
                             .bean(otaProtocolExtractor, "replaceInBodyWithCommand")
-                            .to("stream:out")
+                            //.to("stream:out")
+                            .log(LoggingLevel.INFO, log1, "??aa")
                             .toF("paho:test/%s/some/target/queue?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}",
                                     "temptopic" /*"${header.mqttTopic}"*/)
                             .to(ExchangePattern.InOnly, "stream:out");
@@ -216,6 +216,8 @@ public class MyRouteBuilder {
     static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS");
     // Better:
     final static Logger logger = Logger.getLogger(MyRouteBuilder.class.toString());
+    final static org.slf4j.Logger log1=org.slf4j.LoggerFactory.getLogger(logger.getName());
+
 
     static String[] json = {"{"
             + // this is from (old) api docs?
