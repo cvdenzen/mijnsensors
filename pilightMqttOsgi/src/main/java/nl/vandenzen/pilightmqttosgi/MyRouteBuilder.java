@@ -6,7 +6,10 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.List;
+
+import nl.vandenzen.pilightmqttosgi.json.JsonOptionResponse;
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
+import nl.vandenzen.pilightmqttosgi.json.JsonStatusResponse;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnection;
@@ -112,10 +115,23 @@ public class MyRouteBuilder {
             context.addComponent("netty4", new org.apache.camel.component.netty4.NettyComponent());
 
 
+            GsonDataFormat formatPojoStatusResponse = new GsonDataFormat();
+            //Type genericType = new TypeToken<List<JsonReceiverResponse>>() { }.getType();
+            Type genericTypeStatusResponse = new TypeToken<JsonStatusResponse>() { }.getType();
+            formatPojoStatusResponse.setUnmarshalGenericType(genericTypeStatusResponse); // no idea as what the effect is of this
+
+
             GsonDataFormat formatPojo = new GsonDataFormat();
             //Type genericType = new TypeToken<List<JsonReceiverResponse>>() { }.getType();
             Type genericType = new TypeToken<JsonReceiverResponse>() { }.getType();
             formatPojo.setUnmarshalGenericType(genericType); // no idea as what the effect is of this
+
+
+            GsonDataFormat formatPojoOption = new GsonDataFormat();
+            //Type genericType = new TypeToken<List<JsonOptionResponse>>() { }.getType();
+            Type genericTypeOption = new TypeToken<JsonOptionResponse>() { }.getType();
+            formatPojoOption.setUnmarshalGenericType(genericTypeOption); // no idea as what the effect is of this
+
 
             // Configure the pilight listener (a netty4 consumer) to make it send a subscribe (identify) message
             // to the pilight server. Use a custom bootstrapConfiguration to define a custom ServerBootstrapFactory
@@ -157,11 +173,15 @@ public class MyRouteBuilder {
                             .routeId("ActivemqToPaho")
                             .autoStartup(false)
                             .log(LoggingLevel.INFO, log1, "${body}")
-                            .unmarshal(formatPojo)
-                            //.unmarshal().json(JsonLibrary.Gson(formatPojo)) // setLenient not possible? Not needed if we parse on cr
-                            //.to("stream:out")
-                            //.marshal().json(JsonLibrary.Gson)
-                            //.filter().simple("${bodyAs(JsonReceiverResponse.class)}")
+                            // Status response is {"status":"success"}
+                            .choice()
+                            .when().simple("${body} regex '^\\{\"status.*'")
+                                .unmarshal(formatPojoStatusResponse)
+                                .log("Status received: ${body}")
+                            // origin: receiver sender config core
+                            .when().simple("${body} regex '.*\"origin\" *: *\"receiver\".*'")
+                                .unmarshal(formatPojo)
+                                .log("Receiver response received: ${body}")
                             .bean(otaProtocolExtractor, "storeMqttTopic")
                             // Try to extract protocol, message.id, message.unit and message.state ("down" "up" ? )
                             // set command in exchange
@@ -170,7 +190,17 @@ public class MyRouteBuilder {
                             .log(LoggingLevel.INFO, log1, "??aa")
                             .toF("paho:test/%s/some/target/queue?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}",
                                     "temptopic" /*"${header.mqttTopic}"*/)
-                            .to(ExchangePattern.InOnly, "stream:out");
+                            .to(ExchangePattern.InOnly, "stream:out")
+                            // must be origin: sender config core response
+                            .otherwise()
+                                .unmarshal(formatPojoOption)
+                                .log("origin: sender config core response received: ${body}")
+                            .end()
+                            //.unmarshal().json(JsonLibrary.Gson(formatPojo)) // setLenient not possible? Not needed if we parse on cr
+                            //.to("stream:out")
+                            //.marshal().json(JsonLibrary.Gson)
+                            //.filter().simple("${bodyAs(JsonReceiverResponse.class)}")
+                    ;
                 }
             });
             // Broker started via karaf, feature activemq-broker
