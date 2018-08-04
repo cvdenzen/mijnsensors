@@ -104,7 +104,7 @@ public class MyRouteBuilder {
         try {
             // activemq is http mqtt
 
-            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost");
+            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://amq-broker");
             ActiveMQComponent ac = ActiveMQComponent.activeMQComponent();
             ac.setConnectionFactory(connectionFactory);
             ac.setUsername("karaf");
@@ -152,7 +152,7 @@ public class MyRouteBuilder {
             pc.setLocation("file:${karaf.home}/etc/pilightmqttosgi.properties");
             context.addComponent("properties", pc);
             //final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&serverInitializerFactory=#sif";
-            final String netty4Uri = "netty4:tcp://{{pilightserver}}:{{pilightport}}?clientMode=true&serverInitializerFactory=#sif";
+            final String netty4Uri = "netty4:tcp://{{pilightserver}}:{{pilightport}}?clientMode=true&serverInitializerFactory=#sif&sync=false";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
@@ -175,31 +175,35 @@ public class MyRouteBuilder {
                             .log(LoggingLevel.INFO, log1, "${body}")
                             // Status response is {"status":"success"}
                             .choice()
-                            .when().simple("${body} regex '^\\{\"status.*'")
-                                .unmarshal(formatPojoStatusResponse)
-                                .log("Status received: ${body}")
-                            // origin: receiver sender config core
-                            .when().simple("${body} regex '.*\"origin\" *: *\"receiver\".*'")
-                                .unmarshal(formatPojo)
-                                .log("Receiver response received: ${body}")
+                                .when().simple("${body} regex '^.*\\{.*\"status\".*'")
+                                    .unmarshal(formatPojoStatusResponse)
+                                    .log("Status received: ${body}")
+                                // origin: receiver, only protocol arctech_switch_old
+                                .when().simple("${body} regex '.*\"origin\" *: *\"receiver\".*' && ${body} regex '.*\"protocol\" *: *\"arctech_switch_old\".*'")
+                                    .to("direct:toMqtt")
+                                .otherwise()
+                                    .unmarshal(formatPojoOption)
+                                    .log("origin: sender config core response received: ${body}")
+                            .end()
+                            //.unmarshal().json(JsonLibrary.Gson(formatPojo)) // setLenient not possible? Not needed if we parse on cr
+                            //.to("stream:out")
+                            //.marshal().json(JsonLibrary.Gson)
+                            //.filter().simple("${bodyAs(JsonReceiverResponse.class)}")
+                    ;
+                    from("direct:toMqtt")
+                            .routeId("toMqtt")
+                            .autoStartup(true)
+                            .unmarshal(formatPojo)
+                            .log("Receiver response received: ${body}")
                             .bean(otaProtocolExtractor, "storeMqttTopic")
                             // Try to extract protocol, message.id, message.unit and message.state ("down" "up" ? )
                             // set command in exchange
                             .bean(otaProtocolExtractor, "replaceInBodyWithCommand")
                             //.to("stream:out")
                             .log(LoggingLevel.INFO, log1, "??aa")
-                            .toF("paho:test/%s/some/target/queue?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}",
-                                    "temptopic" /*"${header.mqttTopic}"*/)
-                            .to(ExchangePattern.InOnly, "stream:out")
-                            // must be origin: sender config core response
-                            .otherwise()
-                                .unmarshal(formatPojoOption)
-                                .log("origin: sender config core response received: ${body}")
-                            .end()
-                            //.unmarshal().json(JsonLibrary.Gson(formatPojo)) // setLenient not possible? Not needed if we parse on cr
-                            //.to("stream:out")
-                            //.marshal().json(JsonLibrary.Gson)
-                            //.filter().simple("${bodyAs(JsonReceiverResponse.class)}")
+                            .recipientList(simple("paho:test/${header.mqttTopic}/some/target/queue?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"))
+                    //.to(ExchangePattern.InOnly, "stream:out")
+                    // must be origin: sender config core response
                     ;
                 }
             });

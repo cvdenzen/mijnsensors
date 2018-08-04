@@ -21,9 +21,11 @@ public class OTAProtocolExtractor {
     public void storeMqttTopic(Exchange exchange) {
         // f0=floor 0
         JsonReceiverResponse jrr = ((JsonReceiverResponse) (exchange.getIn().getBody()));
-        if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getId()!=null) && (jrr.getMessage().getUnit()!=null)) {
+        if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getUnit()!=null) && (jrr.getMessage().getId()!=null)) {
             // f0=floor 0
-            exchange.getIn().setHeader("mqttTopic", "f0/kaku/" + jrr.getMessage().getId() + "/" + jrr.getMessage().getUnit());
+            exchange.getIn().setHeader("mqttTopic", "f0/kaku/" + jrr.getMessage().getUnit() + "/" + jrr.getMessage().getId());
+        } else {
+            exchange.getIn().setHeader("mqttTopic", "f0/kaku/" + "idUnknown/unitUnknown");
         }
     }
     
@@ -31,10 +33,14 @@ public class OTAProtocolExtractor {
     public void replaceInBodyWithCommand(Exchange exchange) {
         JsonReceiverResponse jrr = ((JsonReceiverResponse) (exchange.getIn().getBody()));
         // Message is a subclass of the json message as sent by pilight
-        if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getId()!=null) && (jrr.getMessage().getUnit()!=null)) {
+        if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getUnit()!=null) && (jrr.getMessage().getId()!=null)) {
             String otaCommand = jrr.getMessage().getState();
             //exchange.getIn().setHeader("messageState", otaCommand);
-            exchange.getIn().setBody(otaCommand);
+            if (otaCommand!=null) {
+                exchange.getIn().setBody(otaCommand);
+            } else {
+                exchange.getIn().setBody("otaCommandIsNull");
+            }
         }
     }
 }

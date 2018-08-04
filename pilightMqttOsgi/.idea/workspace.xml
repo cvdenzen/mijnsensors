@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/json/JsonOptionResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
@@ -20,31 +20,40 @@
       <file leaf-file-name="activemq.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
+            <state relative-caret-position="855">
               <caret line="57" column="72" selection-start-line="57" selection-start-column="72" selection-end-line="57" selection-end-column="72" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MyRouteBuilder.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MyRouteBuilder.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="912">
-              <caret line="202" column="21" selection-start-line="202" selection-start-column="21" selection-end-line="202" selection-end-column="21" />
+            <state relative-caret-position="494">
+              <caret line="211" column="85" lean-forward="true" selection-start-line="211" selection-start-column="85" selection-end-line="211" selection-end-column="85" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#7249#10163#0" expanded="true" />
-                <element signature="e#10162#10163#0" expanded="true" />
+                <element signature="e#7261#10295#0" expanded="true" />
+                <element signature="e#10294#10295#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OTAProtocolExtractor.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="README.md" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="525">
+              <caret line="35" column="171" selection-start-line="35" selection-start-column="171" selection-end-line="35" selection-end-column="171" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OTAProtocolExtractor.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="22" column="30" selection-start-line="22" selection-start-column="30" selection-end-line="22" selection-end-column="30" />
+            <state relative-caret-position="435">
+              <caret line="34" column="71" lean-forward="true" selection-start-line="34" selection-start-column="71" selection-end-line="34" selection-end-column="71" />
             </state>
           </provider>
         </entry>
@@ -111,6 +120,7 @@
       <find>active</find>
       <find>camel.version</find>
       <find>log</find>
+      <find>localhost</find>
     </findStrings>
     <replaceStrings>
       <replace>${camel.vesion}</replace>
@@ -147,7 +157,6 @@
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PilightServerInitializerFactory.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/SubscribeHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/Users/carl/Downloads/apache-karaf-4.1.5/etc/pilightmqttosgi.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java" />
         <option value="$USER_HOME$/Downloads/apache-karaf-4.1.5/etc/pilightmqttosgi.properties" />
         <option value="$USER_HOME$/Downloads/apache-karaf-4.1.5/etc/activemq.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
@@ -160,6 +169,7 @@
         <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/json/JsonOptionResponse.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java" />
       </list>
     </option>
   </component>
@@ -204,6 +214,22 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <expand>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pilightMqttOsgi" type="cbb8eebc:String" user="pilightMqttOsgi" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pilightMqttOsgi" type="cbb8eebc:String" user="pilightMqttOsgi" />
+              <item name="src/main" type="cbb8eebc:String" user="src/main" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -292,22 +318,6 @@
       </pane>
       <pane id="PackagesPane" />
       <pane id="AndroidView" />
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <expand>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="pilightMqttOsgi" type="cbb8eebc:String" user="pilightMqttOsgi" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="pilightMqttOsgi" type="cbb8eebc:String" user="pilightMqttOsgi" />
-              <item name="src/main" type="cbb8eebc:String" user="src/main" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -568,7 +578,14 @@
       <option name="project" value="LOCAL" />
       <updated>1533074089168</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Received data from Pilight processing">
+      <created>1533158786461</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1533158786462</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -683,7 +700,8 @@
     <MESSAGE value="Working mqtt broker! (not tested yet)" />
     <MESSAGE value="some authentication" />
     <MESSAGE value="logging instead of system.out" />
-    <option name="LAST_COMMIT_MESSAGE" value="logging instead of system.out" />
+    <MESSAGE value="Received data from Pilight processing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Received data from Pilight processing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -890,13 +908,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="35" column="171" selection-start-line="35" selection-start-column="171" selection-end-line="35" selection-end-column="171" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/groups.properties">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -951,7 +962,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
+        <state relative-caret-position="855">
           <caret line="57" column="72" selection-start-line="57" selection-start-column="72" selection-end-line="57" selection-end-column="72" />
         </state>
       </provider>
@@ -995,22 +1006,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java">
+    <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="22" column="30" selection-start-line="22" selection-start-column="30" selection-end-line="22" selection-end-column="30" />
+        <state relative-caret-position="525">
+          <caret line="35" column="171" selection-start-line="35" selection-start-column="171" selection-end-line="35" selection-end-column="171" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="912">
-          <caret line="202" column="21" selection-start-line="202" selection-start-column="21" selection-end-line="202" selection-end-column="21" />
+        <state relative-caret-position="494">
+          <caret line="211" column="85" lean-forward="true" selection-start-line="211" selection-start-column="85" selection-end-line="211" selection-end-column="85" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#7249#10163#0" expanded="true" />
-            <element signature="e#10162#10163#0" expanded="true" />
+            <element signature="e#7261#10295#0" expanded="true" />
+            <element signature="e#10294#10295#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="34" column="71" lean-forward="true" selection-start-line="34" selection-start-column="71" selection-end-line="34" selection-end-column="71" />
         </state>
       </provider>
     </entry>
