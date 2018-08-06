@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import nl.vandenzen.pilightmqttosgi.json.JsonActionSend;
 import nl.vandenzen.pilightmqttosgi.json.JsonOptionResponse;
 import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
 import nl.vandenzen.pilightmqttosgi.json.JsonStatusResponse;
@@ -15,6 +16,7 @@ import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnection;
 import org.apache.activemq.broker.TransportConnector;
 import org.apache.camel.*;
+import org.apache.camel.component.paho.PahoConstants;
 import org.apache.camel.component.properties.PropertiesComponent;
 import org.apache.camel.model.dataformat.*;
 import org.apache.activemq.camel.component.ActiveMQComponent;
@@ -132,6 +134,11 @@ public class MyRouteBuilder {
             Type genericTypeOption = new TypeToken<JsonOptionResponse>() { }.getType();
             formatPojoOption.setUnmarshalGenericType(genericTypeOption); // no idea as what the effect is of this
 
+            GsonDataFormat formatPojoActionSend = new GsonDataFormat();
+            //Type genericType = new TypeToken<List<JsonActionSend>>() { }.getType();
+            Type genericTypeActionSend = new TypeToken<JsonActionSend>() { }.getType();
+            formatPojoOption.setUnmarshalGenericType(genericTypeActionSend); // no idea as what the effect is of this
+
 
             // Configure the pilight listener (a netty4 consumer) to make it send a subscribe (identify) message
             // to the pilight server. Use a custom bootstrapConfiguration to define a custom ServerBootstrapFactory
@@ -201,10 +208,48 @@ public class MyRouteBuilder {
                             .bean(otaProtocolExtractor, "replaceInBodyWithCommand")
                             //.to("stream:out")
                             .log(LoggingLevel.INFO, log1, "??aa")
-                            .recipientList(simple("paho:test/${header.mqttTopic}/some/target/queue?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"))
+                            .recipientList(simple("paho:${header.mqttTopic?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"))
                     //.to(ExchangePattern.InOnly, "stream:out")
                     // must be origin: sender config core response
                     ;
+                    //
+                    // Listen to mqtt for commands and send these commands to pilight server.
+                    // mqtt topic is f0/send/protocol/${id}/${unit}
+                    //
+                    from("paho:f0/arctech_switch_old/#")
+                            .log("Received mqtt message on topic ${header.CamelMqttTopic}")
+                            .log("Received mqtt message ${body}")
+                            // extract id and unit
+                            .process(new Processor() {
+                                @Override
+                                public void process(Exchange exchange) throws Exception {
+                                    // split into protocol, id, unit
+                                    String[] parts=((String)(exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC))).split("\\/");
+                                    JsonActionSend jas=new JsonActionSend();
+                                    JsonActionSend.ActionCode jasac=jas.new ActionCode();
+                                    jas.code=jasac;
+                                    if (parts.length>3) {
+                                        jas.code.protocol=new String[] {parts[1]};
+                                        jas.code.id=new Integer(parts[2]);
+                                        jas.code.unit=new Integer(parts[3]);
+                                        String payload=(exchange.getIn().getBody(String.class));
+                                        if ("on".equals(payload.toLowerCase())) {
+                                            jas.code.off=0;
+                                        } else if ("off".equals(payload.toLowerCase())) {
+                                            jas.code.off=1;
+                                        }
+                                        exchange.getOut().setBody(jas);
+                                    } else {
+                                        log.error("Received mqtt message topic length<3: "+exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC));
+                                    }
+
+                                }
+                            })
+                            .marshal(formatPojoActionSend)
+                            .transform(body().append("\r")) // append the line ending
+                            .log("Sending to pilight: ${body}")
+                            .to(netty4Uri);
+
                 }
             });
             // Broker started via karaf, feature activemq-broker
@@ -251,6 +296,17 @@ public class MyRouteBuilder {
     // Better:
     final static Logger logger = Logger.getLogger(MyRouteBuilder.class.toString());
     final static org.slf4j.Logger log1=org.slf4j.LoggerFactory.getLogger(logger.getName());
+
+    final static String arctech_switch_old_send_template = "{"
+            + "{"
+            + "  \"action\": \"${action}\"," // action should be "send"
+            + "  \"protocol\": \"${protocol}\"," // arctech_switch_old? kaku_switch_old?
+            + "  \"code\": {"
+            + "    \"id\": ${id},"
+            + "    \"unit\": ${unit},"
+            + "    \"off\": ${off}"
+            + "  }"
+            + "}";
 
 
     static String[] json = {"{"

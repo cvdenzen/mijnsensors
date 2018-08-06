@@ -22,10 +22,10 @@ public class OTAProtocolExtractor {
         // f0=floor 0
         JsonReceiverResponse jrr = ((JsonReceiverResponse) (exchange.getIn().getBody()));
         if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getUnit()!=null) && (jrr.getMessage().getId()!=null)) {
-            // f0=floor 0
-            exchange.getIn().setHeader("mqttTopic", "f0/kaku/" + jrr.getMessage().getUnit() + "/" + jrr.getMessage().getId());
+            // f0=floor 0, rc=remote control
+            exchange.getIn().setHeader("mqttTopic", "f0/" +jrr.getProtocol() + "/" + jrr.getMessage().getUnit() + "/" + jrr.getMessage().getId()+"/rc");
         } else {
-            exchange.getIn().setHeader("mqttTopic", "f0/kaku/" + "idUnknown/unitUnknown");
+            exchange.getIn().setHeader("mqttTopic", "f0/protocolUnknown/" + "idUnknown/unitUnknown");
         }
     }
     
