@@ -7,10 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import nl.vandenzen.pilightmqttosgi.json.JsonActionSend;
-import nl.vandenzen.pilightmqttosgi.json.JsonOptionResponse;
-import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
-import nl.vandenzen.pilightmqttosgi.json.JsonStatusResponse;
+import nl.vandenzen.pilightmqttosgi.json.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.apache.activemq.broker.TransportConnection;
@@ -137,7 +134,12 @@ public class MyRouteBuilder {
             GsonDataFormat formatPojoActionSend = new GsonDataFormat();
             //Type genericType = new TypeToken<List<JsonActionSend>>() { }.getType();
             Type genericTypeActionSend = new TypeToken<JsonActionSend>() { }.getType();
-            formatPojoOption.setUnmarshalGenericType(genericTypeActionSend); // no idea as what the effect is of this
+            formatPojoActionSend.setUnmarshalGenericType(genericTypeActionSend); // no idea as what the effect is of this
+
+            GsonDataFormat formatPojoIdentification = new GsonDataFormat();
+            //Type genericType = new TypeToken<List<JsonIdentification>>() { }.getType();
+            Type genericTypeIdentification = new TypeToken<JsonIdentification>() { }.getType();
+            formatPojoIdentification.setUnmarshalGenericType(genericTypeIdentification); // no idea as what the effect is of this
 
 
             // Configure the pilight listener (a netty4 consumer) to make it send a subscribe (identify) message
@@ -159,7 +161,7 @@ public class MyRouteBuilder {
             pc.setLocation("file:${karaf.home}/etc/pilightmqttosgi.properties");
             context.addComponent("properties", pc);
             //final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&serverInitializerFactory=#sif";
-            final String netty4Uri = "netty4:tcp://{{pilightserver}}:{{pilightport}}?clientMode=true&serverInitializerFactory=#sif&sync=false";
+            final String netty4Uri = "netty4:tcp://{{pilightserver}}:{{pilightport}}";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
@@ -169,7 +171,7 @@ public class MyRouteBuilder {
                     //
                     // Read pilight receiver (the 433 MHz receiver connected to
                     // Raspberry Pi
-                    from(netty4Uri + "&textline=true")
+                    from(netty4Uri + "?clientMode=true&serverInitializerFactory=#sif&sync=false&textline=true")
                             .routeId("PilightToActivemq")
                             .startupOrder(1)
                             .log(LoggingLevel.INFO, log1, "${body}")
@@ -186,11 +188,14 @@ public class MyRouteBuilder {
                                     .unmarshal(formatPojoStatusResponse)
                                     .log("Status received: ${body}")
                                 // origin: receiver, only protocol arctech_switch_old
+                                .endChoice()
                                 .when().simple("${body} regex '.*\"origin\" *: *\"receiver\".*' && ${body} regex '.*\"protocol\" *: *\"arctech_switch_old\".*'")
                                     .to("direct:toMqtt")
+                                .endChoice()
                                 .otherwise()
                                     .unmarshal(formatPojoOption)
                                     .log("origin: sender config core response received: ${body}")
+                                .endChoice()
                             .end()
                             //.unmarshal().json(JsonLibrary.Gson(formatPojo)) // setLenient not possible? Not needed if we parse on cr
                             //.to("stream:out")
@@ -217,8 +222,11 @@ public class MyRouteBuilder {
                     // mqtt topic is f0/send/protocol/${id}/${unit}
                     //
                     from("paho:f0/arctech_switch_old/#")
+                            .routeId("fromPahoToPilight")
+                            .autoStartup(false)
                             .log("Received mqtt message on topic ${header.CamelMqttTopic}")
                             .log("Received mqtt message ${body}")
+                            .setHeader("messagetype",constant("mqtt"))
                             // extract id and unit
                             .process(new Processor() {
                                 @Override
@@ -246,10 +254,22 @@ public class MyRouteBuilder {
                                 }
                             })
                             .marshal(formatPojoActionSend)
+                            .to("direct:toPilight");
+                    //
+                    // Send identification to Pilight (the connection that sends commands to Pilight)
+                    //
+                    from("direct:pilightIdentify")
+                            .marshal(formatPojoIdentification)
+                            .to("direct:toPilight");
+
+                    from("direct:toPilight")
                             .transform(body().append("\r")) // append the line ending
                             .log("Sending to pilight: ${body}")
-                            .to(netty4Uri);
-
+                            .to(netty4Uri+"?disconnect=false&sync=true&textline=true")
+                            .log("Reply from pilight: ${body}")
+                    ;
+                    from("direct:trash").stop()
+                            ;
                 }
             });
             // Broker started via karaf, feature activemq-broker
@@ -266,13 +286,15 @@ public class MyRouteBuilder {
             logger.info(msg);
             System.out.println(msg);
             Thread.sleep(2000);
-            template.sendBody("activemq:queue:test1.queue", pilightIdentify+"\n");
             //template.sendBody("activemq:queue:test.queue", json[0]);
+            JsonIdentification ji=new JsonIdentification("identify",0,0,0,0,"0000-d0-63-03-000001","all");
+            template.sendBody("direct:pilightIdentify", ji);
             msg = dateFormat.format(new Date()) + " main: sendBody done";
             System.out.println(msg);
             Thread.sleep(2000);
             // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
             context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
+            context.startRoute("fromPahoToPilight"); // first identify, then start listening to mqtt broker
         } catch (Exception ex) {
             msg = dateFormat.format(new Date()) + " " + ex.toString();
             System.out.println(msg);
