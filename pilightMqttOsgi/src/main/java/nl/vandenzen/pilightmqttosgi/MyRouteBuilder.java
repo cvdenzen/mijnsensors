@@ -7,6 +7,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import nl.vandenzen.pilightmqttosgi.json.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
@@ -96,10 +98,17 @@ public class MyRouteBuilder {
         ((SimpleRegistry) registry).put("otaProtocolExtractor", otaProtocolExtractor);
         //org.eclipse.paho.client.mqttv3.MqttClient a=new org.eclipse.paho.client.mqttv3.MqttClient("","").
 
+        // The string decoder and encoder for connection to pilight
+        StringDecoder stringDecoder=new StringDecoder();
+        StringEncoder stringEncoder=new StringEncoder();
+        ((SimpleRegistry) registry).put("string-decoder",stringDecoder);
+        ((SimpleRegistry) registry).put("string-encoder",stringEncoder);
+
         // Default timeout is 300s (5 mins), which is too long to wait for in testing situations. Shutdown takes too long.
         getContext().getShutdownStrategy().setTimeUnit(TimeUnit.SECONDS);
         getContext().getShutdownStrategy().setTimeout(5);
         getContext().getShutdownStrategy().setShutdownNowOnTimeout(true);
+
         try {
             // activemq is http mqtt
 
@@ -213,7 +222,7 @@ public class MyRouteBuilder {
                             .bean(otaProtocolExtractor, "replaceInBodyWithCommand")
                             //.to("stream:out")
                             .log(LoggingLevel.INFO, log1, "??aa")
-                            .recipientList(simple("paho:${header.mqttTopic?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"))
+                            .recipientList(simple("paho:${header.mqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"))
                     //.to(ExchangePattern.InOnly, "stream:out")
                     // must be origin: sender config core response
                     ;
@@ -238,8 +247,8 @@ public class MyRouteBuilder {
                                     jas.code=jasac;
                                     if (parts.length>3) {
                                         jas.code.protocol=new String[] {parts[1]};
-                                        jas.code.id=new Integer(parts[2]);
-                                        jas.code.unit=new Integer(parts[3]);
+                                        jas.code.unit=new Integer(parts[2]);
+                                        jas.code.id=new Integer(parts[3]);
                                         String payload=(exchange.getIn().getBody(String.class));
                                         if ("on".equals(payload.toLowerCase())) {
                                             jas.code.off=0;
@@ -265,7 +274,9 @@ public class MyRouteBuilder {
                     from("direct:toPilight")
                             .transform(body().append("\r")) // append the line ending
                             .log("Sending to pilight: ${body}")
-                            .to(netty4Uri+"?disconnect=false&sync=true&textline=true")
+                            // With disconnect=true, the reply is the same as the sent message
+                            // disconnect=false&decoder=#string-decoder&encoder=#string-encoder&sync=true&
+                            .to(netty4Uri+"?textline=true&disconnect=true")
                             .log("Reply from pilight: ${body}")
                     ;
                     from("direct:trash").stop()
