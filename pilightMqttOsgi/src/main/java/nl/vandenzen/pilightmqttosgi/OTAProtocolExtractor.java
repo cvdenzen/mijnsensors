@@ -23,7 +23,7 @@ public class OTAProtocolExtractor {
         JsonReceiverResponse jrr = ((JsonReceiverResponse) (exchange.getIn().getBody()));
         if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getUnit()!=null) && (jrr.getMessage().getId()!=null)) {
             // f0=floor 0, rc=remote control
-            exchange.getIn().setHeader("mqttTopic", "f0/" +jrr.getProtocol() + "/" + jrr.getMessage().getUnit() + "/" + jrr.getMessage().getId()+"/rc");
+            exchange.getIn().setHeader("mqttTopic", "f0/" +jrr.getProtocol() + "/" + jrr.getMessage().getId() + "/" + jrr.getMessage().getUnit()+"/rc");
         } else {
             exchange.getIn().setHeader("mqttTopic", "f0/protocolUnknown/" + "idUnknown/unitUnknown");
         }
@@ -33,7 +33,7 @@ public class OTAProtocolExtractor {
     public void replaceInBodyWithCommand(Exchange exchange) {
         JsonReceiverResponse jrr = ((JsonReceiverResponse) (exchange.getIn().getBody()));
         // Message is a subclass of the json message as sent by pilight
-        if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getUnit()!=null) && (jrr.getMessage().getId()!=null)) {
+        if ((jrr!=null) && (jrr.getMessage()!=null) && (jrr.getMessage().getId()!=null) && (jrr.getMessage().getUnit()!=null)) {
             String otaCommand = jrr.getMessage().getState();
             //exchange.getIn().setHeader("messageState", otaCommand);
             if (otaCommand!=null) {

@@ -181,7 +181,8 @@ public class MyRouteBuilder {
                     // Read pilight receiver (the 433 MHz receiver connected to
                     // Raspberry Pi
                     from(netty4Uri + "?clientMode=true&serverInitializerFactory=#sif&sync=false&textline=true")
-                            .routeId("PilightToActivemq")
+                            .routeId("PilightListener")
+                            .autoStartup(false)
                             .startupOrder(1)
                             .log(LoggingLevel.INFO, log1, "${body}")
                             .setExchangePattern(ExchangePattern.InOnly)
@@ -228,9 +229,9 @@ public class MyRouteBuilder {
                     ;
                     //
                     // Listen to mqtt for commands and send these commands to pilight server.
-                    // mqtt topic is f0/send/protocol/${id}/${unit}
+                    // mqtt topic is f0/protocol/${id}/${unit}/cmd
                     //
-                    from("paho:f0/arctech_switch_old/#")
+                    from("paho:f0/arctech_switch_old/+/+/cmd")
                             .routeId("fromPahoToPilight")
                             .autoStartup(false)
                             .log("Received mqtt message on topic ${header.CamelMqttTopic}")
@@ -272,11 +273,19 @@ public class MyRouteBuilder {
                             .to("direct:toPilight");
 
                     from("direct:toPilight")
-                            .transform(body().append("\r")) // append the line ending
+                            //.transform(body().append("\r")) // append the line ending
                             .log("Sending to pilight: ${body}")
                             // With disconnect=true, the reply is the same as the sent message
                             // disconnect=false&decoder=#string-decoder&encoder=#string-encoder&sync=true&
-                            .to(netty4Uri+"?textline=true&disconnect=true")
+
+//                            Pilight socket_write does s+\n+\0:
+//			/* Change the delimiter into regular newlines */
+//                    sendBuff[n-(len-1)] = '\0';
+//                    sendBuff[n-(len)] = '\n';
+//
+                            .to(netty4Uri+"?disconnect=false&textline=true&delimiter=NULL&synchronous=true")
+                            // Strip new line and null from string
+                            .transform(body().regexReplaceAll("\n\0",""))
                             .log("Reply from pilight: ${body}")
                     ;
                     from("direct:trash").stop()
@@ -297,15 +306,31 @@ public class MyRouteBuilder {
             logger.info(msg);
             System.out.println(msg);
             Thread.sleep(2000);
-            //template.sendBody("activemq:queue:test.queue", json[0]);
+            // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
+
+            if (false) {
+                // Next routes are from pilight to mqtt
+                // Goal: commands from remote control must be sent to mqtt.
+                // Status August 10, 2018: working.
+                context.startRoute("PilightListener");
+                context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
+            }
+            for (int i=20;i>0;i--) {
+                msg=dateFormat.format(new Date()) + " "+i+" seconds before starting route from PahoToPilight";
+                System.out.println(msg);
+                Thread.sleep(1000);
+            }
             JsonIdentification ji=new JsonIdentification("identify",0,0,0,0,"0000-d0-63-03-000001","all");
             template.sendBody("direct:pilightIdentify", ji);
-            msg = dateFormat.format(new Date()) + " main: sendBody done";
+            msg = dateFormat.format(new Date()) + " main: sendBody identification to pilight through camel netty4 done";
             System.out.println(msg);
             Thread.sleep(2000);
-            // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
-            context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
             context.startRoute("fromPahoToPilight"); // first identify, then start listening to mqtt broker
+            template.sendBody("paho:fo/arctech_switch_old/3/0/rc","on");
+            msg = dateFormat.format(new Date()) + " main: sendBody paho:fo/arctech_switch_old/3/0/rc done";
+            System.out.println(msg);
+
+            // Start pilight listener
         } catch (Exception ex) {
             msg = dateFormat.format(new Date()) + " " + ex.toString();
             System.out.println(msg);
