@@ -164,6 +164,9 @@ public class MyRouteBuilder {
             // misschien beter om hier te kijken: https://stackoverflow.com/questions/49682080/netty-message-on-connect
             // onderstaande code is daar niet op gebaseerd.
 
+            // Client/producer initialisation
+            ClientInitializerFactory pilightClientInitializerFactory=new PilightClientInitializerFactory();
+            ((SimpleRegistry) registry).put("cif", pilightClientInitializerFactory); // Client Initializer Factory
 
             // Make pilight server configurable in properties file in karaf etc/pilightmqttosgi.properties
             PropertiesComponent pc= new PropertiesComponent();
@@ -283,7 +286,7 @@ public class MyRouteBuilder {
 //                    sendBuff[n-(len-1)] = '\0';
 //                    sendBuff[n-(len)] = '\n';
 //
-                            .to(netty4Uri+"?disconnect=false&textline=true&delimiter=NULL&synchronous=true")
+                            .to(netty4Uri+"?disconnect=false&clientInitializerFactory=#cif&synchronous=true")
                             // Strip new line and null from string
                             .transform(body().regexReplaceAll("\n\0",""))
                             .log("Reply from pilight: ${body}")
