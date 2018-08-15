@@ -19,9 +19,7 @@ public class PilightServerInitializerFactory extends ServerInitializerFactory {
         ChannelPipeline channelPipeline = ch.pipeline();
 
         channelPipeline.addLast("encoder-SD", new StringEncoder(CharsetUtil.UTF_8));
-        channelPipeline.addLast("decoder-DELIM", new DelimiterBasedFrameDecoder(maxLineSize, true,
-                new ByteBuf[] {Unpooled.wrappedBuffer(new byte[] { 0x0D, 0X0A }) , Unpooled.wrappedBuffer(new byte[] { 0X0A }),
-                        Unpooled.wrappedBuffer(new byte[] { 0x00 })}));
+        channelPipeline.addLast("decoder-DELIM", new DelimiterBasedFrameDecoder(maxLineSize, true, Delimiters.lineDelimiter()));
         channelPipeline.addLast("decoder-SD", new StringDecoder(CharsetUtil.UTF_8));
         // here we add the handler that emits the subscribe/initialise message to Pilight
         channelPipeline.addLast("subscribe-handler",new SubscribeHandler());

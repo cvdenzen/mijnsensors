@@ -234,7 +234,7 @@ public class MyRouteBuilder {
                     // Listen to mqtt for commands and send these commands to pilight server.
                     // mqtt topic is f0/protocol/${id}/${unit}/cmd
                     //
-                    from("paho:f0/arctech_switch_old/+/+/cmd")
+                    from("paho:f0/kaku_switch_old/+/+/cmd")
                             .routeId("fromPahoToPilight")
                             .autoStartup(false)
                             .log("Received mqtt message on topic ${header.CamelMqttTopic}")
@@ -248,6 +248,7 @@ public class MyRouteBuilder {
                                     String[] parts=((String)(exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC))).split("\\/");
                                     JsonActionSend jas=new JsonActionSend();
                                     JsonActionSend.ActionCode jasac=jas.new ActionCode();
+                                    jas.action="send";
                                     jas.code=jasac;
                                     if (parts.length>3) {
                                         jas.code.protocol=new String[] {parts[1]};
@@ -255,7 +256,7 @@ public class MyRouteBuilder {
                                         jas.code.id=new Integer(parts[3]);
                                         String payload=(exchange.getIn().getBody(String.class));
                                         if ("on".equals(payload.toLowerCase())) {
-                                            jas.code.off=0;
+                                            jas.code.off=-1;
                                         } else if ("off".equals(payload.toLowerCase())) {
                                             jas.code.off=1;
                                         }
@@ -286,10 +287,11 @@ public class MyRouteBuilder {
 //                    sendBuff[n-(len-1)] = '\0';
 //                    sendBuff[n-(len)] = '\n';
 //
-                            .to(netty4Uri+"?disconnect=false&clientInitializerFactory=#cif&synchronous=true")
+                            // &clientInitializerFactory=#cif
+                            .to(netty4Uri+"?disconnect=false&synchronous=true&textline=true")
+                            .log("Reply from pilight: ${body}")
                             // Strip new line and null from string
                             .transform(body().regexReplaceAll("\n\0",""))
-                            .log("Reply from pilight: ${body}")
                     ;
                     from("direct:trash").stop()
                             ;
