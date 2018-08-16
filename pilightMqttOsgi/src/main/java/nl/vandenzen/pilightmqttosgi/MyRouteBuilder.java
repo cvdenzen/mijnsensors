@@ -256,9 +256,11 @@ public class MyRouteBuilder {
                                         jas.code.id=new Integer(parts[3]);
                                         String payload=(exchange.getIn().getBody(String.class));
                                         if ("on".equals(payload.toLowerCase())) {
-                                            jas.code.off=-1;
+                                            jas.code.off=null;
+                                            jas.code.on=1;
                                         } else if ("off".equals(payload.toLowerCase())) {
                                             jas.code.off=1;
+                                            jas.code.on=null;
                                         }
                                         exchange.getOut().setBody(jas);
                                     } else {

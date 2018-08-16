@@ -23,5 +23,6 @@ public class JsonActionSend {
         public Integer id;
         public Integer unit;
         public Integer off;
+        public Integer on;
     }
 }
