@@ -27,6 +27,7 @@ feature:install camel-gson
 feature:install camel-stream
 feature:install camel-netty4
 feature:install camel-mqtt
+feature:install camel-quartz2
 
 feature:install jms
 

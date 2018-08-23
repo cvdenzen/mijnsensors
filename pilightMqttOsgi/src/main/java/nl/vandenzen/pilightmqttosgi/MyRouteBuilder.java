@@ -127,6 +127,7 @@ public class MyRouteBuilder {
             context.addComponent("stream", new org.apache.camel.component.stream.StreamComponent());
             context.addComponent("paho", new org.apache.camel.component.paho.PahoComponent());
             context.addComponent("netty4", new org.apache.camel.component.netty4.NettyComponent());
+            context.addComponent("quartz2", new org.apache.camel.component.quartz2.QuartzComponent());
 
 
             GsonDataFormat formatPojoStatusResponse = new GsonDataFormat();
@@ -313,8 +314,9 @@ public class MyRouteBuilder {
                                 @Override
                                 public void process(Exchange exchange) throws Exception {
                                     BigDecimal light=bh1750.read();
-                                    exchange.getOut().setBody(light);
-                                    exchange.getIn().setHeader("mqttTopic", "f0/lightsensor");
+                                    logger.info("bh1750.reead gaf " + light);
+                                    exchange.getOut().setBody(light.toString());
+                                    exchange.getOut().setHeader("mqttTopic", "f0/lightsensor");
                                 }
                             })
                             .recipientList(simple("paho:${header.mqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
