@@ -1,8 +1,8 @@
 Status 20180215: UNDER DEVELOPMENT
 
-The pilightMqttOsgi project:
+The pilightMqttOsgi project: 20180820 activemq version 5.15.4, 5.15.5
 repo-add activemq
-# since karaf 4.2 needs next features for activemq
+# since karaf 4.2 (20180820) needs next features for activemq
 feature:install aries-blueprint
 #and add the spring-legacy repo: (or not?)
 feature:repo-add spring-legacy
@@ -12,7 +12,7 @@ feature:install shell-compat
 feature:install activemq
 feature:install activemq-broker # (for mqtt?)
 
-# karaf, install camel and camel-blueprint:
+# karaf, install camel and camel-blueprint: (20180820: camel version 2.22.0)
 repo-add camel
 feature:install camel
 

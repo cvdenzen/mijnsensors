@@ -171,6 +171,27 @@
             <version>${camel.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-quartz2</artifactId>
+            <version>${camel.version}</version>
+            <!-- use the same version as your Camel core version -->
+        </dependency>
+
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-core</artifactId>
+            <version>1.1</version>
+            <type>jar</type>
+        </dependency>
+
+
+        <!--dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-parent</artifactId>
+            <version>1.1</version>
+        </dependency -->
+
 
     </dependencies>
 
@@ -181,8 +202,14 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>3.5.0</version>
                 <extensions>true</extensions>
+
                 <configuration>
+
                     <instructions>
+                        <!-- inline all non-pom dependencies, except those with scope runtime -->
+                        <!--Embed-Dependency>*;type=jar;inline=false</Embed-Dependency -->
+                        <Export-Package>nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.json;version="1.0.0",\
+                        com.pi4j.io.i2c</Export-Package>
                         <Bundle-Activator>nl.vandenzen.pilightmqttosgi.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>

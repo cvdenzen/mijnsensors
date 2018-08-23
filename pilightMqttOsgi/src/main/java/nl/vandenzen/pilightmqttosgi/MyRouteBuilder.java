@@ -5,10 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.List;
 
+import com.pi4j.io.i2c.I2CFactory;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import javafx.scene.effect.Light;
 import nl.vandenzen.pilightmqttosgi.json.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
@@ -41,6 +44,9 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 
 import org.apache.camel.component.netty4.NettyServerBootstrapConfiguration;
+
+
+import com.pi4j.io.i2c.I2CBus;
 
 /**
  * A Camel Java DSL Router
@@ -297,6 +303,21 @@ public class MyRouteBuilder {
                     ;
                     from("direct:trash").stop()
                             ;
+
+                    // Light measurement
+                    from("quartz2://lightreadertimer?cron=0/10+*+*+*+*+?")
+
+                            .routeId("lightsensor")
+                            .autoStartup(false)
+                            .process(new Processor() {
+                                @Override
+                                public void process(Exchange exchange) throws Exception {
+                                    BigDecimal light=bh1750.read();
+                                    exchange.getOut().setBody(light);
+                                    exchange.getIn().setHeader("mqttTopic", "f0/lightsensor");
+                                }
+                            })
+                            .recipientList(simple("paho:${header.mqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
                 }
             });
             // Broker started via karaf, feature activemq-broker
@@ -315,13 +336,6 @@ public class MyRouteBuilder {
             Thread.sleep(2000);
             // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
 
-            if (false) {
-                // Next routes are from pilight to mqtt
-                // Goal: commands from remote control must be sent to mqtt.
-                // Status August 10, 2018: working.
-                context.startRoute("PilightListener");
-                context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
-            }
             for (int i=20;i>0;i--) {
                 msg=dateFormat.format(new Date()) + " "+i+" seconds before starting route from PahoToPilight";
                 System.out.println(msg);
@@ -333,11 +347,29 @@ public class MyRouteBuilder {
             System.out.println(msg);
             Thread.sleep(2000);
             context.startRoute("fromPahoToPilight"); // first identify, then start listening to mqtt broker
-            template.sendBody("paho:fo/arctech_switch_old/3/0/rc","on");
+            template.sendBody("paho:f0/arctech_switch_old/3/0/rc","on");
             msg = dateFormat.format(new Date()) + " main: sendBody paho:fo/arctech_switch_old/3/0/rc done";
             System.out.println(msg);
 
             // Start pilight listener
+
+            if (true) {
+                // Next routes are from pilight to mqtt
+                // Goal: commands from remote control must be sent to mqtt.
+                // Status August 10, 2018: working.
+                context.startRoute("PilightListener");
+                context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
+            }
+
+            // Light sensor init
+            I2CBus bus= I2CFactory.getInstance(I2CBus.BUS_1);;
+            bh1750=new LightSensorReaderBH1750(bus);
+            bh1750.init();
+            Thread.sleep(300);
+            context.startRoute("lightsensor");
+            msg = dateFormat.format(new Date()) + " started route lightsensor";
+            System.out.println(msg);
+
         } catch (Exception ex) {
             msg = dateFormat.format(new Date()) + " " + ex.toString();
             System.out.println(msg);
@@ -435,4 +467,5 @@ public class MyRouteBuilder {
             "\"media\":\"all\"" +
             "}";
 
+    LightSensorReaderBH1750 bh1750;
 }
