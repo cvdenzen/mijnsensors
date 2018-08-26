@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.List;
@@ -42,6 +44,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.Properties;
 
 import org.apache.camel.component.netty4.NettyServerBootstrapConfiguration;
 
@@ -81,6 +84,7 @@ public class MyRouteBuilder {
     CamelContext context;
     Registry registry;
     public void start() {
+
         //JsonDataFormat jsonDataFormat = new JacksonDataFormat(JsonReceiverResponse.class);
         XStreamDataFormat xStreamDataFormat = new XStreamDataFormat(); // (JsonReceiverResponse.class);
         //GsonDataFormat gsonDataFormat = new GsonDataFormat(); // (JsonReceiverResponse.class);
@@ -181,7 +185,7 @@ public class MyRouteBuilder {
             pc.setLocation("file:${karaf.home}/etc/pilightmqttosgi.properties");
             context.addComponent("properties", pc);
             //final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&serverInitializerFactory=#sif";
-            final String netty4Uri = "netty4:tcp://{{pilightserver}}:{{pilightport}}";
+            final String pilightServerUri = "netty4:tcp://{{pilightserver}}:{{pilightport}}";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
@@ -191,7 +195,7 @@ public class MyRouteBuilder {
                     //
                     // Read pilight receiver (the 433 MHz receiver connected to
                     // Raspberry Pi
-                    from(netty4Uri + "?clientMode=true&serverInitializerFactory=#sif&sync=false&textline=true")
+                    from(pilightServerUri + "?clientMode=true&serverInitializerFactory=#sif&sync=false&textline=true")
                             .routeId("PilightListener")
                             .autoStartup(false)
                             .startupOrder(1)
@@ -259,9 +263,19 @@ public class MyRouteBuilder {
                                     jas.action="send";
                                     jas.code=jasac;
                                     if (parts.length>3) {
-                                        jas.code.protocol=new String[] {parts[2]};
-                                        jas.code.unit=new Integer(parts[3]);
-                                        jas.code.id=new Integer(parts[4]);
+                                        //jas.code.protocol=new String[] {parts[1]};
+                                        //logger.info("pc="+pc);
+                                        //exchange.getIn().setHeader("pilight.kaku.protocol",simple("${properties:pilight.kaku.protocol}"));
+                                        //logger.info("exchange header pili...="+simple("${header.pilight.kaku.protocol}").getText());
+                                        // null: logger.info("pc.getOverrideProperties="+pc.getOverrideProperties());
+                                        //logger.info("pc.getOverrideProperties().getProperty="+pc.getOverrideProperties().getProperty("pilight.kaku.protocol"));
+                                        //logger.info("pc.getInitialProperties="+pc.getInitialProperties());
+                                        //logger.info("pc.getInitialProperties().getProperty="+pc.getInitialProperties().getProperty("pilight.kaku.protocol"));
+                                        //jas.code.protocol=new String[] {pc.getInitialProperties().getProperty("pilight.kaku.protocol",
+                                        //        "propertyNotFoundPilight.kaku.protocol")};
+                                        jas.code.protocol=new String[] {"kaku_switch_old"}; // noodgreep, properties is too difficult in Camel
+                                        jas.code.unit=new Integer(parts[2]);
+                                        jas.code.id=new Integer(parts[3]);
                                         String payload=(exchange.getIn().getBody(String.class));
                                         if ("on".equals(payload.toLowerCase())) {
                                             jas.code.off=null;
@@ -270,7 +284,7 @@ public class MyRouteBuilder {
                                             jas.code.off=1;
                                             jas.code.on=null;
                                         }
-                                        exchange.getOut().setBody(jas);
+                                        exchange.getIn().setBody(jas);
                                     } else {
                                         log.error("Received mqtt message topic length<3: "+exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC));
                                     }
@@ -298,7 +312,7 @@ public class MyRouteBuilder {
 //                    sendBuff[n-(len)] = '\n';
 //
                             // &clientInitializerFactory=#cif
-                            .to(netty4Uri+"?disconnect=false&synchronous=true&textline=true")
+                            .to(pilightServerUri+"?disconnect=false&synchronous=true&textline=true")
                             .log("Reply from pilight: ${body}")
                             // Strip new line and null from string
                             .transform(body().regexReplaceAll("\n\0",""))

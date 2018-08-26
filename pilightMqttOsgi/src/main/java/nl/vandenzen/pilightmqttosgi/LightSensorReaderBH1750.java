@@ -209,7 +209,7 @@ def main():
         }
 
         // Divisor is default 1.2, if 0.5lx resolution, it is 2.4, at double measurement time+0.5lx res, then 4.8.
-        return new Float((int) ((p[0] << 8) | p[1])) / 4.8f;
+        return new Float((int) ((p[0] & 0xFF) << 8) | (p[1] & 0xFF)) / 4.8f;
     }
 
 // Start measurement at 4lx resolution. Time typically 16ms.

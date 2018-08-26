@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Routes are working!">
-      <change afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/BH1750Processor.java" afterDir="false" />
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="bueprint restored but not (yet) used. Too difficult to get bh1750 object into blueprint route.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/BH1750Processor.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LightSensorReaderBH1750.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LightSensorReaderBH1750.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/testblueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/testblueprint.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
@@ -41,19 +43,19 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="MF" value="6" />
-          <entry key="java" value="6980" />
+          <entry key="java" value="7948" />
           <entry key="md" value="119" />
-          <entry key="properties" value="299" />
-          <entry key="txt" value="405" />
+          <entry key="properties" value="493" />
+          <entry key="txt" value="511" />
           <entry key="xml" value="680" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="6980" />
+          <entry key="JAVA" value="7948" />
           <entry key="Manifest" value="6" />
-          <entry key="PLAIN_TEXT" value="524" />
-          <entry key="Properties" value="299" />
+          <entry key="PLAIN_TEXT" value="630" />
+          <entry key="Properties" value="493" />
           <entry key="XML" value="680" />
         </counts>
       </usages-collector>
@@ -79,13 +81,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="967">
-              <caret line="313" column="65" selection-start-line="313" selection-start-column="65" selection-end-line="313" selection-end-column="65" />
+            <state relative-caret-position="822">
+              <caret line="275" column="142" selection-start-line="275" selection-start-column="142" selection-end-line="275" selection-end-column="142" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#8964#18645#0" expanded="true" />
+                <element signature="e#18644#18645#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -103,8 +107,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LightSensorReaderBH1750.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2162">
-              <caret line="210" column="114" selection-start-line="210" selection-start-column="114" selection-end-line="210" selection-end-column="114" />
+            <state relative-caret-position="573">
+              <caret line="213" lean-forward="true" selection-start-line="213" selection-end-line="213" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -113,31 +117,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/BH1750Processor.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/testblueprint.xml">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="165">
-              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/blueprint.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="73" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="73" />
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
             </state>
           </provider>
         </entry>
@@ -145,8 +128,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
+            <state relative-caret-position="240">
+              <caret line="16" column="37" selection-start-line="16" selection-start-column="37" selection-end-line="16" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -154,8 +137,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="25" column="76" selection-start-line="25" selection-start-column="76" selection-end-line="25" selection-end-column="76" />
+            <state relative-caret-position="555">
+              <caret line="42" column="61" lean-forward="true" selection-start-line="42" selection-start-column="61" selection-end-line="42" selection-end-column="61" />
             </state>
           </provider>
         </entry>
@@ -171,8 +154,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>hallo</find>
-      <find>model</find>
       <find>configur</find>
       <find>nodig</find>
       <find>stream</find>
@@ -201,6 +182,8 @@
       <find>pi4j</find>
       <find>i2c.23</find>
       <find>lightsensor</find>
+      <find>f0/</find>
+      <find>pilightmqttosgi.propert</find>
     </findStrings>
     <replaceStrings>
       <replace>${camel.vesion}</replace>
@@ -252,13 +235,13 @@
         <option value="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties" />
-        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LightSensorReaderBH1750.java" />
         <option value="$PROJECT_DIR$/src/main/resources/testblueprint.xml" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/BH1750Processor.java" />
-        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/testblueprint.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LightSensorReaderBH1750.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
       </list>
     </option>
   </component>
@@ -365,6 +348,14 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="pilightmqttosgi" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="blueprint" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -408,7 +399,7 @@
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="true" />
     <property name="Repository.Attach.Sources" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1535281565412" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1535298386071" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.09113608" />
@@ -735,7 +726,14 @@
       <option name="project" value="LOCAL" />
       <updated>1535278003911</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="bueprint restored but not (yet) used. Too difficult to get bh1750 object into blueprint route.">
+      <created>1535281711418</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1535281711418</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -760,7 +758,7 @@
       <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.47202381" weight="0.327551" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Dependency Viewer" order="10" visible="true" weight="0.32857144" />
-      <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.46666667" visible="true" weight="0.32857144" />
+      <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.46666667" weight="0.32857144" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -842,7 +840,8 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Not really reuseChannel. Does not work." />
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="start/stop verbeterd" />
     <MESSAGE value="NON WORKING CODE&#10;problems with json-gson datatype" />
     <MESSAGE value="NON WORKING CODE&#10;Still problems with json-gson datatype" />
@@ -867,7 +866,8 @@
     <MESSAGE value="Working version (on and off) but no reply from pilight" />
     <MESSAGE value="i2c compiles and resolves in Karaf" />
     <MESSAGE value="Routes are working!" />
-    <option name="LAST_COMMIT_MESSAGE" value="Routes are working!" />
+    <MESSAGE value="bueprint restored but not (yet) used. Too difficult to get bh1750 object into blueprint route." />
+    <option name="LAST_COMMIT_MESSAGE" value="bueprint restored but not (yet) used. Too difficult to get bh1750 object into blueprint route." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/pilightMqttOsgi.iml">
@@ -1130,6 +1130,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/BH1750Processor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="20" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/blueprint.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
@@ -1137,54 +1147,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="35" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="35" />
+        <state relative-caret-position="165">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="25" column="76" selection-start-line="25" selection-start-column="76" selection-end-line="25" selection-end-column="76" />
+        <state relative-caret-position="555">
+          <caret line="42" column="61" lean-forward="true" selection-start-line="42" selection-start-column="61" selection-end-line="42" selection-end-column="61" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LightSensorReaderBH1750.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2162">
-          <caret line="210" column="114" selection-start-line="210" selection-start-column="114" selection-end-line="210" selection-end-column="114" />
+        <state relative-caret-position="573">
+          <caret line="213" lean-forward="true" selection-start-line="213" selection-end-line="213" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/BH1750Processor.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="240">
+          <caret line="16" column="37" selection-start-line="16" selection-start-column="37" selection-end-line="16" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="967">
-          <caret line="313" column="65" selection-start-line="313" selection-start-column="65" selection-end-line="313" selection-end-column="65" />
+        <state relative-caret-position="822">
+          <caret line="275" column="142" selection-start-line="275" selection-start-column="142" selection-end-line="275" selection-end-column="142" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#8964#18645#0" expanded="true" />
+            <element signature="e#18644#18645#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/testblueprint.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
         </state>
       </provider>
     </entry>
