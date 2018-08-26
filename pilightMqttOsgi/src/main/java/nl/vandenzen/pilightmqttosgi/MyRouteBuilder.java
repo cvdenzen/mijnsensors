@@ -47,6 +47,7 @@ import org.apache.camel.component.netty4.NettyServerBootstrapConfiguration;
 
 
 import com.pi4j.io.i2c.I2CBus;
+import org.apache.camel.support.ExpressionAdapter;
 
 /**
  * A Camel Java DSL Router
@@ -310,6 +311,7 @@ public class MyRouteBuilder {
 
                             .routeId("lightsensor")
                             .autoStartup(false)
+                            .setHeader("bh1750",constant(bh1750))
                             .process(new Processor() {
                                 @Override
                                 public void process(Exchange exchange) throws Exception {
