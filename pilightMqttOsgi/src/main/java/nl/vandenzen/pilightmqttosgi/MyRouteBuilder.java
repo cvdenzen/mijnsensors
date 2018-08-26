@@ -239,9 +239,9 @@ public class MyRouteBuilder {
                     ;
                     //
                     // Listen to mqtt for commands and send these commands to pilight server.
-                    // mqtt topic is f0/protocol/${id}/${unit}/cmd
+                    // mqtt topic is f0/protocol_cmd/${id}/${unit}/cmd
                     //
-                    from("paho:f0/kaku_switch_old/+/+/cmd")
+                    from("paho:{{mqtt.topic.kaku.cmd}}/+/+")
                             .routeId("fromPahoToPilight")
                             .autoStartup(false)
                             .log("Received mqtt message on topic ${header.CamelMqttTopic}")
@@ -258,9 +258,9 @@ public class MyRouteBuilder {
                                     jas.action="send";
                                     jas.code=jasac;
                                     if (parts.length>3) {
-                                        jas.code.protocol=new String[] {parts[1]};
-                                        jas.code.unit=new Integer(parts[2]);
-                                        jas.code.id=new Integer(parts[3]);
+                                        jas.code.protocol=new String[] {parts[2]};
+                                        jas.code.unit=new Integer(parts[3]);
+                                        jas.code.id=new Integer(parts[4]);
                                         String payload=(exchange.getIn().getBody(String.class));
                                         if ("on".equals(payload.toLowerCase())) {
                                             jas.code.off=null;
@@ -313,13 +313,14 @@ public class MyRouteBuilder {
                             .process(new Processor() {
                                 @Override
                                 public void process(Exchange exchange) throws Exception {
-                                    BigDecimal light=bh1750.read();
-                                    logger.info("bh1750.reead gaf " + light);
-                                    exchange.getOut().setBody(light.toString());
-                                    exchange.getOut().setHeader("mqttTopic", "f0/lightsensor");
+                                    Float light=bh1750.read();
+                                    logger.info("bh1750.read result " + light);
+                                    exchange.getIn().setBody(light.toString());
+                                    // next line is useless
+                                    //exchange.getIn().setHeader(PahoConstants.MQTT_TOPIC, simple("{{mqtt.topic.lightsensor.local.i2c.23}}"));
                                 }
                             })
-                            .recipientList(simple("paho:${header.mqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
+                            .recipientList(simple("paho:{{mqtt.topic.lightsensor.local.i2c.23}}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
                 }
             });
             // Broker started via karaf, feature activemq-broker
@@ -338,6 +339,16 @@ public class MyRouteBuilder {
             Thread.sleep(2000);
             // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
 
+
+            // Light sensor init
+            I2CBus bus= I2CFactory.getInstance(I2CBus.BUS_1);;
+            bh1750=new LightSensorReaderBH1750(bus);
+            bh1750.init();
+            Thread.sleep(300);
+            context.startRoute("lightsensor");
+            msg = dateFormat.format(new Date()) + " started route lightsensor";
+            System.out.println(msg);
+
             for (int i=20;i>0;i--) {
                 msg=dateFormat.format(new Date()) + " "+i+" seconds before starting route from PahoToPilight";
                 System.out.println(msg);
@@ -349,7 +360,7 @@ public class MyRouteBuilder {
             System.out.println(msg);
             Thread.sleep(2000);
             context.startRoute("fromPahoToPilight"); // first identify, then start listening to mqtt broker
-            template.sendBody("paho:f0/arctech_switch_old/3/0/rc","on");
+            //template.sendBody("paho:f0/arctech_switch_old/3/0/rc","on");
             msg = dateFormat.format(new Date()) + " main: sendBody paho:fo/arctech_switch_old/3/0/rc done";
             System.out.println(msg);
 
@@ -363,14 +374,6 @@ public class MyRouteBuilder {
                 context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
             }
 
-            // Light sensor init
-            I2CBus bus= I2CFactory.getInstance(I2CBus.BUS_1);;
-            bh1750=new LightSensorReaderBH1750(bus);
-            bh1750.init();
-            Thread.sleep(300);
-            context.startRoute("lightsensor");
-            msg = dateFormat.format(new Date()) + " started route lightsensor";
-            System.out.println(msg);
 
         } catch (Exception ex) {
             msg = dateFormat.format(new Date()) + " " + ex.toString();

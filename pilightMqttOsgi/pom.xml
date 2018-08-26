@@ -210,9 +210,8 @@
                         <Include-Resource>lib</Include-Resource>
                         <!-- https://github.com/bndtools/bndtools/wiki/Big-Bad-Bundle -->
                         <Bundle-ClassPath>.,pi4j-core-1.1.jar</Bundle-ClassPath>
-                        <Private-Package>com.pi4j.io.i2c.I2CFactory</Private-Package>
                         <Export-Package>nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.json;version="1.0.0",\
-                        com.pi4j.io.i2c,com.pi4j.io.i2c.I2CFactory,com.pi4j.io.i2c.I2CBus</Export-Package>
+                        com.pi4j.io.i2c.I2CBus</Export-Package>
                         <Bundle-Activator>nl.vandenzen.pilightmqttosgi.Activator</Bundle-Activator>
                     </instructions>
                 </configuration>

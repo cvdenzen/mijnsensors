@@ -6,9 +6,12 @@ import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
+import com.sun.tools.javadoc.Start;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LightSensorReaderBH1750 {
     /*
@@ -140,7 +143,7 @@ def convertToNumber(data):
 
 def readLight(addr=DEVICE):
   # Read data from I2C interface
-  data = bus.read_i2c_block_data(addr,ONE_TIME_HIGH_RES_MODE_1)
+  data = bus.read_i2c_block_data(addr,ONE_TIME_HIGH_RES_MODE_)
   return convertToNumber(data)
 
 def main():
@@ -151,6 +154,7 @@ def main():
     time.sleep(0.5)
      */
     private I2CDevice device;
+    private long conversiontime=240; // time in milliseconds
 
     LightSensorReaderBH1750(I2CBus bus) throws IOException {
         device = bus.getDevice(0x23);
@@ -158,26 +162,71 @@ def main():
 
     void init() {
         try {
-            device.write((byte) 0x10);  //11x resolution 120ms
+            //device.write((byte) CONTINUOUS_HIGH_RES_MODE_2);
+            /*
+            Change Measurement time
+              ( High bit )
+            01000_MT[7,6,5]
+            Change measurement time.
+            ※
+              Please refer "adjust measurement result for influence of optical window."
+            Change Masurement time
+              ( Low bit )
+            011_MT[4,3,2,1,0]
+            Change measurement time.
+            ※
+              Please refer "adjust measurement result for influence of optical window.
+             */
+            // Set measurement time at 240ms (normally 120ms) to get better low light measurement
+            device.write((byte) 0b01000_100);
+            device.write((byte) 0b011_01010 );
+            conversiontime=300; // time to wait for conversion
 
         } catch (IOException ignore) {
             ignore.printStackTrace();
         }
     }
 
-    public BigDecimal read() {
+    public Float read() {
         byte[] p = new byte[2];
 
         int r;
+
         try {
+            device.write((byte) ONE_TIME_HIGH_RES_MODE_2);
+            Thread.sleep(conversiontime);
             r = device.read(p, 0, 2);
         } catch (IOException e) {
             throw new IllegalStateException(e);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Sleep while waiting for light sensor BH1750 interrupted");
+
         }
 
+        logger.info("read p[0]="+p[0]+", p[1]="+p[1]);
         if (r != 2) {
             throw new IllegalStateException("Read Error; r=" + r);
         }
-        return new BigDecimal((p[0] << 8) | p[1]);
+
+        // Divisor is default 1.2, if 0.5lx resolution, it is 2.4, at double measurement time+0.5lx res, then 4.8.
+        return new Float((int) ((p[0] << 8) | p[1])) / 4.8f;
     }
+
+// Start measurement at 4lx resolution. Time typically 16ms.
+private final static int CONTINUOUS_LOW_RES_MODE = 0x13;
+// Start measurement at 1lx resolution. Time typically 120ms
+private final static int CONTINUOUS_HIGH_RES_MODE_1 = 0x10;
+// Start measurement at 0.5lx resolution. Time typically 120ms
+private final static int CONTINUOUS_HIGH_RES_MODE_2 = 0x11;
+// Start measurement at 1lx resolution. Time typically 120ms
+// Device is automatically set to Power Down after measurement.
+private final static int ONE_TIME_HIGH_RES_MODE_1 = 0x20;
+// Start measurement at 0.5lx resolution. Time typically 120ms
+// Device is automatically set to Power Down after measurement.
+private final static int ONE_TIME_HIGH_RES_MODE_2 = 0x21;
+// Start measurement at 1lx resolution. Time typically 120ms
+// Device is automatically set to Power Down after measurement.
+private final static int ONE_TIME_LOW_RES_MODE = 0x23;
+
+    final static Logger logger = Logger.getLogger(MyRouteBuilder.class.toString());
 }
