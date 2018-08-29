@@ -31,6 +31,9 @@ feature:install camel-quartz2
 
 feature:install jms
 
+# then, if already in use by e.g. openhab, change ssh port in etc/apache.karaf.shell.cfg from 8101 in e.g. 8102.
+# otherwise, karaf client will connect to whatever karaf instance started first.
+
 # pilight, in a unix shell:
 cp -avv ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties ~/Downloads/apache-karaf-4.2.0/etc/
 cp -avv ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml ~/Downloads/apache-karaf-4.2.0/etc/

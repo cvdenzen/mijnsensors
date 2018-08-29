@@ -243,14 +243,14 @@ public class MyRouteBuilder {
                     // must be origin: sender config core response
                     ;
                     //
-                    // Listen to mqtt for commands and send these commands to pilight server.
-                    // mqtt topic is f0/protocol_cmd/${id}/${unit}/cmd
-                    //
-                    from("paho:{{mqtt.topic.kaku.cmd}}/+/+")
+                    // Listen to mqtt for commands and send these commands to pilight server
+                    // mqtt topic is f0/protocol/cmd/${id}/${unit}
+                    //               0  1        2   3     4
+                    //from("paho:{{mqtt.topic.kaku.cmd}}/+/+")
+                    from("direct:fromPahoToPilight")
                             .routeId("fromPahoToPilight")
-                            .autoStartup(false)
-                            .log("Received mqtt message on topic ${header.CamelMqttTopic}")
-                            .log("Received mqtt message ${body}")
+                            .autoStartup(true)
+                            .log("Received mqtt message on topic ${header.CamelMqttTopic}, command ${body}")
                             .setHeader("messagetype",constant("mqtt"))
                             // extract id and unit
                             .process(new Processor() {
@@ -274,8 +274,8 @@ public class MyRouteBuilder {
                                         //jas.code.protocol=new String[] {pc.getInitialProperties().getProperty("pilight.kaku.protocol",
                                         //        "propertyNotFoundPilight.kaku.protocol")};
                                         jas.code.protocol=new String[] {"kaku_switch_old"}; // noodgreep, properties is too difficult in Camel
-                                        jas.code.unit=new Integer(parts[2]);
-                                        jas.code.id=new Integer(parts[3]);
+                                        jas.code.unit=new Integer(parts[3]);
+                                        jas.code.id=new Integer(parts[4]);
                                         String payload=(exchange.getIn().getBody(String.class));
                                         if ("on".equals(payload.toLowerCase())) {
                                             jas.code.off=null;
@@ -286,9 +286,8 @@ public class MyRouteBuilder {
                                         }
                                         exchange.getIn().setBody(jas);
                                     } else {
-                                        log.error("Received mqtt message topic length<3: "+exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC));
+                                        log.error("Received mqtt message topic length<4: "+exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC));
                                     }
-
                                 }
                             })
                             .marshal(formatPojoActionSend)
@@ -319,6 +318,42 @@ public class MyRouteBuilder {
                     ;
                     from("direct:trash").stop()
                             ;
+                    //
+                    // Listen to mqtt for commands and rebroadcast them as state command
+                    // mqtt topic is f0/protocol/cmd/${id}/${unit}
+                    // mqtt topic is f0/protocol/rc/${id}/${unit}
+                    //               0  1        2  3     4
+                    // We also will receive "state" messages, but we will ignore them ???
+                    from("paho:{{mqtt.topic.kaku.cmd}}/+/+")
+                            .recipientList(simple("direct:toMqttSetState,direct:fromPahoToPilight"),",");
+                    from("paho:{{mqtt.topic.kaku.rc}}/+/+").to("direct:toMqttSetState");
+                    from("direct:toMqttSetState")
+                            .routeId("toMqttSetState")
+                            .autoStartup(true)
+                            // extract id and unit
+                            .process(new Processor() {
+                                @Override
+                                public void process(Exchange exchange) throws Exception {
+                                    // split into protocol, id, unit
+                                    String[] parts=((String)(exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC))).split("\\/");
+                                    if ((parts.length>4) && ("cmd".equals(parts[2]) || "rc".equals(parts[2]))) {
+                                        parts[2] = "state";
+                                    } else {
+                                        log.error("Received mqtt message topic length<4 or part[2]<>cmd and part[2]<>rc: "
+                                                + exchange.getIn().getHeader(PahoConstants.MQTT_TOPIC));
+                                    }
+                                    // reassemble topic
+                                    StringBuilder sb=new StringBuilder(100);
+                                    for (int i=0;i<parts.length;i++) {
+                                        sb.append(parts[i]);
+                                        if (i<parts.length-1) sb.append("/");
+                                    }
+                                    exchange.getIn().setHeader(PahoConstants.MQTT_TOPIC,sb.toString());
+                                }
+                            })
+                            .log("Broadcasting topic ${header.CamelMqttTopic}, command ${body}")
+                            .recipientList(simple("paho:${header.CamelMqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"))
+                    ;
 
                     // Light measurement
                     from("quartz2://lightreadertimer?cron=0/10+*+*+*+*+?")
@@ -351,7 +386,6 @@ public class MyRouteBuilder {
             context.start();
             msg = dateFormat.format(new Date()) + " main: context started";
             logger.info(msg);
-            System.out.println(msg);
             Thread.sleep(2000);
             // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
 
@@ -363,22 +397,22 @@ public class MyRouteBuilder {
             Thread.sleep(300);
             context.startRoute("lightsensor");
             msg = dateFormat.format(new Date()) + " started route lightsensor";
-            System.out.println(msg);
+            logger.info(msg);
 
-            for (int i=20;i>0;i--) {
+            for (int i=5;i>0;i--) {
                 msg=dateFormat.format(new Date()) + " "+i+" seconds before starting route from PahoToPilight";
-                System.out.println(msg);
+                logger.info(msg);
                 Thread.sleep(1000);
             }
             JsonIdentification ji=new JsonIdentification("identify",0,0,0,0,"0000-d0-63-03-000001","all");
             template.sendBody("direct:pilightIdentify", ji);
             msg = dateFormat.format(new Date()) + " main: sendBody identification to pilight through camel netty4 done";
-            System.out.println(msg);
+            logger.info(msg);
             Thread.sleep(2000);
             context.startRoute("fromPahoToPilight"); // first identify, then start listening to mqtt broker
             //template.sendBody("paho:f0/arctech_switch_old/3/0/rc","on");
-            msg = dateFormat.format(new Date()) + " main: sendBody paho:fo/arctech_switch_old/3/0/rc done";
-            System.out.println(msg);
+            //msg = dateFormat.format(new Date()) + " main: sendBody paho:fo/arctech_switch_old/3/0/rc done";
+            //System.out.println(msg);
 
             // Start pilight listener
 
@@ -388,13 +422,16 @@ public class MyRouteBuilder {
                 // Status August 10, 2018: working.
                 context.startRoute("PilightListener");
                 context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
+                msg = dateFormat.format(new Date()) + " PilightListener and ActivemqToPaho started";
+                logger.info(msg);
             }
 
 
         } catch (Exception ex) {
             msg = dateFormat.format(new Date()) + " " + ex.toString();
-            System.out.println(msg);
-            ex.printStackTrace();
+            logger.log(Level.SEVERE,msg,ex);
+            //System.out.println(msg);
+            //ex.printStackTrace();
         } finally {
             //context.stop();
             msg = dateFormat.format(new Date()) + " main: End of main, Camel context should still be running";
