@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<features name="pilightmqttosgi-1.0.0-SNAPSHOT" xmlns="http://karaf.apache.org/xmlns/features/v1.3.0">
+    <feature name="pilightmqttosgi" version="1.0.0-SNAPSHOT">
+        <feature>aries-blueprint</feature>
+        <feature>shell-compat</feature>
+        <feature>activemq</feature>
+        <feature>activemq-broker</feature>
+        <feature>camel</feature>
+        <feature>camel-jms</feature>
+        <feature>camel-paho</feature>
+        <feature>activemq-camel</feature>
+        <feature>activemq-cf</feature>
+        <feature>activemq-blueprint</feature>
+        <feature>camel-gson</feature>
+        <feature>camel-stream</feature>
+        <feature>camel-netty4</feature>
+        <feature>camel-mqtt</feature>
+        <feature>camel-quartz2</feature>
+        <feature>jms</feature>
+        <feature>service-wrapper</feature>
+        <!--bundle>pilightMqttOsgi OSGi Bundle</bundle -->
+        <bundle>file:/home/pi/tmp/pilightMqttOsgi-1.0-SNAPSHOT.jar</bundle>
+    </feature>
+</features>

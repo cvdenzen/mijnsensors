@@ -10,6 +10,13 @@
             <to uri="stream:out"/>
         </route>
 
+        <route id="picoUPSSquareWave" autoStartup="true">
+            <from uri="timer:picoUPS?period=250"/>
+            <to uri="UPSPIco:toggleGpio27"/>
+            <to uri="stream:out"/>
+        </route>
+
     </camelContext>
 
+    <bean id="UPSPIco" class="nl.vandenzen.pilightmqttosgi.UPSPIco"/>
 </blueprint>

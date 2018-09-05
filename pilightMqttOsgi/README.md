@@ -1,11 +1,16 @@
 Status 20180215: UNDER DEVELOPMENT
 
 The pilightMqttOsgi project: 20180820 activemq version 5.15.4, 5.15.5
-repo-add activemq
-# since karaf 4.2 (20180820) needs next features for activemq
-feature:install aries-blueprint
+# not  needed, is default in karaf 4.2.1 repo-add activemq
+repo-add camel
 #and add the spring-legacy repo: (or not?)
 feature:repo-add spring-legacy
+
+#
+# feature install can be done by features.xml file ???? 20180905 experimental
+#
+# since karaf 4.2 (20180820) needs next features for activemq
+feature:install aries-blueprint
 # and
 feature:install shell-compat
 
@@ -13,7 +18,6 @@ feature:install activemq
 feature:install activemq-broker # (for mqtt?)
 
 # karaf, install camel and camel-blueprint: (20180820: camel version 2.22.0)
-repo-add camel
 feature:install camel
 
 feature:install camel-jms
@@ -31,14 +35,38 @@ feature:install camel-quartz2
 
 feature:install jms
 
-# then, if already in use by e.g. openhab, change ssh port in etc/apache.karaf.shell.cfg from 8101 in e.g. 8102.
+feature:install service-wrapper # just to create karaf.service file, because the wrapper gives (tool readelf) machine Intel 80386 code
+
+#
+# end of feature install commands
+#
+
+wrapper:install
+
+# vi bin/karaf.service, add User=openhab in [Service]
+# See https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/
+# cp bin/karaf.service /etc/systemd/system # or make a link
+
+
+# if already in use by e.g. openhab, change ssh port in etc/apache.karaf.shell.cfg from 8101 in e.g. 8102.
 # otherwise, karaf client will connect to whatever karaf instance started first.
 
-# pilight, in a unix shell:
-cp -avv ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties ~/Downloads/apache-karaf-4.2.0/etc/
-cp -avv ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml ~/Downloads/apache-karaf-4.2.0/etc/
-cp -avvv ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar ~/Downloads/apache-karaf-4.2.0/deploy/;ls -l ~/Downloads/apache-karaf-4.2.0/deploy/
+# on raspberry, user root. (if chown -R openhab.openhab /usr/apache-karaf
+adduser pi openhab
+chmod g+w /usr/share/apache-karaf/etc
+chmod g+w /usr/share/apache-karaf/deploy
 
+# pilight, in a unix shell on iMac
+scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@192.168.2.9:/usr/share/apache-karaf/etc/
+scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml pi@192.168.2.9:/usr/share/apache-karaf/etc/
+scp ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@192.168.2.9:/usr/share/apache-karaf/deploy/
+
+# karaf service (systemd) on rpi is not possible through the service-wrapper (that only supports 80386 architecture).
+# see https://karaf.apache.org/manual/latest/#_service_script_templates
+cd bin/contrib
+./karaf-service.sh  -k /usr/share/apache-karaf -u openhab
+cp karaf*service /etc/systemd/system
+systemctl enable karaf
 
 Try to make pilight to mqtt gateway, something like pilight2mqtt. But there is a problem with pilight2mqtt: it cannot
 handle multiple top level json objects and crashes. Because I prefer Java over Python, I decided to rebuild pilight2mqtt
