@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="feature.xml file">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="working with dynamic linking wiringpi (I think)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterDir="false" />
@@ -44,17 +44,17 @@
           <entry key="java" value="9586" />
           <entry key="md" value="1077" />
           <entry key="properties" value="598" />
-          <entry key="txt" value="675" />
-          <entry key="xml" value="1133" />
+          <entry key="txt" value="723" />
+          <entry key="xml" value="1134" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="9586" />
           <entry key="Manifest" value="6" />
-          <entry key="PLAIN_TEXT" value="1752" />
+          <entry key="PLAIN_TEXT" value="1800" />
           <entry key="Properties" value="598" />
-          <entry key="XML" value="1133" />
+          <entry key="XML" value="1134" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -115,7 +115,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="300">
@@ -136,11 +136,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="210">
-              <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
+              <caret line="14" column="56" selection-start-line="14" selection-start-column="56" selection-end-line="14" selection-end-column="56" />
             </state>
           </provider>
         </entry>
@@ -255,8 +255,8 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/features.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" />
-        <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
       </list>
     </option>
   </component>
@@ -774,7 +774,14 @@
       <option name="project" value="LOCAL" />
       <updated>1536180463274</updated>
     </task>
-    <option name="localTasksCounter" value="39" />
+    <task id="LOCAL-00039" summary="working with dynamic linking wiringpi (I think)">
+      <created>1536262697958</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1536262697958</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -883,7 +890,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="NON WORKING CODE&#10;No errors on gson!" />
     <MESSAGE value="custom consumer/bean" />
     <MESSAGE value="custom bootstrap in netty4" />
     <MESSAGE value="custom bootstrap in netty4, werkt nog niet" />
@@ -908,7 +914,8 @@
     <MESSAGE value="cmd to pilight working with hardcoded protocol because Camel properties are too difficult" />
     <MESSAGE value="Release candidate" />
     <MESSAGE value="feature.xml file" />
-    <option name="LAST_COMMIT_MESSAGE" value="feature.xml file" />
+    <MESSAGE value="working with dynamic linking wiringpi (I think)" />
+    <option name="LAST_COMMIT_MESSAGE" value="working with dynamic linking wiringpi (I think)" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT 3/OSGI-INF/blueprint/blueprint.xml" />
@@ -1198,13 +1205,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="14" column="41" selection-start-line="14" selection-start-column="41" selection-end-line="14" selection-end-column="41" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -1212,6 +1212,13 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="56" selection-start-line="14" selection-start-column="56" selection-end-line="14" selection-end-column="56" />
         </state>
       </provider>
     </entry>

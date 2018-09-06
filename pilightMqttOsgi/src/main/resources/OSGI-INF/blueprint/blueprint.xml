@@ -13,7 +13,6 @@
         <route id="picoUPSSquareWave" autoStartup="true">
             <from uri="timer:picoUPS?period=250"/>
             <to uri="bean:UPSPIco?method=toggleGpio27"/>
-            <to uri="stream:out"/>
         </route>
 
     </camelContext>
