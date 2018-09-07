@@ -86,7 +86,7 @@ Additional feature: use ActiveMQ as MQTT broker. Add a connector to activemq.xml
  </transportConnectors>
 
 Status 20180209:
-pimatic (no more openhab2 for now: 2.2 no sitemap, rules are difficult to edit, OH2 is going to use Microsofts Visual Studio).
+pimatic? (no more openhab2 for now: 2.2 no sitemap, rules are difficult to edit, OH2 is going to use Microsofts Visual Studio).
 
 pimatic heeft een config file. https://pimatic.org/guide/getting-started/configuration/
 
