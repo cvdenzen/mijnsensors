@@ -13,16 +13,16 @@ public class UPSPIco {
         // create gpio controller
         final GpioController gpio = GpioFactory.getInstance();
 
-        // provision gpio pin27 #01 as an output pin27 and turn on
+        // provision gpio gpioPir #01 as an output gpioPir and turn on
         pin27 = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_27, "MyLED", PinState.HIGH);
 
-        // set shutdown state for this pin27
+        // set shutdown state for this gpioPir
         pin27.setShutdownOptions(true, PinState.LOW);
     }
 
     public String toggleGpio27() {
 
-        // toggle the current state of gpio pin27 #01  (should turn off)
+        // toggle the current state of gpio gpioPir #01  (should turn off)
         pin27.toggle();
         return "Pin27 toggled";
 

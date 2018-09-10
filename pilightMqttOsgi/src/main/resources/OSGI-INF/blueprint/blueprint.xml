@@ -3,11 +3,11 @@
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="simple">
         <route id="HelloWorldFromBlueprint" autoStartup="false">
-            <from uri="timer:simple?period=5000"/>
+            <from uri="timer:simple?period=5000&amp;repeatCount=3"/>
             <setBody>
-                <simple>Hello World from blueprint (Camel)</simple>
+                <simple>Hello World from blueprint (Camel UPSPIco)</simple>
             </setBody>
-            <to uri="stream:out"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
 
         <route id="picoUPSSquareWave" autoStartup="true">

@@ -11,6 +11,7 @@
         <feature>activemq-camel</feature>
         <feature>activemq-cf</feature>
         <feature>activemq-blueprint</feature>
+        <feature>activemq-amqp-client</feature> <!-- for pir sending to mqtt topic -->
         <feature>camel-gson</feature>
         <feature>camel-stream</feature>
         <feature>camel-netty4</feature>
