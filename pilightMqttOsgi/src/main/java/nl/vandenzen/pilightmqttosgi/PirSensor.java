@@ -79,5 +79,5 @@ public class PirSensor {
 
     public final GpioPinDigitalInput gpioPir;
 
-    final static Logger logger = Logger.getLogger(MyRouteBuilder.class.toString());
+    final static Logger logger = Logger.getLogger(PirSensor.class.toString());
 }
