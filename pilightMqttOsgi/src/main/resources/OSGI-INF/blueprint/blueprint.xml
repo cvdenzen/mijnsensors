@@ -15,17 +15,6 @@
             <to uri="bean:UPSPIco?method=toggleGpio27"/>
         </route>
 
-
-        <route id="PirSensorFromTopic" autoStartup="true" startupOrder="100">
-            <from uri="activemq:topic:f0.nnw.pir"/>
-
-            <setHeader headerName="CamelMqttTopic">
-                <constant>f0/nnw/pir</constant>
-            </setHeader>
-            <to uri="paho:${header.CamelMqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"/>
-
-        </route>
-
     </camelContext>
 
     <bean id="UPSPIco" class="nl.vandenzen.pilightmqttosgi.UPSPIco"/>
