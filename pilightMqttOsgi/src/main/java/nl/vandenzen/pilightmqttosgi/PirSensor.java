@@ -54,7 +54,7 @@ public class PirSensor {
                             Session.AUTO_ACKNOWLEDGE);
 
                     //Creates a MessageProducer and a TextMessage:
-                    // Create the destination (Topic or Queue). Topic floor 0, north west west, pir sensor
+                    // Create the destination (Topic or Queue). Topic floor 0, north north west, pir sensor
                     Destination destination = session.createTopic("f0.nnw.pir");
                     MessageProducer producer = session.createProducer(destination);
                     TextMessage message = session.createTextMessage();
