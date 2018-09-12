@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
-    final boolean useBlueprint = false;
+    final boolean useBlueprint = false; // blueprint.xml is used anyway.
     MyRouteBuilder myRouteBuilder;
     public void start(BundleContext context) throws Exception {
         String msg = "Hallo, dit is Activator voor pilight-mqtt";
@@ -48,6 +48,7 @@ public class Activator implements BundleActivator {
         myRouteBuilder.stop();
         String msg = "Hallo, dit is Activator.stop() pilight-mqtt";
         System.out.println(msg);
+
     }
 
 

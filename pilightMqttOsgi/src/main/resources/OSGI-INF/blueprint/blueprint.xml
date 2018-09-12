@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
-    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="simple">
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
         <route id="HelloWorldFromBlueprint" autoStartup="false">
             <from uri="timer:simple?period=5000&amp;repeatCount=3"/>
             <setBody>
@@ -10,7 +10,7 @@
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
 
-        <route id="picoUPSSquareWave" autoStartup="true">
+        <route id="picoUPSSquareWave" autoStartup="true" routePolicyRef="UPSPIcoRoutePolicy">
             <from uri="timer:picoUPS?period=250"/>
             <to uri="bean:UPSPIco?method=toggleGpio27"/>
         </route>
@@ -18,4 +18,5 @@
     </camelContext>
 
     <bean id="UPSPIco" class="nl.vandenzen.pilightmqttosgi.UPSPIco"/>
+    <bean id="UPSPIcoRoutePolicy" class="nl.vandenzen.pilightmqttosgi.UPSPIcoRoutePolicy"/>
 </blueprint>
