@@ -157,6 +157,7 @@ def main():
     private long conversiontime=240; // time in milliseconds
 
     LightSensorReaderBH1750(I2CBus bus) throws IOException {
+        logger.log(Level.INFO,"Start LightSensorReaderBH1750 constructor");
         device = bus.getDevice(0x23);
     }
 

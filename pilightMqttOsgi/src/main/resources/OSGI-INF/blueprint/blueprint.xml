@@ -10,13 +10,15 @@
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
 
-        <route id="picoUPSSquareWave" autoStartup="true" routePolicyRef="UPSPIcoRoutePolicy">
+        <route id="picoUPSSquareWave" autoStartup="true">
             <from uri="timer:picoUPS?period=250"/>
             <to uri="bean:UPSPIco?method=toggleGpio27"/>
         </route>
 
     </camelContext>
 
-    <bean id="UPSPIco" class="nl.vandenzen.pilightmqttosgi.UPSPIco"/>
-    <bean id="UPSPIcoRoutePolicy" class="nl.vandenzen.pilightmqttosgi.UPSPIcoRoutePolicy"/>
+    <bean id="UPSPIco" class="nl.vandenzen.pilightmqttosgi.UPSPIco"
+          init-method="init" destroy-method="destroy"/>
+    <!-- Start class -->
+    <bean id="pirSensor" class="nl.vandenzen.pilightmqttosgi.PirSensor" activation="eager"/>
 </blueprint>
