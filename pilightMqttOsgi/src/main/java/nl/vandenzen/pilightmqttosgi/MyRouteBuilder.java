@@ -372,6 +372,23 @@ public class MyRouteBuilder {
                                 }
                             })
                             .recipientList(simple("paho:{{mqtt.topic.lightsensor.local.i2c.23}}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
+
+
+                    // UPS status
+                    from("quartz2://lightreadertimer?cron=0/10+*+*+*+*+?")
+
+                            .routeId("PIcoUPSPublisher")
+                            .autoStartup(true)
+                            .startupOrder(100)
+                            // power mode
+                            .process(new Processor() {
+                                @Override
+                                public void process(Exchange exchange) throws Exception {
+                                    String pwrMode=upsPico.upsGetPwrMode();
+                                    exchange.getIn().setBody(pwrMode);// value
+                                }
+                            })
+                            .recipientList(simple("paho:picoups/pwrmode?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
                 }
             });
             // Broker started via karaf, feature activemq-broker
@@ -381,6 +398,10 @@ public class MyRouteBuilder {
             //broker.start();
             //System.out.println(broker.toString());
             //Thread.sleep(2000);
+
+            // UPS
+            upsPico=new UPSPIco();
+            upsPico.init();
 
             ProducerTemplate template = context.createProducerTemplate();
             context.start();
@@ -399,7 +420,9 @@ public class MyRouteBuilder {
             msg = dateFormat.format(new Date()) + " started route lightsensor";
             logger.info(msg);
 
-            for (int i=5;i>0;i--) {
+
+
+            for (int i=2;i>0;i--) {
                 msg=dateFormat.format(new Date()) + " "+i+" seconds before starting route from PahoToPilight";
                 logger.info(msg);
                 Thread.sleep(1000);
@@ -526,4 +549,5 @@ public class MyRouteBuilder {
             "}";
 
     LightSensorReaderBH1750 bh1750;
+    UPSPIco upsPico;
 }
