@@ -103,7 +103,7 @@ git push
 
 Connect to openhab system (raspberry):
 Terminal, ssh pi@192.168.2.9
-(su is niet nodig voor deze app, draait onder user pi ?)
+(su is niet nodig voor deze app, draait onder user pi ?, beter om openhab met env te doen: sudo -E -s -u openhab)
 cd ~/gitrepos/mijnsensors
 git pull
 (of git clone https://github.com/cvdenzen/mijnsensors.git)
