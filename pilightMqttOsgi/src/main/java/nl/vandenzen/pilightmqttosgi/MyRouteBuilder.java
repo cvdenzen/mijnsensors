@@ -194,7 +194,7 @@ public class MyRouteBuilder {
                     //from("netty4:tcp://localhost:1883?textline=true")
                     //
                     // Read pilight receiver (the 433 MHz receiver connected to
-                    // Raspberry Pi
+                    // Raspberry Pi)
                     from(pilightServerUri + "?clientMode=true&serverInitializerFactory=#sif&sync=false&textline=true")
                             .routeId("PilightListener")
                             .autoStartup(false)
@@ -378,13 +378,13 @@ public class MyRouteBuilder {
                     from("quartz2://lightreadertimer?cron=0/10+*+*+*+*+?")
 
                             .routeId("PIcoUPSPublisher")
-                            .autoStartup(true)
+                            .autoStartup(false) // ups beeps unexpectly when enabled
                             .startupOrder(100)
                             // power mode
                             .process(new Processor() {
                                 @Override
                                 public void process(Exchange exchange) throws Exception {
-                                    String pwrMode=upsPico.upsGetPwrMode();
+                                    String pwrMode="todo"; // upsPico.upsGetPwrMode();
                                     exchange.getIn().setBody(pwrMode);// value
                                 }
                             })
@@ -400,8 +400,8 @@ public class MyRouteBuilder {
             //Thread.sleep(2000);
 
             // UPS
-            upsPico=new UPSPIco();
-            upsPico.init();
+            //upsPico=new UPSPIco();
+            //upsPico.init();
 
             ProducerTemplate template = context.createProducerTemplate();
             context.start();
@@ -412,13 +412,18 @@ public class MyRouteBuilder {
 
 
             // Light sensor init
-            I2CBus bus= I2CFactory.getInstance(I2CBus.BUS_1);;
-            bh1750=new LightSensorReaderBH1750(bus);
-            bh1750.init();
-            Thread.sleep(300);
-            context.startRoute("lightsensor");
-            msg = dateFormat.format(new Date()) + " started route lightsensor";
-            logger.info(msg);
+            try {
+                I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
+                bh1750 = new LightSensorReaderBH1750(bus);
+                bh1750.init();
+                Thread.sleep(300);
+                context.startRoute("lightsensor");
+                msg = dateFormat.format(new Date()) + " started route lightsensor";
+                logger.info(msg);
+            }
+            catch (Exception ex) {
+                logger.log(Level.SEVERE,"Error initialising light sensor bh1750",ex);
+            }
 
 
 
@@ -433,9 +438,6 @@ public class MyRouteBuilder {
             logger.info(msg);
             Thread.sleep(2000);
             context.startRoute("fromPahoToPilight"); // first identify, then start listening to mqtt broker
-            //template.sendBody("paho:f0/arctech_switch_old/3/0/rc","on");
-            //msg = dateFormat.format(new Date()) + " main: sendBody paho:fo/arctech_switch_old/3/0/rc done";
-            //System.out.println(msg);
 
             // Start pilight listener
 
@@ -549,5 +551,5 @@ public class MyRouteBuilder {
             "}";
 
     LightSensorReaderBH1750 bh1750;
-    UPSPIco upsPico;
+    //UPSPIco upsPico; // is already bean in blueprint
 }

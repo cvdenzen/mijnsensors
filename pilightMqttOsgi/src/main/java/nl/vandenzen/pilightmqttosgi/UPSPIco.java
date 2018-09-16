@@ -13,12 +13,13 @@ import java.util.logging.Logger;
 public class UPSPIco {
 
     public UPSPIco() throws Exception {
-        logger.log(Level.INFO, "Start UPSPIco constructor");
+        logger.logp(Level.INFO, nl.vandenzen.pilightmqttosgi.UPSPIco.class.toString(),"constructor",
+                "Start UPSPIco constructor, threadid="+Thread.currentThread());
         // create gpio controller
         gpio = GpioFactory.getInstance();
-        logger.log(Level.INFO,"Start i2c getDevices");
-        I2CBus bus= I2CFactory.getInstance(I2CBus.BUS_1);
-        statusDevice = bus.getDevice(0x69);
+        //logger.log(Level.INFO,"Start i2c getDevices");
+        //I2CBus bus= I2CFactory.getInstance(I2CBus.BUS_1);
+        //statusDevice = bus.getDevice(0x69);
     }
 
     public String toggleGpio27() {

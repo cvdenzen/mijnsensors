@@ -1,7 +1,7 @@
 Status 20180215: UNDER DEVELOPMENT
 
 The pilightMqttOsgi project: 20180820 activemq version 5.15.4, 5.15.5
-# not  needed, is default in karaf 4.2.1 repo-add activemq
+repo-add activemq
 repo-add camel
 #and add the spring-legacy repo: (or not?)
 feature:repo-add spring-legacy

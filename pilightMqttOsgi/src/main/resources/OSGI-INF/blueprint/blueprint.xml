@@ -18,6 +18,7 @@
     </camelContext>
 
     <bean id="UPSPIco" class="nl.vandenzen.pilightmqttosgi.UPSPIco"
+          scope="singleton"
           init-method="init" destroy-method="destroy"/>
     <!-- Start class -->
     <bean id="pirSensor" class="nl.vandenzen.pilightmqttosgi.PirSensor" activation="eager"/>
