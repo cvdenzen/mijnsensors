@@ -3,17 +3,12 @@ package nl.vandenzen.pilightmqttosgi;
 
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.camel.component.ActiveMQComponent;
 
-import javax.annotation.Resource;
 import javax.jms.*;
 import javax.jms.ConnectionFactory;
-import javax.jms.Queue;
-
-import org.apache.activemq.ActiveMQConnectionFactory;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,13 +23,16 @@ public class PirSensor {
     //private static ConnectionFactory connectionFactory;
 
     public PirSensor() {
-        ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://amq-broker");
+    }
 
+    public void init() {
+        gpioPir = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, "PIR"); // 02 and 03 conflicts with i2c?
+        // Activemq mqtt client
+        ConnectionFactory jmsConnectionFactory = new ActiveMQConnectionFactory("vm://amq-broker");
         ActiveMQComponent ac = ActiveMQComponent.activeMQComponent();
-        ac.setConnectionFactory(connectionFactory);
+        ac.setConnectionFactory(jmsConnectionFactory);
         ac.setUsername("karaf");
         ac.setPassword("karaf");
-        gpioPir = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, "PIR");
         gpioPir.addListener(new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
@@ -47,9 +45,9 @@ public class PirSensor {
                 //Creates a Connection and a Session:
 
                 try {
-                    Connection connection = connectionFactory.createConnection();
-                    connection.start();
-                    Session session = connection.createSession(
+                    Connection jmsConnection = jmsConnectionFactory.createConnection();
+                    jmsConnection.start();
+                    Session session = jmsConnection.createSession(
                             false,
                             Session.AUTO_ACKNOWLEDGE);
 
@@ -68,16 +66,20 @@ public class PirSensor {
                     //Sends an empty control message to indicate the end of the message stream:
 
                     //producer.send(session.createMessage());
-                    connection.stop();
-                    connection.close();
+                    jmsConnection.stop();
+                    jmsConnection.close();
                 } catch (JMSException ex) {
                     logger.log(Level.SEVERE, "PIR send message to jms queue error", ex);
                 }
             }
         });
     }
+    public void destroy() {
+        gpioPir.removeAllListeners();
+        gpio.unprovisionPin(gpioPir);
+    }
 
-    public final GpioPinDigitalInput gpioPir;
+    public GpioPinDigitalInput gpioPir;
 
     final static Logger logger = Logger.getLogger(PirSensor.class.toString());
 }

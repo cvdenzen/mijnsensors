@@ -359,7 +359,8 @@ public class MyRouteBuilder {
                     from("quartz2://lightreadertimer?cron=0/10+*+*+*+*+?")
 
                             .routeId("lightsensor")
-                            .autoStartup(false)
+                            .autoStartup(true)
+                            .startupOrder(100)
                             .setHeader("bh1750",constant(bh1750))
                             .process(new Processor() {
                                 @Override
@@ -374,12 +375,20 @@ public class MyRouteBuilder {
                             .recipientList(simple("paho:{{mqtt.topic.lightsensor.local.i2c.23}}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
 
 
-                    // UPS status
-                    from("quartz2://lightreadertimer?cron=0/10+*+*+*+*+?")
+                    // UPS toggle (heartbeat)
 
+                    from("timer:picoUPS?period=250")
+
+                            .routeId("picoUPSSquareWave")
+                            .autoStartup(true)
+                            .startupOrder(200)
+                            // power mode
+                            .to("bean:UPSPIco?method=toggleGpio27");
+                    // UPS status
+                    from("quartz2://picoupspublishertimer?cron=0/10+*+*+*+*+?")
                             .routeId("PIcoUPSPublisher")
-                            .autoStartup(false) // ups beeps unexpectly when enabled
-                            .startupOrder(100)
+                            .autoStartup(true) // ups beeps unexpectly when enabled
+                            .startupOrder(300)
                             // power mode
                             .process(new Processor() {
                                 @Override
@@ -400,15 +409,24 @@ public class MyRouteBuilder {
             //Thread.sleep(2000);
 
             // UPS
-            //upsPico=new UPSPIco();
-            //upsPico.init();
+            try {
+                upsPico = new UPSPIco();
+                upsPico.init();
+                ((SimpleRegistry) registry).put("UPSPIco",upsPico);
+            }
+            catch (Exception ex) {
+                logger.log(Level.SEVERE,"Error initialising UPSPIco",ex);
+            }
 
-            ProducerTemplate template = context.createProducerTemplate();
-            context.start();
-            msg = dateFormat.format(new Date()) + " main: context started";
-            logger.info(msg);
-            Thread.sleep(2000);
-            // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
+            // PirSensor
+            try {
+                pirSensor = new PirSensor();
+                pirSensor.init();
+            }
+            catch (Exception ex) {
+                logger.log(Level.SEVERE,"Error initialising PirSensor",ex);
+            }
+
 
 
             // Light sensor init
@@ -417,7 +435,6 @@ public class MyRouteBuilder {
                 bh1750 = new LightSensorReaderBH1750(bus);
                 bh1750.init();
                 Thread.sleep(300);
-                context.startRoute("lightsensor");
                 msg = dateFormat.format(new Date()) + " started route lightsensor";
                 logger.info(msg);
             }
@@ -425,6 +442,13 @@ public class MyRouteBuilder {
                 logger.log(Level.SEVERE,"Error initialising light sensor bh1750",ex);
             }
 
+
+            ProducerTemplate template = context.createProducerTemplate();
+            context.start();
+            msg = dateFormat.format(new Date()) + " main: context started";
+            logger.info(msg);
+            Thread.sleep(2000);
+            // See https://access.redhat.com/documentation/en-us/red_hat_jboss_fuse/6.1/html/apache_camel_development_guide/basicprinciples-startupshutdown
 
 
             for (int i=2;i>0;i--) {
@@ -467,6 +491,8 @@ public class MyRouteBuilder {
     public void stop() {
         try {
             context.stop();
+            if (upsPico!=null) upsPico.destroy();
+            if (pirSensor!=null) pirSensor.destroy();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -551,5 +577,6 @@ public class MyRouteBuilder {
             "}";
 
     LightSensorReaderBH1750 bh1750;
-    //UPSPIco upsPico; // is already bean in blueprint
+    UPSPIco upsPico;
+    PirSensor pirSensor;
 }
