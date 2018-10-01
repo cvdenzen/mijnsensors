@@ -1,39 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
+
+
+
+
+
+-->
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
-        <route id="HelloWorldFromBlueprint" autoStartup="false">
+
+        <!-- hopeloos, te weinig documentatie om dit goed te krijgen -->
+        <!-- route id="DefineCache" autoStartup="true" startupOrder="5">
+		<from uri="ehcache://oh?configurationUri=file:${karaf.home}/etc/ehcache.xml"/>
+		<from uri="ehcache://oh?configurationUri=classpath:etc/ehcache.xml"/>
+		    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+        </route -->
+
+        <route id="HelloWorldFromBlueprint" autoStartup="true">
             <from uri="timer:simple?period=5000&amp;repeatCount=3"/>
             <setBody>
                 <simple>Hello World from blueprint (Camel UPSPIco)</simple>
             </setBody>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <to uri="log:vandenzen"/>
         </route>
 
         <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
-            <from uri="paho:oh/LichtIntensiteit_Woonkamer"/>
-            <to uri="bean:lichtIntensiteit_Woonkamer?method=setValue"/>
+            <from uri="paho:oh/LichtIntensiteit_Woonkamer/state"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Float"/>
+            <bean ref="LichtIntensiteit_Woonkamer" method="setValue"/>
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
 
-        <route id="direct:Enable_lights_on_by_daylight" autoStartup="true" startupOrder="100">
-            <from uri="direct:Enable_lights_on_by_daylight"/>
+        <route id="f0/nnw/pir_gf_achterdeur17_updated" autoStartup="true" startupOrder="201">
+            <from uri="paho:oh/pir_gf_achterdeur17/state"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <!-- If enough light, enable automatic switch on -->
-
             <choice>
-                <when>
-                    <simple> ${in.body} > 30 </simple>
-                    <setBody><simple>1</simple></setBody>
-                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <to uri="bean:autoOnEnabled?method=setValue" />
+                <when><simple>${in.body} == "CLOSED"</simple>
+                    <!-- lichten aan als hij uit staat -->
+                    <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
+                    <when><simple>${in.body} == "false" </simple>
+                        <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
+                        <!-- delay -->
+                        <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                        <convertBodyTo type="java.lang.String"/>
+                        <convertBodyTo type="java.lang.Integer"/>
+                        <delay>
+                            <simple>${in.body}</simple>
+                        </delay>
+                        <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
+                    </when>
                 </when>
             </choice>
         </route>
 
+        <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="202">
+            <from uri="paho:oh/AutoOnEnabled/state"/>
+            <convertBodyTo type="java.lang.String"/>
+            <choice>
+                <when><simple>${in.body} == "1"</simple>
+                    <setBody><constant>true</constant></setBody>
+                </when>
+                <otherwise>
+                    <setBody><constant>false</constant></setBody>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="AutoOnEnabled" method="setValue"/>
+            <bean ref="AutoOnEnabled" method="getValue"/>
+        </route>
+        <route id="listenLightsOnIntensityThreshold" autoStartup="true" startupOrder="203">
+            <from uri="paho:oh/LightsOnIntensityThreshold/state"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <bean ref="LightsOnIntensityThreshold" method="setValue"/>
+        </route>
+        <route id="listenLight_GF_Huiskamer_Achterdeur_Schemerlamp" autoStartup="true" startupOrder="204">
+            <from uri="paho:oh/Light_GF_Huiskamer_Achterdeur_Schemerlamp/state"/>
+            <choice>
+                <when><simple>${in.body} == "ON"</simple>
+                    <setBody><constant>true</constant></setBody>
+                </when>
+                <otherwise>
+                    <setBody><constant>false</constant></setBody>
+                </otherwise>
+            </choice>
+            <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="setValue"/>
+        </route>
+        <route id="listenGF_Passenger_minutes" autoStartup="true" startupOrder="205">
+            <from uri="paho:oh/GF_Passenger_minutes/state"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <bean ref="GF_Passenger_minutes" method="setValue"/>
+        </route>
+
+        <!-- body is LichtIntensiteit_Woonkamer -->
+        <route id="direct:Enable_lights_on_by_daylight" autoStartup="true" startupOrder="100">
+            <from uri="direct:Enable_lights_on_by_daylight"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <!-- If enough light, enable automatic switch on -->
+            <setHeader headerName="pilightLichtIntensiteitWoonkamer">
+                <simple>${in.body}</simple>
+            </setHeader>
+            <!-- Lees enabled -->
+            <bean ref="AutoOnEnabled" method="getValue"/>
+            <choice>
+                <when><simple>${in.body}</simple>
+                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                    <setBody><constant>false</constant></setBody>
+                    <bean ref="AutoOnEnabled" method="setValue"/>
+
+
+                    <choice>
+                        <when>
+                            <simple> ${header.pilightLichtIntensiteitWoonkamer} &lt; ${in.body} </simple>
+                            <setBody><simple>Licht gaat aan!</simple></setBody>
+                            <to uri="direct:ZetLichtenAan"/>
+                            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                        </when>
+                    </choice>
+                </when>
+            </choice>
+        </route>
+
+        <!-- Zet lichten aan -->
+        <route id="ZetLichtenAan" autoStartup="true" startupOrder="101">
+            <from uri="direct:ZetLichtenAan"/>
+            <setBody><constant>on</constant></setBody>
+            <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
+            <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
+        </route>
+
+        <!-- Zet lichten uit -->
+        <route id="ZetLichtenUit" autoStartup="true" startupOrder="102">
+            <from uri="direct:ZetLichtenUit"/>
+            <setBody><constant>off</constant></setBody>
+            <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
+            <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
+        </route>
+
+        <!-- Zet 1 licht aan -->
+        <route id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan" autoStartup="true" startupOrder="103">
+            <from uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
+            <setBody><constant>on</constant></setBody>
+            <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
+        </route>
+        <route id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit" autoStartup="true" startupOrder="104">
+            <from uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
+            <setBody><constant>off</constant></setBody>
+            <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
+        </route>
+
+
+
+
     </camelContext>
-    <bean id="lichtIntensiteit_Woonkamer" class="java.util.concurrent.atomic.AtomicReference"/>
-    <bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/>
+    <!-- bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/ -->
+    <bean id="AutoOnEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="LightsOnIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">
+        <property name="value" value="4"/>
+    </bean>
+    <bean id="LightsEnableIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">
+        <property name="value" value="31"/>
+    </bean>
+    <bean id="LichtIntensiteit_Woonkamer" class="nl.vandenzen.pilightmqttosgi.util.MutableFloat">
+        <property name="value" value="50"/>
+    </bean>
+    <bean id="Light_GF_Huiskamer_Achterdeur_Schemerlamp" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="GF_Passenger_minutes" class="nl.vandenzen.pilightmqttosgi.util.MutableLong">
+        <property name="value" value="1"/>
+    </bean>
 
 
 </blueprint>
