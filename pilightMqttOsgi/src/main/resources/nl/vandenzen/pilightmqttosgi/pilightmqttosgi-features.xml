@@ -17,6 +17,7 @@
         <feature>camel-netty4</feature>
         <feature>camel-mqtt</feature>
         <feature>camel-quartz2</feature>
+        <feature>camel-ehcache</feature>
         <feature>jms</feature>
         <feature>service-wrapper</feature>
         <!--bundle>pilightMqttOsgi OSGi Bundle</bundle -->

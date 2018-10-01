@@ -106,6 +106,12 @@
             <artifactId>jackson-coreutils</artifactId>
             <version>1.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-cache</artifactId>
+            <version>${camel.version}</version>
+            <!-- use the same version as your Camel core version -->
+        </dependency>
 
 
         <!-- Apache Active MQ Jars -->

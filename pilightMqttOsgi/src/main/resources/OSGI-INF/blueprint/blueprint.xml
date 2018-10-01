@@ -11,12 +11,9 @@
         </route>
 
         <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
-            <from uri="paho:oh/LichtIntensiteit_Woonkamer">
-                <recipientList>
-                    <to uri="lichtIntensiteit_Woonkamer" method="setValue"/>
-                    <constant>direct:Enable_lights_on_by_daylight</constant>
-                </recipientList>
-            </from>
+            <from uri="paho:oh/LichtIntensiteit_Woonkamer"/>
+            <to uri="bean:lichtIntensiteit_Woonkamer?method=setValue"/>
+            <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
 
         <route id="direct:Enable_lights_on_by_daylight" autoStartup="true" startupOrder="100">
@@ -29,14 +26,14 @@
                     <simple> ${in.body} > 30 </simple>
                     <setBody><simple>1</simple></setBody>
                     <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <to uri="autoOnEnabled" method="setValue" />
+                    <to uri="bean:autoOnEnabled?method=setValue" />
                 </when>
             </choice>
         </route>
 
-        <bean id="lichtIntensiteit_Woonkamer" class="java.util.concurrent.atomic.AtomicReference<Float>"/>
-        <bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference<Boolean>"/>
-
     </camelContext>
+    <bean id="lichtIntensiteit_Woonkamer" class="java.util.concurrent.atomic.AtomicReference"/>
+    <bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/>
+
 
 </blueprint>
