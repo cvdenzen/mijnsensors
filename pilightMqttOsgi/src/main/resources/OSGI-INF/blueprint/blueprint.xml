@@ -42,19 +42,36 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <choice>
                 <when><simple>${in.body} == "CLOSED"</simple>
-                    <!-- lichten aan als hij uit staat -->
-                    <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
-                    <when><simple>${in.body} == "false" </simple>
-                        <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
-                        <!-- delay -->
-                        <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-                        <convertBodyTo type="java.lang.String"/>
-                        <convertBodyTo type="java.lang.Integer"/>
-                        <delay>
-                            <simple>${in.body}</simple>
-                        </delay>
-                        <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
-                    </when>
+                    <setBody><constant>PIR is CLOSED</constant></setBody>
+                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                    <bean ref="LightsOnIntensityThreshold" method="getValue"/>
+                    <setHeader headerName="LightsOnIntensityThreshold">
+                        <simple>${in.body}</simple>
+                    </setHeader>
+                    <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
+                    <setBody><simple>het is donker, ${in.body} moet kleiner zijn dan ${header.LightsOnIntensityThreshold}</simple></setBody>
+                    <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
+                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                    <choice>
+                        <when><simple>${in.body} &lt; ${header.LightsOnIntensityThreshold}</simple>
+                            <!-- lichten aan als hij uit staat -->
+                            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                            <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
+                            <choice>
+                                <when><simple>${in.body} == "false" </simple>
+                                    <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
+                                    <!-- delay -->
+                                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                                    <convertBodyTo type="java.lang.String"/>
+                                    <convertBodyTo type="java.lang.Long"/>
+                                    <delay>
+                                        <simple>${in.body}</simple>
+                                    </delay>
+                                    <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
+                                </when>
+                            </choice>
+                        </when>
+                    </choice>
                 </when>
             </choice>
         </route>
@@ -106,7 +123,6 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="direct:Enable_lights_on_by_daylight" autoStartup="true" startupOrder="100">
             <from uri="direct:Enable_lights_on_by_daylight"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <!-- If enough light, enable automatic switch on -->
             <setHeader headerName="pilightLichtIntensiteitWoonkamer">
                 <simple>${in.body}</simple>
             </setHeader>
@@ -153,14 +169,23 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setBody><constant>on</constant></setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
         </route>
+        <!-- Zet 1 licht uit -->
         <route id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit" autoStartup="true" startupOrder="104">
             <from uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
             <setBody><constant>off</constant></setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
         </route>
-
-
-
+        <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="105">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz2://groep/timer1?cron=0+0+12+*+*+?"/>
+            <setBody><constant>true</constant></setBody>
+            <bean ref="AutoOnEnabled" method="setValue"/>
+        </route>
+        <route id="LichtUitInNacht" autoStartup="true" startupOrder="106">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz2://groep/timer2?cron=0+2+2+*+*+?"/>
+            <to uri="direct:ZetLichtenUit"/>
+        </route>
 
     </camelContext>
     <!-- bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/ -->
