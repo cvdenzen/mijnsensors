@@ -183,7 +183,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
         <route id="LichtUitInNacht" autoStartup="true" startupOrder="106">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz2://groep/timer2?cron=0+2+2+*+*+?"/>
+            <from uri="quartz2://groep/timer2?cron=0+50+23+*+*+?"/>
             <to uri="direct:ZetLichtenUit"/>
         </route>
 
