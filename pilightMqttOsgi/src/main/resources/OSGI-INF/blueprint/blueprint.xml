@@ -141,7 +141,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
                     <choice>
                         <when>
-                            <simple> ${header.LichtIntensiteit_Woonkamer} &lt; ${in.body} </simple>
+                            <simple> ${header.LichtIntensiteit_Woonkamer} &lt; ${header.LightsOnIntensityThreshold} </simple>
                             <setBody><simple>Licht gaat aan!</simple></setBody>
                             <to uri="direct:ZetLichtenAan"/>
                             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
@@ -157,6 +157,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Zet lichten aan -->
         <route id="ZetLichtenAan" autoStartup="true" startupOrder="101">
             <from uri="direct:ZetLichtenAan"/>
+            <setBody><simple>Lichten gaan aan!</simple></setBody>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <setBody><constant>on</constant></setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
             <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
