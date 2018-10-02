@@ -89,7 +89,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </choice>
             <convertBodyTo type="java.lang.Boolean"/>
             <bean ref="AutoOnEnabled" method="setValue"/>
-            <bean ref="AutoOnEnabled" method="getValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
         <route id="listenLightsOnIntensityThreshold" autoStartup="true" startupOrder="203">
             <from uri="paho:oh/LightsOnIntensityThreshold/state"/>
@@ -99,6 +100,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <convertBodyTo type="java.lang.Integer"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <bean ref="LightsOnIntensityThreshold" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
         <route id="listenLight_GF_Huiskamer_Achterdeur_Schemerlamp" autoStartup="true" startupOrder="204">
             <from uri="paho:oh/Light_GF_Huiskamer_Achterdeur_Schemerlamp/state"/>
@@ -119,28 +122,32 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <bean ref="GF_Passenger_minutes" method="setValue"/>
         </route>
 
-        <!-- body is LichtIntensiteit_Woonkamer -->
+        <!-- Generic entry point for turning on the lights automatically based on light settings -->
         <route id="direct:Enable_lights_on_by_daylight" autoStartup="true" startupOrder="100">
             <from uri="direct:Enable_lights_on_by_daylight"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <setHeader headerName="pilightLichtIntensiteitWoonkamer">
+            <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
+            <setHeader headerName="LichtIntensiteit_Woonkamer">
                 <simple>${in.body}</simple>
             </setHeader>
-            <!-- Lees enabled -->
-            <bean ref="AutoOnEnabled" method="getValue"/>
+            <setHeader headerName="LightsOnIntensityThreshold">
+                <method ref="LightsOnIntensityThreshold" method="getValue"/>
+            </setHeader>
+            <setHeader headerName="AutoOnEnabled">
+                <method ref="AutoOnEnabled" method="getValue"/>
+            </setHeader>
             <choice>
-                <when><simple>${in.body}</simple>
+                <when><simple>${header.AutoOnEnabled}</simple>
                     <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <setBody><constant>false</constant></setBody>
-                    <bean ref="AutoOnEnabled" method="setValue"/>
-
-
                     <choice>
                         <when>
-                            <simple> ${header.pilightLichtIntensiteitWoonkamer} &lt; ${in.body} </simple>
+                            <simple> ${header.LichtIntensiteit_Woonkamer} &lt; ${in.body} </simple>
                             <setBody><simple>Licht gaat aan!</simple></setBody>
                             <to uri="direct:ZetLichtenAan"/>
                             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                            <!-- disable automatic turning on the lights -->
+                            <setBody><constant>false</constant></setBody>
+                            <bean ref="AutoOnEnabled" method="setValue"/>
                         </when>
                     </choice>
                 </when>
