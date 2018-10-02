@@ -325,6 +325,8 @@ public class MyRouteBuilder {
                     //               0  1        2  3     4
                     // We also will receive "state" messages, but we will ignore them ???
                     from("paho:{{mqtt.topic.kaku.cmd}}/+/+")
+                            .routeId("fromTopicKakuCmd")
+                            .startupOrder(300)
                             .recipientList(simple("direct:toMqttSetState,direct:fromPahoToPilight"),",");
                     from("paho:{{mqtt.topic.kaku.rc}}/+/+").to("direct:toMqttSetState");
                     from("direct:toMqttSetState")
