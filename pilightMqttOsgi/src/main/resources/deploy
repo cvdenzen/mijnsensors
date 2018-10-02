@@ -4,5 +4,5 @@ sudo -s -u openhab
 cd /home/pi/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources
 
 git pull
-cp -a --update /nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml /usr/share/apache-karaf/deploy
+cp -a --update nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml /usr/share/apache-karaf/deploy
 cp -a --update OSGI-INF/blueprint/blueprint.xml /usr/share/apache-karaf/deploy
