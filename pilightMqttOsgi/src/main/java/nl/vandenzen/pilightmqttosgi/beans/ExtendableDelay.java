@@ -5,11 +5,12 @@ import org.apache.camel.EndpointInject;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.impl.DefaultExchange;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Timer;
-import java.util.TimerTask
+import java.util.TimerTask;
 
 public class ExtendableDelay {
 
@@ -20,7 +21,8 @@ public class ExtendableDelay {
     public ExtendableDelay(String uri) {
         this.uri = uri;
     }
-    public void restartTime() {
+    public void restartTime(Exchange exchange) {
+        this.exchange=exchange;
         if (timer!=null) timer.cancel();
         timer=new Timer();
         timer.schedule(timerTask,this.delay);
@@ -40,7 +42,7 @@ public class ExtendableDelay {
         public void run() {
             producer.send(uri,exchange);
         }
-    }
+    };
     final private String uri;
     private long delay=0;
     private Exchange exchange;
