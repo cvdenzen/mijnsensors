@@ -246,7 +246,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <bean id="GF_Passenger_minutes" class="nl.vandenzen.pilightmqttosgi.util.MutableLong">
         <property name="value" value="1"/>
     </bean>
-    <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.util.ExtendableDelay">
+    <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->
         <argument value="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
     </bean>
