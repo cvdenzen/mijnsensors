@@ -7,7 +7,8 @@ repo-add camel
 feature:repo-add spring-legacy
 
 #
-# feature install can be done by features.xml file ???? 20180905 experimental
+# feature install can be done by features.xml file ???? 20180905 experimental:
+# feature:install pilightmqttosgi
 #
 # since karaf 4.2 (20180820) needs next features for activemq
 feature:install aries-blueprint

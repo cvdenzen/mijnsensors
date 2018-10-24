@@ -62,20 +62,29 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         <when>
                             <simple>${in.body} &lt; ${header.LightsOnIntensityThreshold}</simple>
                             <!-- lichten aan als hij uit staat -->
+                            <setBody>
+                                <simple>het is donker</simple>
+                            </setBody>
                             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
                             <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
+                            <!-- make light state (on or off) available to delay-bean -->
+                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setLightState"/>
                             <choice>
                                 <when>
                                     <simple>${in.body} == "false"</simple>
+                                    <setBody>
+                                        <simple>het licht is uit</simple>
+                                    </setBody>
+                                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
                                     <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
-                                    <!-- delay -->
-                                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-                                    <convertBodyTo type="java.lang.String"/>
-                                    <convertBodyTo type="java.lang.Long"/>
-                                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
-                                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
                                 </when>
                             </choice>
+                            <!-- delay -->
+                            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                            <convertBodyTo type="java.lang.String"/>
+                            <convertBodyTo type="java.lang.Long"/>
+                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
                         </when>
                     </choice>
                 </when>

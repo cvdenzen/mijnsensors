@@ -7,6 +7,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.impl.DefaultExchange;
 
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Timer;
@@ -20,11 +21,41 @@ public class ExtendableDelay {
 
     public ExtendableDelay(String uri) {
         this.uri = uri;
+        logger.log(Level.INFO,"Bean created with uri "+uri);
     }
-    public void restartTime(Exchange exchange) {
+
+    /**
+     * Start or restart timer. When first time, also check whether light is on or off.
+     * Only start when light is off.
+     * @param exchange
+     */
+    public void restartTimer(Exchange exchange) {
+        logger.log(Level.INFO,"ExtendableDelay.restartTimer started");
         this.exchange=exchange;
-        if (timer!=null) timer.cancel();
+        try {
+            lock.lock();
+            if (timer != null)
+                    timer.cancel();
+        }
+        finally {
+            lock.unlock();
+        }
+        // todo:
+        // if light is off || (timer!=null)
         timer=new Timer();
+
+        TimerTask timerTask = new TimerTask() {
+            public void run() {
+                try {
+                    lock.lock();
+                    producer.send(uri,exchange);
+                    timer=null; // signal for restartTimer
+                }
+                finally {
+                    lock.unlock();
+                }
+            }
+        };
         timer.schedule(timerTask,this.delay);
 
     }
@@ -37,14 +68,20 @@ public class ExtendableDelay {
         this.delay = delay;
     }
 
+    public boolean isLightState() {
+        return lightState;
+    }
+
+    public void setLightState(boolean lightState) {
+        this.lightState = lightState;
+    }
+
     private Timer timer;
-    private TimerTask timerTask = new TimerTask() {
-        public void run() {
-            producer.send(uri,exchange);
-        }
-    };
+
     final private String uri;
     private long delay=0;
     private Exchange exchange;
     final static Logger logger = Logger.getLogger(ExtendableDelay.class.toString());
+    final ReentrantLock lock=new ReentrantLock();
+    private boolean lightState;
 }
