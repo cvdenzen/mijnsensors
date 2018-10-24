@@ -390,7 +390,7 @@ public class MyRouteBuilder {
                     from("quartz2://picoupspublishertimer?cron=0/10+*+*+*+*+?")
                             .routeId("PIcoUPSPublisher")
                             .autoStartup(true) // ups beeps unexpectly when enabled
-                            .startupOrder(300)
+                            .startupOrder(201)
                             // power mode
                             .process(new Processor() {
                                 @Override
