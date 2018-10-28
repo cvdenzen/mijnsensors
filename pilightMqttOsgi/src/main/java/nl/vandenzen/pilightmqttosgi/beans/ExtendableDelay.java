@@ -19,6 +19,10 @@ public class ExtendableDelay {
     @EndpointInject(uri="activemq:foo.bar")
     ProducerTemplate producer;
 
+    /**
+     *
+     * @param uri The uri to call when delay has finished
+     */
     public ExtendableDelay(String uri) {
         this.uri = uri;
         logger.log(Level.INFO,"Bean created with uri "+uri);
@@ -35,29 +39,31 @@ public class ExtendableDelay {
         try {
             lock.lock();
             if (timer != null)
+                // already started, cancel to start new period
                     timer.cancel();
         }
         finally {
             lock.unlock();
         }
-        // todo:
-        // if light is off || (timer!=null)
-        timer=new Timer();
+        // Only start a timer if light is off or already started.
+        // In the last case, the time will be extended.
+        if (!lightState || (timer!=null)) {
+            timer = new Timer();
 
-        TimerTask timerTask = new TimerTask() {
-            public void run() {
-                try {
-                    lock.lock();
-                    producer.send(uri,exchange);
-                    timer=null; // signal for restartTimer
+            TimerTask timerTask = new TimerTask() {
+                public void run() {
+                    try {
+                        lock.lock();
+                        producer.send(uri, exchange);
+                        logger.log(Level.INFO,"ExtendableDelay: turn off light: "+uri);
+                        timer = null; // signal for restartTimer
+                    } finally {
+                        lock.unlock();
+                    }
                 }
-                finally {
-                    lock.unlock();
-                }
-            }
-        };
-        timer.schedule(timerTask,this.delay);
-
+            };
+            timer.schedule(timerTask, this.delay);
+        }
     }
 
     public long getDelay() {
@@ -76,6 +82,22 @@ public class ExtendableDelay {
         this.lightState = lightState;
     }
 
+    public boolean isBg_w_tv_w() {
+        return bg_w_tv_w;
+    }
+
+    public void setBg_w_tv_w(boolean bg_w_tv_w) {
+        this.bg_w_tv_w = bg_w_tv_w;
+    }
+
+    public boolean isBg_x_imac3() {
+        return bg_x_imac3;
+    }
+
+    public void setBg_x_imac3(boolean bg_x_imac3) {
+        this.bg_x_imac3 = bg_x_imac3;
+    }
+
     private Timer timer;
 
     final private String uri;
@@ -84,4 +106,6 @@ public class ExtendableDelay {
     final static Logger logger = Logger.getLogger(ExtendableDelay.class.toString());
     final ReentrantLock lock=new ReentrantLock();
     private boolean lightState;
+    private boolean bg_w_tv_w;
+    private boolean bg_x_imac3;
 }
