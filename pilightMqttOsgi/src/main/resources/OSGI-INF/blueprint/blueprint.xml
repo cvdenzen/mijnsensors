@@ -146,7 +146,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <convertBodyTo type="java.lang.Integer"/>
             <bean ref="GF_Passenger_minutes" method="setValue"/>
         </route>
-        <route id="listenLight_bg_w_tv_w" autoStartup="true" startupOrder="206">
+        <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
             <from uri="paho:oh/bg_w_tv_w/state"/>
             <choice>
                 <when>
@@ -166,7 +166,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:LightsOffCalc"/>
         </route>
 
-        <route id="listenLight_bg_x_imac3" autoStartup="true" startupOrder="207">
+        <route id="listenbg_x_imac3" autoStartup="true" startupOrder="207">
             <from uri="paho:oh/bg_x_imac3/state"/>
             <choice>
                 <when>
@@ -226,6 +226,22 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
         </route>
+        <!-- Zet 1 licht aan -->
+        <route id="Light_GF_Huiskamer_Achter_Staandelamp_aan" autoStartup="true" startupOrder="105">
+            <from uri="direct:Light_GF_Huiskamer_Achter_Staandelamp_aan"/>
+            <setBody>
+                <constant>on</constant>
+            </setBody>
+            <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
+        </route>
+        <!-- Zet 1 licht uit -->
+        <route id="Light_GF_Huiskamer_Achter_Staandelamp_uit" autoStartup="true" startupOrder="106">
+            <from uri="direct:Light_GF_Huiskamer_Achter_Staandelamp_uit"/>
+            <setBody>
+                <constant>off</constant>
+            </setBody>
+            <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
+        </route>
         <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="301">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz2://groep/timer1?cron=0+0+12+*+*+?"/>
@@ -236,7 +252,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
         <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz2://groep/timer2?cron=47+50+23+*+*+?"/>
+            <from uri="quartz2://groep/timer2?cron=47+50+22+*+*+?"/>
             <setBody>
                 <constant>true</constant>
             </setBody>
@@ -291,12 +307,19 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         <simple>Licht gaat uit.</simple>
                     </setBody>
                     <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <to uri="direct:ZetLichtenUit"/>
+                    <!-- staande lamp direct uitzetten, achterdeurlamp pas na een delay -->
+                    <to uri="direct:Light_GF_Huiskamer_Achter_Staandelamp_uit"/>
                     <!-- disable automatic turning off the lights -->
                     <setBody>
                         <constant>false</constant>
                     </setBody>
                     <bean ref="AutoOffEnabled" method="setValue"/>
+                    <!-- delay for only one light (achterdeur)-->
+                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                    <convertBodyTo type="java.lang.String"/>
+                    <convertBodyTo type="java.lang.Long"/>
+                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
                 </when>
             </choice>
         </route>
@@ -336,6 +359,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <property name="value" value="50"/>
     </bean>
     <bean id="Light_GF_Huiskamer_Achterdeur_Schemerlamp" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="Light_GF_Huiskamer_Achter_Staandelamp" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="GF_Passenger_minutes" class="nl.vandenzen.pilightmqttosgi.util.MutableLong">
         <property name="value" value="1"/>
     </bean>
