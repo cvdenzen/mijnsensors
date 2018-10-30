@@ -37,58 +37,44 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
 
-        <route id="f0/nnw/pir_gf_achterdeur17_updated" autoStartup="true" startupOrder="201">
-            <from uri="paho:oh/pir_gf_achterdeur17/state"/>
+        <route id="pir_gf_achterdeur17_updated" autoStartup="true" startupOrder="201">
+            <from uri="direct:pir_gf_achterdeur17_updated"/>
+            <!-- set states of light etc. in header of the message -->
+            <to uri="direct:SetHeaders"/>
+            <setBody>
+                <javaScript>
+                    "Light_GF_Huiskamer_Achterdeur_Schemerlamp="
+                    +request.headers.get('Light_GF_Huiskamer_Achterdeur_Schemerlamp')
+                </javaScript>
+            </setBody>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <choice>
                 <when>
-                    <simple>${in.body} == "CLOSED"</simple>
+                    <javaScript>
+                        request.headers.get('pir_gf_achterdeur17')
+                        &amp;&amp;
+                        request.headers.get('LichtIntensiteit_Woonkamer')&lt;request.headers.get('LightsOnIntensityThreshold')
+                        &amp;&amp;
+                        !request.headers.get('Light_GF_Huiskamer_Achterdeur_Schemerlamp') // licht is uit
+                    </javaScript>
                     <setBody>
-                        <constant>PIR is CLOSED</constant>
+                        <simple>het licht is uit</simple>
                     </setBody>
                     <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <bean ref="LightsOnIntensityThreshold" method="getValue"/>
-                    <setHeader headerName="LightsOnIntensityThreshold">
-                        <simple>${in.body}</simple>
-                    </setHeader>
-                    <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
-                    <setBody>
-                        <simple>het is donker, ${in.body} moet kleiner zijn dan ${header.LightsOnIntensityThreshold}
-                        </simple>
-                    </setBody>
-                    <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
-                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <choice>
-                        <when>
-                            <simple>${in.body} &lt; ${header.LightsOnIntensityThreshold}</simple>
-                            <!-- lichten aan als hij uit staat -->
-                            <setBody>
-                                <simple>het is donker</simple>
-                            </setBody>
-                            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                            <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
-                            <!-- make light state (on or off) available to delay-bean -->
-                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setLightState"/>
-                            <choice>
-                                <when>
-                                    <simple>${in.body} == "false"</simple>
-                                    <setBody>
-                                        <simple>het licht is uit</simple>
-                                    </setBody>
-                                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                                    <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
-                                </when>
-                            </choice>
-                            <!-- delay -->
-                            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-                            <convertBodyTo type="java.lang.String"/>
-                            <convertBodyTo type="java.lang.Long"/>
-                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
-                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
-                        </when>
-                    </choice>
+                    <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
+                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                    <convertBodyTo type="java.lang.String"/>
+                    <convertBodyTo type="java.lang.Long"/>
+                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="schedule"/>
                 </when>
             </choice>
+            <!-- delay, extend with each action on pir -->
+            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Long"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="extend"/>
         </route>
 
         <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="202">
@@ -166,7 +152,27 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:LightsOffCalc"/>
         </route>
 
-        <route id="listenbg_x_imac3" autoStartup="true" startupOrder="207">
+        <route id="listenbg_x_imac2" autoStartup="true" startupOrder="207">
+            <from uri="paho:oh/bg_x_imac2/state"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "ON"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <bean ref="bg_x_imac2" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
+
+        <route id="listenbg_x_imac3" autoStartup="true" startupOrder="208">
             <from uri="paho:oh/bg_x_imac3/state"/>
             <choice>
                 <when>
@@ -186,6 +192,27 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:LightsOffCalc"/>
         </route>
 
+        <route id="listenPir_gf_achterdeur17" autoStartup="true" startupOrder="209">
+            <from uri="paho:oh/pir_gf_achterdeur17/state"/>
+            <convertBodyTo type="java.lang.String"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "CLOSED"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="pir_gf_achterdeur17" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:pir_gf_achterdeur17_updated"/>
+        </route>
         <!-- Zet lichten aan -->
         <route id="ZetLichtenAan" autoStartup="true" startupOrder="101">
             <from uri="direct:ZetLichtenAan"/>
@@ -301,6 +328,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         &amp;&amp;
                         !request.headers.get('bg_w_tv_w') // tv is off
                         &amp;&amp;
+                        !request.headers.get('bg_x_imac2') // and imac is off
+                        &amp;&amp;
                         !request.headers.get('bg_x_imac3') // and imac is off
                     </javaScript>
                     <setBody>
@@ -331,17 +360,29 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setHeader headerName="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
+            <setHeader headerName="LightsOnIntensityThreshold">
+                <method ref="LightsOnIntensityThreshold" method="getValue"/>
+            </setHeader>
             <setHeader headerName="AutoOnEnabled">
                 <method ref="AutoOnEnabled" method="getValue"/>
             </setHeader>
             <setHeader headerName="AutoOffEnabled">
                 <method ref="AutoOffEnabled" method="getValue"/>
             </setHeader>
+            <setHeader headerName="pir_gf_achterdeur17">
+                <method ref="pir_gf_achterdeur17" method="getValue"/>
+            </setHeader>
             <setHeader headerName="bg_w_tv_w">
                 <method ref="bg_w_tv_w" method="getValue"/>
             </setHeader>
+            <setHeader headerName="bg_x_imac2">
+                <method ref="bg_x_imac2" method="getValue"/>
+            </setHeader>
             <setHeader headerName="bg_x_imac3">
                 <method ref="bg_x_imac3" method="getValue"/>
+            </setHeader>
+            <setHeader headerName="Light_GF_Huiskamer_Achterdeur_Schemerlamp">
+                <method ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
             </setHeader>
         </route>
 
@@ -349,6 +390,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <!-- bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/ -->
     <bean id="AutoOnEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="AutoOffEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="pir_gf_achterdeur17" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="LightsOnIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">
         <property name="value" value="4"/>
     </bean>
@@ -366,6 +408,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
 
     <bean id="bg_w_tv_w" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="bg_x_imac2" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->

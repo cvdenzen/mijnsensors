@@ -29,73 +29,83 @@ public class ExtendableDelay {
     }
 
     /**
-     * Start or restart timer. When first time, also check whether light is on or off.
-     * Only start when light is off.
+     * Start or restart timer.
      * @param exchange
      */
     public void restartTimer(Exchange exchange) {
         logger.log(Level.INFO,"ExtendableDelay.restartTimer started");
         this.exchange=exchange;
+
+        TimerTask timerTask = new TimerTask() {
+            public void run() {
+                try {
+                    lock.lock();
+                    if (timer!=null) {
+                        producer.send(uri, exchange);
+                        logger.log(Level.INFO, "ExtendableDelay: " + uri);
+                        timer = null; // signal for restartTimer
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            }
+        };
+
         try {
             lock.lock();
             if (timer != null)
                 // already started, cancel to start new period
                     timer.cancel();
+            // Start a timer unconditionally.
+            timer = new Timer();
+            timer.schedule(timerTask, this.delay);
         }
         finally {
             lock.unlock();
         }
-        // Only start a timer if light is off or already started.
-        // In the last case, the time will be extended.
-        if (!lightState || (timer!=null)) {
-            timer = new Timer();
+    }
 
-            TimerTask timerTask = new TimerTask() {
-                public void run() {
-                    try {
-                        lock.lock();
-                        producer.send(uri, exchange);
-                        logger.log(Level.INFO,"ExtendableDelay: turn off light: "+uri);
-                        timer = null; // signal for restartTimer
-                    } finally {
-                        lock.unlock();
-                    }
-                }
-            };
-            timer.schedule(timerTask, this.delay);
+    /**
+     * Start a new timer, but only if not yet started
+     */
+    public void schedule(Exchange exchange) {
+        logger.log(Level.INFO,"Start method schedule timer, lock="+lock+", timer="+timer);
+        try {
+            lock.lock();
+            if (timer==null) {
+                logger.log(Level.INFO,"Schedule timer");
+                restartTimer(exchange);
+            }
+        }
+        finally {
+            lock.unlock();
         }
     }
 
+    /**
+     * Extend time, but only if timer already has been started
+     * @param exchange
+     */
+    public void extend(Exchange exchange) {
+        logger.log(Level.INFO,"Start method extend timer, lock="+lock+", timer="+timer);
+        try {
+            lock.lock();
+            if (timer!=null) {
+                logger.log(Level.INFO,"Extend timer");
+                restartTimer(exchange);
+            }
+        }
+        finally {
+            lock.unlock();
+        }
+
+    }
     public long getDelay() {
         return delay;
     }
 
     public void setDelay(long delay) {
         this.delay = delay;
-    }
-
-    public boolean isLightState() {
-        return lightState;
-    }
-
-    public void setLightState(boolean lightState) {
-        this.lightState = lightState;
-    }
-
-    public boolean isBg_w_tv_w() {
-        return bg_w_tv_w;
-    }
-
-    public void setBg_w_tv_w(boolean bg_w_tv_w) {
-        this.bg_w_tv_w = bg_w_tv_w;
-    }
-
-    public boolean isBg_x_imac3() {
-        return bg_x_imac3;
-    }
-
-    public void setBg_x_imac3(boolean bg_x_imac3) {
-        this.bg_x_imac3 = bg_x_imac3;
     }
 
     private Timer timer;
@@ -105,7 +115,4 @@ public class ExtendableDelay {
     private Exchange exchange;
     final static Logger logger = Logger.getLogger(ExtendableDelay.class.toString());
     final ReentrantLock lock=new ReentrantLock();
-    private boolean lightState;
-    private boolean bg_w_tv_w;
-    private boolean bg_x_imac3;
 }
