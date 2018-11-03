@@ -134,6 +134,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
         <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
             <from uri="paho:oh/bg_w_tv_w/state"/>
+            <!-- get old value of bg_w_tv_w -->
+            <setHeader headerName="bg_w_tv_w">
+                <method ref="bg_w_tv_w" method="getValue"/>
+            </setHeader>
             <choice>
                 <when>
                     <simple>${in.body} == "ON"</simple>
@@ -148,6 +152,26 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 </otherwise>
             </choice>
             <bean ref="bg_w_tv_w" method="setValue"/>
+            <!-- calculate stable count -->
+            <choice>
+                <when>
+                    <javaScript>request.headers.get('bg_w_tv_w')==request.body</javaScript>
+                    <setBody>
+                        <javaScript>
+                            request.headers.get('bg_w_tv_w_stable')+1
+                        </javaScript>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>0</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <bean ref="bg_w_tv_w_stable" method="setValue"/>
+            <setBody>
+                <javaScript>'Stable count is '+request.body</javaScript>
+            </setBody>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
@@ -352,6 +376,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 </when>
             </choice>
         </route>
+
+        <!-- SetHeaders. Body contents not altered -->
         <route id="SetHeaders" autoStartup="true" startupOrder="501">
             <from uri="direct:SetHeaders"/>
             <setHeader headerName="LichtIntensiteit_Woonkamer">
@@ -374,6 +400,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setHeader>
             <setHeader headerName="bg_w_tv_w">
                 <method ref="bg_w_tv_w" method="getValue"/>
+            </setHeader>
+            <setHeader headerName="bg_w_tv_w_stable">
+                <method ref="bg_w_tv_w_stable" method="getValue"/>
             </setHeader>
             <setHeader headerName="bg_x_imac2">
                 <method ref="bg_x_imac2" method="getValue"/>
@@ -408,6 +437,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
 
     <bean id="bg_w_tv_w" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <!-- for debounce, add history count -->
+    <bean id="bg_w_tv_w_stable" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">
     <bean id="bg_x_imac2" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
