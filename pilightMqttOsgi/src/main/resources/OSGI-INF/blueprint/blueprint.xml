@@ -8,7 +8,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
 
 -->
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
 
@@ -25,7 +28,6 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <simple>Hello World from blueprint (Camel UPSPIco)</simple>
             </setBody>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <to uri="log:vandenzen"/>
         </route>
 
         <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
@@ -138,6 +140,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setHeader headerName="bg_w_tv_w">
                 <method ref="bg_w_tv_w" method="getValue"/>
             </setHeader>
+            <!-- get old value of bg_w_tv_w_stable -->
+            <setHeader headerName="bg_w_tv_w_stable">
+                <method ref="bg_w_tv_w_stable" method="getValue"/>
+            </setHeader>
             <choice>
                 <when>
                     <simple>${in.body} == "ON"</simple>
@@ -152,10 +158,20 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 </otherwise>
             </choice>
             <bean ref="bg_w_tv_w" method="setValue"/>
+            <log message="Values old: ${headers.bg_w_tv_w}, new: ${body}; Stable: ${headers.bg_w_tv_w_stable}"/>
+            <setBody>
+                <javaScript>
+                    'request.headers.get='+request.headers.get('bg_w_tv_w')+', request.body='+request.body
+                </javaScript>
+            </setBody>
+            <log message="${body}"/>
+            <!-- restore body contents after log javaScript message -->
+            <bean ref="bg_w_tv_w" method="getValue"/>
             <!-- calculate stable count -->
             <choice>
                 <when>
                     <javaScript>request.headers.get('bg_w_tv_w')==request.body</javaScript>
+                    <log message="Same value old: ${headers.bg_w_tv_w}, new: ${body}"/>
                     <setBody>
                         <javaScript>
                             request.headers.get('bg_w_tv_w_stable')+1
@@ -172,6 +188,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setBody>
                 <javaScript>'Stable count is '+request.body</javaScript>
             </setBody>
+            <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <log message="Stable count is ${body}"/>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
@@ -314,7 +332,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
 
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
-        <route id="direct:Enable_lights_on_by_daylight" autoStartup="true" startupOrder="401">
+        <route id="Enable_lights_on_by_daylight" autoStartup="true" startupOrder="401">
             <from uri="direct:Enable_lights_on_by_daylight"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
@@ -350,7 +368,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <javaScript>
                         request.headers.get('AutoOffEnabled')
                         &amp;&amp;
-                        !request.headers.get('bg_w_tv_w') // tv is off
+                        (!request.headers.get('bg_w_tv_w') // tv is off for at least x times
+                         &amp;&amp; (request.headers.get('bg_w_tv_w_stable')>4)
+                        )
                         &amp;&amp;
                         !request.headers.get('bg_x_imac2') // and imac is off
                         &amp;&amp;
@@ -438,7 +458,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
     <bean id="bg_w_tv_w" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <!-- for debounce, add history count -->
-    <bean id="bg_w_tv_w_stable" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">
+    <bean id="bg_w_tv_w_stable" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger"/>
     <bean id="bg_x_imac2" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
