@@ -170,21 +170,17 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <!-- calculate stable count -->
             <choice>
                 <when>
+                    <!-- normally this would not happen, as only changes are reported -->
                     <javaScript>request.headers.get('bg_w_tv_w')==request.body</javaScript>
                     <log message="Same value old: ${headers.bg_w_tv_w}, new: ${body}"/>
-                    <setBody>
-                        <javaScript>
-                            request.headers.get('bg_w_tv_w_stable')+1
-                        </javaScript>
-                    </setBody>
                 </when>
                 <otherwise>
                     <setBody>
                         <constant>0</constant>
+                        <bean ref="bg_w_tv_w_stable" method="setValue"/>
                     </setBody>
                 </otherwise>
             </choice>
-            <bean ref="bg_w_tv_w_stable" method="setValue"/>
             <setBody>
                 <javaScript>'Stable count is '+request.body</javaScript>
             </setBody>
@@ -329,6 +325,27 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
+        <route id="Increment_bg_w_tv_w_stable" autoStartup="true" startupOrder="303">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz2://groep/timer3?cron=0/10+*+*+*+*+?"/>
+            <!-- get old value of bg_w_tv_w_stable -->
+            <setHeader headerName="bg_w_tv_w_stable">
+                <method ref="bg_w_tv_w_stable" method="getValue"/>
+            </setHeader>
+            <setBody>
+                <javaScript>
+                    request.headers.get('bg_w_tv_w_stable')+1
+                </javaScript>
+            </setBody>
+            <bean ref="bg_w_tv_w_stable" method="setValue"/>
+            <setBody>
+                <javaScript>'Stable count is '+request.body</javaScript>
+            </setBody>
+            <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <log message="Increment: Stable count is ${body}"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
 
 
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
@@ -369,7 +386,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         request.headers.get('AutoOffEnabled')
                         &amp;&amp;
                         (!request.headers.get('bg_w_tv_w') // tv is off for at least x times
-                         &amp;&amp; (request.headers.get('bg_w_tv_w_stable')>2)
+                         &amp;&amp; (request.headers.get('bg_w_tv_w_stable')>14)
                         )
                         &amp;&amp;
                         !request.headers.get('bg_x_imac2') // and imac is off
