@@ -5,9 +5,9 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Stable count for tv activated.">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="feature javascript added">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/deploy" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/deploy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -64,17 +64,17 @@
           <entry key="java" value="16744" />
           <entry key="md" value="1369" />
           <entry key="properties" value="598" />
-          <entry key="txt" value="1805" />
-          <entry key="xml" value="5794" />
+          <entry key="txt" value="1850" />
+          <entry key="xml" value="5797" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="16744" />
           <entry key="Manifest" value="6" />
-          <entry key="PLAIN_TEXT" value="3498" />
+          <entry key="PLAIN_TEXT" value="3543" />
           <entry key="Properties" value="598" />
-          <entry key="XML" value="5794" />
+          <entry key="XML" value="5797" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -84,7 +84,7 @@
           <entry key="java" value="48" />
           <entry key="md" value="5" />
           <entry key="properties" value="9" />
-          <entry key="xml" value="32" />
+          <entry key="xml" value="33" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
@@ -93,7 +93,7 @@
           <entry key="Manifest" value="28" />
           <entry key="PLAIN_TEXT" value="7" />
           <entry key="Properties" value="9" />
-          <entry key="XML" value="32" />
+          <entry key="XML" value="33" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.vcs.git.usages">
@@ -112,17 +112,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
+            <state relative-caret-position="-81">
+              <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/deploy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+            <state relative-caret-position="90">
+              <caret line="6" selection-start-line="6" selection-end-line="6" selection-end-column="67" />
             </state>
           </provider>
         </entry>
@@ -145,20 +145,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="40" selection-start-line="20" selection-start-column="40" selection-end-line="20" selection-end-column="40" />
+            <state relative-caret-position="15">
+              <caret line="1" column="88" selection-start-line="1" selection-start-column="88" selection-end-line="1" selection-end-column="88" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1005">
-              <caret line="77" column="37" selection-start-line="77" selection-start-column="37" selection-end-line="77" selection-end-column="37" />
+            <state relative-caret-position="606">
+              <caret line="361" column="37" selection-start-line="361" selection-start-column="37" selection-end-line="361" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -220,10 +220,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>activemqcomponent</find>
-      <find>queue</find>
-      <find>shell</find>
-      <find>Sending mess</find>
       <find>27</find>
       <find>UPSPIco</find>
       <find>routepolicy</find>
@@ -250,6 +246,10 @@
       <find>lightsensor</find>
       <find>javascript</find>
       <find>calc</find>
+      <find>2.22.1</find>
+      <find>2.</find>
+      <find>javas</find>
+      <find>java</find>
     </findStrings>
     <replaceStrings>
       <replace>${camel.vesion}</replace>
@@ -317,11 +317,11 @@
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" />
         <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/etc/activemq.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/deploy" />
+        <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" />
       </list>
     </option>
   </component>
@@ -435,7 +435,7 @@
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="true" />
     <property name="Repository.Attach.Sources" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543585762842" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543588136225" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.09113608" />
@@ -537,13 +537,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00014" summary="custom bootstrap in netty4, werkt nog niet">
-      <created>1530228799527</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1530228799530</updated>
     </task>
     <task id="LOCAL-00015" summary=" custom ServerInitializerFactory does init string">
       <created>1530652592101</created>
@@ -881,7 +874,14 @@
       <option name="project" value="LOCAL" />
       <updated>1541336643273</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="feature javascript added">
+      <created>1543585834021</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1543585834022</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -990,7 +990,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Release candidate" />
     <MESSAGE value="feature.xml file" />
     <MESSAGE value="working with dynamic linking wiringpi (I think)" />
     <MESSAGE value="suppress out, although I did not see any output. Went to /dev/null?" />
@@ -1015,7 +1014,8 @@
     <MESSAGE value="Delay in lights off. New strategy, cleaner delay timer. javaScript used to compose log message." />
     <MESSAGE value="Calculate stable count. Prepare for check for e.g. tv (that sometimes misses the ON state because of network/tv problems)" />
     <MESSAGE value="Stable count for tv activated." />
-    <option name="LAST_COMMIT_MESSAGE" value="Stable count for tv activated." />
+    <MESSAGE value="feature javascript added" />
+    <option name="LAST_COMMIT_MESSAGE" value="feature javascript added" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/Downloads/apache-karaf-4.1.5/etc/activemq.xml" />
@@ -1192,13 +1192,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3765">
-          <caret line="251" column="29" selection-start-line="251" selection-start-column="29" selection-end-line="251" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar!/META-INF/MANIFEST.MF">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
@@ -1301,13 +1294,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="618">
@@ -1322,17 +1308,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/deploy">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="40" selection-start-line="20" selection-start-column="40" selection-end-line="20" selection-end-column="40" />
+        <state relative-caret-position="90">
+          <caret line="6" selection-start-line="6" selection-end-line="6" selection-end-column="67" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/deploy">
+    <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+        <state relative-caret-position="606">
+          <caret line="361" column="37" selection-start-line="361" selection-start-column="37" selection-end-line="361" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-81">
+          <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="88" selection-start-line="1" selection-start-column="88" selection-end-line="1" selection-end-column="88" />
         </state>
       </provider>
     </entry>
