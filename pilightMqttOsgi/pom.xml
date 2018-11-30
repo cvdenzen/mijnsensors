@@ -14,7 +14,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <camel.version>2.23.0</camel.version>
-        <activemq.version>5.15.4</activemq.version>
+        <activemq.version>5.15.8</activemq.version>
         <netty-version>4.1.24.Final</netty-version>
     </properties>
     <repositories>

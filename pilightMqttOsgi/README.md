@@ -1,9 +1,10 @@
 Status 20180215: UNDER DEVELOPMENT
 
-The pilightMqttOsgi project: 20180820 activemq version 5.15.4, 5.15.5
+The pilightMqttOsgi project: 20180820 activemq version 5.15.4, 5.15.5, 5.15.8
 repo-add activemq
+# camel 2.23.0
 repo-add camel
-#and add the spring-legacy repo: (or not?)
+#and add the spring-legacy repo: (or not?) 4.2.1
 feature:repo-add spring-legacy
 
 #
@@ -60,7 +61,11 @@ chmod g+w /usr/share/apache-karaf/deploy
 # pilight, in a unix shell on iMac
 scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@192.168.2.9:/usr/share/apache-karaf/etc/
 scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml pi@192.168.2.9:/usr/share/apache-karaf/etc/
-scp ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@192.168.2.9:/usr/share/apache-karaf/deploy/
+# copy jar from imac to raspberry
+scp ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@192.168.2.9:tmp
+# On raspberry:
+sudo -s -E -u openhab
+cp /home/pi/tmp/pilightMqttOsgi-1.0-SNAPSHOT.jar /usr/share/apache-karaf/deploy
 
 # karaf service (systemd) on rpi is not possible through the service-wrapper (that only supports 80386 architecture).
 # see https://karaf.apache.org/manual/latest/#_service_script_templates
