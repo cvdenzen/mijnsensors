@@ -5,7 +5,7 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="use old namespace instead of 1.3.0, see https://issues.apache.org/jira/browse/KARAF-4730">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="restored name space version, did not help, changed config for felix, see https://issues.apache.org/jira/browse/KARAF-4730">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
@@ -64,17 +64,17 @@
           <entry key="java" value="16744" />
           <entry key="md" value="1369" />
           <entry key="properties" value="598" />
-          <entry key="txt" value="1892" />
-          <entry key="xml" value="5815" />
+          <entry key="txt" value="1962" />
+          <entry key="xml" value="5823" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JAVA" value="16744" />
           <entry key="Manifest" value="6" />
-          <entry key="PLAIN_TEXT" value="3585" />
+          <entry key="PLAIN_TEXT" value="3655" />
           <entry key="Properties" value="598" />
-          <entry key="XML" value="5815" />
+          <entry key="XML" value="5823" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -148,8 +148,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="18" column="40" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
+            <state relative-caret-position="15">
+              <caret line="1" column="88" selection-start-line="1" selection-start-column="88" selection-end-line="1" selection-end-column="88" />
             </state>
           </provider>
         </entry>
@@ -157,8 +157,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="235" column="38" selection-start-line="235" selection-start-column="38" selection-end-line="235" selection-end-column="38" />
+            <state relative-caret-position="-110">
+              <caret line="15" column="27" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -220,7 +220,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>27</find>
       <find>UPSPIco</find>
       <find>routepolicy</find>
       <find>this</find>
@@ -248,8 +247,9 @@
       <find>calc</find>
       <find>2.22.1</find>
       <find>2.</find>
-      <find>javas</find>
       <find>java</find>
+      <find>javas</find>
+      <find>2.22.</find>
     </findStrings>
     <replaceStrings>
       <replace>${camel.vesion}</replace>
@@ -435,7 +435,7 @@
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="true" />
     <property name="Repository.Attach.Sources" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543588659026" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1543589198642" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.09113608" />
@@ -537,13 +537,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00016" summary="some improvements">
-      <created>1530739655114</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1530739655115</updated>
     </task>
     <task id="LOCAL-00017" summary="property file">
       <created>1531065971213</created>
@@ -881,7 +874,14 @@
       <option name="project" value="LOCAL" />
       <updated>1543588185295</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="restored name space version, did not help, changed config for felix, see https://issues.apache.org/jira/browse/KARAF-4730">
+      <created>1543588743970</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1543588743970</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -990,7 +990,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="working with dynamic linking wiringpi (I think)" />
     <MESSAGE value="suppress out, although I did not see any output. Went to /dev/null?" />
     <MESSAGE value="First, failed, attempts for pir sensor on gpio-3 (gpio-2 does not work, always 1)" />
     <MESSAGE value="typo, pir sensor is working." />
@@ -1015,7 +1014,8 @@
     <MESSAGE value="Stable count for tv activated." />
     <MESSAGE value="feature javascript added" />
     <MESSAGE value="use old namespace instead of 1.3.0, see https://issues.apache.org/jira/browse/KARAF-4730" />
-    <option name="LAST_COMMIT_MESSAGE" value="use old namespace instead of 1.3.0, see https://issues.apache.org/jira/browse/KARAF-4730" />
+    <MESSAGE value="restored name space version, did not help, changed config for felix, see https://issues.apache.org/jira/browse/KARAF-4730" />
+    <option name="LAST_COMMIT_MESSAGE" value="restored name space version, did not help, changed config for felix, see https://issues.apache.org/jira/browse/KARAF-4730" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/Downloads/apache-karaf-4.1.5/etc/activemq.xml" />
@@ -1324,15 +1324,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="40" selection-start-line="18" selection-start-column="40" selection-end-line="18" selection-end-column="40" />
+        <state relative-caret-position="15">
+          <caret line="1" column="88" selection-start-line="1" selection-start-column="88" selection-end-line="1" selection-end-column="88" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="235" column="38" selection-start-line="235" selection-start-column="38" selection-end-line="235" selection-end-column="38" />
+        <state relative-caret-position="-110">
+          <caret line="15" column="27" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="27" />
         </state>
       </provider>
     </entry>
