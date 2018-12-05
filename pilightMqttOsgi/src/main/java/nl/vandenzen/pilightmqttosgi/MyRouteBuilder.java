@@ -51,6 +51,7 @@ import org.apache.camel.component.netty4.NettyServerBootstrapConfiguration;
 
 import com.pi4j.io.i2c.I2CBus;
 import org.apache.camel.support.ExpressionAdapter;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
 /**
  * A Camel Java DSL Router
@@ -64,7 +65,12 @@ public class MyRouteBuilder {
     }
     public MyRouteBuilder() {
     }
-
+    MqttConnectOptions connectOptions() {
+        MqttConnectOptions connectOptions = new MqttConnectOptions();
+        connectOptions.setUserName("hab");
+        connectOptions.setPassword("H1k!b2E18p&1".toCharArray());
+        return connectOptions;
+    }
     public CamelContext getContext() {
         return context;
     }
@@ -114,6 +120,10 @@ public class MyRouteBuilder {
         StringEncoder stringEncoder=new StringEncoder();
         ((SimpleRegistry) registry).put("string-decoder",stringDecoder);
         ((SimpleRegistry) registry).put("string-encoder",stringEncoder);
+
+        MqttConnectOptions mqttConnectOptions=connectOptions();
+        ((SimpleRegistry) registry).put("dummyName",mqttConnectOptions);
+
 
         // Default timeout is 300s (5 mins), which is too long to wait for in testing situations. Shutdown takes too long.
         getContext().getShutdownStrategy().setTimeUnit(TimeUnit.SECONDS);

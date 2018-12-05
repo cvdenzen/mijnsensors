@@ -1,7 +1,9 @@
 Status 20180215: UNDER DEVELOPMENT
 
-The pilightMqttOsgi project: 20180820 activemq version 5.15.4, 5.15.5, 5.15.8
-repo-add activemq
+The pilightMqttOsgi project: 20180820 activemq separate activemq-karaf container (20181205)!!! version 5.15.4, 5.15.5, 5.15.8
+# separate container feature:install:service-wrapper,wrapper:install --name=activemq-karaf
+# systemctl enable .... (see https://karaf.apache.org/manual/latest-3.0.x/wrapper)
+#repo-add activemq
 # camel 2.23.0
 repo-add camel
 #and add the spring-legacy repo: (or not?) 4.2.1
@@ -16,8 +18,8 @@ feature:install aries-blueprint
 # and
 feature:install shell-compat
 
-feature:install activemq
-feature:install activemq-broker # (for mqtt?)
+#feature:install activemq
+#feature:install activemq-broker # (for mqtt?)
 
 # karaf, install camel and camel-blueprint: (20180820: camel version 2.22.0)
 feature:install camel
@@ -25,9 +27,9 @@ feature:install camel
 feature:install camel-jms
 feature:install camel-paho
 
-feature:install activemq-camel
-feature:install activemq-cf # (connection factory)
-feature:install activemq-blueprint # (no idea why)
+#feature:install activemq-camel
+#feature:install activemq-cf # (connection factory)
+#feature:install activemq-blueprint # (no idea why)
 
 feature:install camel-gson
 feature:install camel-stream

@@ -3,15 +3,9 @@
     <feature name="pilightmqttosgi" version="1.0.0-SNAPSHOT">
         <feature>aries-blueprint</feature>
         <feature>shell-compat</feature>
-        <feature>activemq</feature>
-        <feature>activemq-broker</feature>
         <feature>camel</feature>
         <feature>camel-jms</feature>
         <feature>camel-paho</feature>
-        <feature>activemq-camel</feature>
-        <feature>activemq-cf</feature>
-        <feature>activemq-blueprint</feature>
-        <feature>activemq-amqp-client</feature> <!-- for pir sending to mqtt topic -->
         <feature>camel-gson</feature>
         <feature>camel-stream</feature>
         <feature>camel-netty4</feature>
