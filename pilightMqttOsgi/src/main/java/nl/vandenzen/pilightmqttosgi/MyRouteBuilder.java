@@ -68,7 +68,7 @@ public class MyRouteBuilder {
     MqttConnectOptions connectOptions() {
         MqttConnectOptions connectOptions = new MqttConnectOptions();
         connectOptions.setUserName("hab");
-        connectOptions.setPassword("H1k!b2E18p&1".toCharArray());
+        connectOptions.setPassword("J51bTmPbaza4".toCharArray());
         return connectOptions;
     }
     public CamelContext getContext() {
