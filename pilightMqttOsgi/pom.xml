@@ -14,7 +14,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <camel.version>2.23.0</camel.version>
-        <activemq.version>5.15.8</activemq.version>
         <netty-version>4.1.24.Final</netty-version>
     </properties>
     <repositories>
@@ -45,12 +44,6 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-camel</artifactId>
-            <version>${activemq.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -116,28 +109,6 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-script</artifactId>
             <version>${camel.version}</version>
-        </dependency>
-
-        <!-- Apache Active MQ Jars -->
-
-        <dependency>
-
-            <groupId>org.apache.activemq</groupId>
-
-            <artifactId>activemq-client</artifactId>
-
-            <version>${activemq.version}</version>
-
-        </dependency>
-
-        <dependency>
-
-            <groupId>org.apache.activemq</groupId>
-
-            <artifactId>activemq-pool</artifactId>
-
-            <version>${activemq.version}</version>
-
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->

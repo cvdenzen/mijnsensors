@@ -1,27 +1,25 @@
 Status 20180215: UNDER DEVELOPMENT
 
-The pilightMqttOsgi project: 20180820 activemq separate activemq-karaf container (20181205)!!! version 5.15.4, 5.15.5, 5.15.8
-# separate container feature:install:service-wrapper,wrapper:install --name=activemq-karaf
-# systemctl enable .... (see https://karaf.apache.org/manual/latest-3.0.x/wrapper)
-#repo-add activemq
+repo-add activemq
+feature:install activemq-broker
 # camel 2.23.0
 repo-add camel
-#and add the spring-legacy repo: (or not?) 4.2.1
-feature:repo-add spring-legacy
+feature:install camel
+#feature:repo-add spring-legacy
 
 #
-# feature install can be done by features.xml file ???? 20180905 experimental:
+# feature install can be done by pilightmqttosgi-features.xml
 # feature:install pilightmqttosgi
 #
 # since karaf 4.2 (20180820) needs next features for activemq
-feature:install aries-blueprint
+#feature:install aries-blueprint
 # and
-feature:install shell-compat
+#feature:install shell-compat
 
 #feature:install activemq
 #feature:install activemq-broker # (for mqtt?)
 
-# karaf, install camel and camel-blueprint: (20180820: camel version 2.22.0)
+# karaf, install camel and camel-blueprint:
 feature:install camel
 
 feature:install camel-jms
@@ -53,7 +51,7 @@ wrapper:install
 
 
 # if already in use by e.g. openhab, change ssh port in etc/apache.karaf.shell.cfg from 8101 in e.g. 8102.
-# otherwise, karaf client will connect to whatever karaf instance started first.
+# and etc/jetty.xml change secure.port to e.g. 8444.
 
 # on raspberry, user root. (if chown -R openhab.openhab /usr/apache-karaf
 adduser pi openhab

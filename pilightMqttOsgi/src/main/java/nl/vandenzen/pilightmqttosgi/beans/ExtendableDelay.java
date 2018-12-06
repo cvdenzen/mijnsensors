@@ -16,7 +16,7 @@ import java.util.TimerTask;
 public class ExtendableDelay {
 
     // Inject a dummy uri. This is the easiest way to initialize a producer.
-    @EndpointInject(uri="activemq:foo.bar")
+    @EndpointInject(uri="direct:foo.bar")
     ProducerTemplate producer;
 
     /**

@@ -5,9 +5,21 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="removed activemq, will be started in separate karaf container to avoid javax.jms version/dependency chain problems">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="password in paho calls for user hab for mqtt broker changed">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_0_3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_pool2_2_4_2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_j2ee_management_1_1_spec_1_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_jms_1_1_spec_1_1_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_jta_1_0_1B_spec_1_0_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_xbean_xbean_spring_4_2.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,10 +34,52 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="559">
+              <caret line="341" column="52" selection-start-line="341" selection-start-column="52" selection-end-line="341" selection-end-column="52" />
+              <folding>
+                <element signature="e#16182#16187#0" expanded="true" />
+                <element signature="e#16187#16192#0" expanded="true" />
+                <element signature="e#16305#16309#0" expanded="true" />
+                <element signature="e#17402#17407#0" expanded="true" />
+                <element signature="e#17407#17412#0" expanded="true" />
+                <element signature="e#17531#17536#0" expanded="true" />
+                <element signature="e#17536#17541#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="555">
+              <caret line="47" column="27" selection-start-line="47" selection-start-column="27" selection-end-line="47" selection-end-column="27" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="91" column="25" lean-forward="true" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+            <state relative-caret-position="379">
+              <caret line="200" column="64" selection-start-line="200" selection-start-column="64" selection-end-line="200" selection-end-column="64" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="570">
+              <caret line="49" column="40" selection-start-line="42" selection-start-column="35" selection-end-line="49" selection-end-column="40" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -34,7 +88,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="315">
-              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+              <caret line="21" selection-start-line="21" selection-end-line="21" />
             </state>
           </provider>
         </entry>
@@ -42,8 +96,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="82" selection-start-line="4" selection-start-column="82" selection-end-line="4" selection-end-column="82" />
+            <state relative-caret-position="150">
+              <caret line="10" column="49" selection-start-line="10" selection-start-column="49" selection-end-line="10" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -51,8 +105,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1723">
-              <caret line="146" column="44" lean-forward="true" selection-start-line="146" selection-start-column="44" selection-end-line="146" selection-end-column="44" />
+            <state relative-caret-position="240">
+              <caret line="16" selection-start-line="16" selection-end-line="16" />
             </state>
           </provider>
         </entry>
@@ -60,8 +114,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.classpath">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="836">
-              <caret line="78" column="12" lean-forward="true" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="12" />
+            <state relative-caret-position="1170">
+              <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -70,44 +124,7 @@
         <entry file="file://$PROJECT_DIR$/pilightMqttOsgi.eml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1200">
-              <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/util/MutableBoolean.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="9" column="22" selection-start-line="9" selection-start-column="22" selection-end-line="9" selection-end-column="22" />
-              <folding>
-                <element signature="e#132#133#0" expanded="true" />
-                <element signature="e#160#161#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/util/MutableFloat.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-              <folding>
-                <element signature="e#127#128#0" expanded="true" />
-                <element signature="e#155#156#0" expanded="true" />
-                <element signature="e#196#197#0" expanded="true" />
-                <element signature="e#230#231#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/util/MutableInteger.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="9" column="32" selection-start-line="9" selection-start-column="32" selection-end-line="9" selection-end-column="32" />
+              <caret line="80" selection-start-line="80" selection-end-line="80" />
             </state>
           </provider>
         </entry>
@@ -132,14 +149,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>quartz</find>
-      <find>producer</find>
-      <find>300</find>
-      <find>201</find>
-      <find>beans.Exte</find>
-      <find>DelayHuis</find>
-      <find>ExtendableDel</find>
-      <find>response rece</find>
       <find>com.pi4j.io.gpio</find>
       <find>beans</find>
       <find>cron</find>
@@ -162,6 +171,14 @@
       <find>userName</find>
       <find>password</find>
       <find>paho</find>
+      <find>active</find>
+      <find>ACTIVEMQ</find>
+      <find>sif</find>
+      <find>foo</find>
+      <find>activemq</find>
+      <find>direct:</find>
+      <find>pilig</find>
+      <find>stable count</find>
     </findStrings>
     <replaceStrings>
       <replace>${camel.vesion}</replace>
@@ -223,22 +240,22 @@
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LightSensorReaderBH1750.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/UPSPIco.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/GpioSupport.java" />
-        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/util/MutableBoolean.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/util/MutableFloat.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/util/MutableInteger.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/util/MutableLong.java" />
         <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/deploy" />
-        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/etc/activemq.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/deploy" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/.classpath" />
         <option value="$PROJECT_DIR$/pilightMqttOsgi.eml" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
       </list>
     </option>
   </component>
@@ -299,7 +316,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -368,13 +384,14 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="true" />
     <property name="Repository.Attach.Sources" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544020489753" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1544025909782" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.09113608" />
@@ -476,13 +493,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00021" summary="some authentication">
-      <created>1532555161673</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1532555161673</updated>
     </task>
     <task id="LOCAL-00022" summary="logging instead of system.out">
       <created>1533074089167</created>
@@ -820,14 +830,21 @@
       <option name="project" value="LOCAL" />
       <updated>1544017986161</updated>
     </task>
-    <option name="localTasksCounter" value="70" />
+    <task id="LOCAL-00070" summary="password in paho calls for user hab for mqtt broker changed">
+      <created>1544020542931</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1544020542931</updated>
+    </task>
+    <option name="localTasksCounter" value="71" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.53265303" visible="true" weight="0.2735043" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.53265303" visible="true" weight="0.2765568" />
       <window_info id="Structure" order="1" sideWeight="0.422449" side_tool="true" weight="0.30586082" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="3" />
@@ -842,10 +859,10 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5279762" side_tool="true" weight="0.32765532" />
-      <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.47202381" weight="0.3265306" />
+      <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.47202381" visible="true" weight="0.3265306" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Dependency Viewer" order="10" visible="true" weight="0.32857144" />
-      <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.46666667" visible="true" weight="0.32857144" />
+      <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.46666667" weight="0.32857144" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -941,7 +958,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Werkende versie, ook met GPIO27" />
     <MESSAGE value="Lijkt te werken, pir, ups squarewave (heartbeat), lightsensor." />
     <MESSAGE value="oh scripting in blueprint, first steps" />
     <MESSAGE value="util boolean integer float for blueprint use" />
@@ -966,7 +982,8 @@
     <MESSAGE value="camel version to 2.23.0, built" />
     <MESSAGE value="activemq version" />
     <MESSAGE value="removed activemq, will be started in separate karaf container to avoid javax.jms version/dependency chain problems" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed activemq, will be started in separate karaf container to avoid javax.jms version/dependency chain problems" />
+    <MESSAGE value="password in paho calls for user hab for mqtt broker changed" />
+    <option name="LAST_COMMIT_MESSAGE" value="password in paho calls for user hab for mqtt broker changed" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/credentials.properties">
@@ -1153,41 +1170,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="90" column="13" selection-start-line="90" selection-start-column="13" selection-end-line="90" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1005">
-          <caret line="77" column="37" selection-start-line="77" selection-start-column="37" selection-end-line="77" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/etc/activemq.xml" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/deploy">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
           <caret line="6" selection-start-line="6" selection-end-line="6" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="73" selection-start-line="10" selection-start-column="73" selection-end-line="10" selection-end-column="73" />
-          <folding>
-            <element signature="e#16182#16187#0" expanded="true" />
-            <element signature="e#16187#16192#0" expanded="true" />
-            <element signature="e#16305#16309#0" expanded="true" />
-            <element signature="e#17402#17407#0" expanded="true" />
-            <element signature="e#17407#17412#0" expanded="true" />
-            <element signature="e#17531#17536#0" expanded="true" />
-            <element signature="e#17536#17541#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1236,6 +1223,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="47" column="27" selection-start-line="47" selection-start-column="27" selection-end-line="47" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="570">
+          <caret line="49" column="40" selection-start-line="42" selection-start-column="35" selection-end-line="49" selection-end-column="40" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" selection-start-line="16" selection-end-line="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.classpath">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1170">
+          <caret line="78" column="12" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pilightMqttOsgi.eml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1200">
+          <caret line="80" selection-start-line="80" selection-end-line="80" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/META-INF/MANIFEST.MF">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -1243,45 +1268,43 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1723">
-          <caret line="146" column="44" lean-forward="true" selection-start-line="146" selection-start-column="44" selection-end-line="146" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/.classpath">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="836">
-          <caret line="78" column="12" lean-forward="true" selection-start-line="78" selection-start-column="12" selection-end-line="78" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pilightMqttOsgi.eml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="80" lean-forward="true" selection-start-line="80" selection-end-line="80" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="82" selection-start-line="4" selection-start-column="82" selection-end-line="4" selection-end-column="82" />
+        <state relative-caret-position="379">
+          <caret line="200" column="64" selection-start-line="200" selection-start-column="64" selection-end-line="200" selection-end-column="64" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
+    <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="91" column="25" lean-forward="true" selection-start-line="91" selection-start-column="25" selection-end-line="91" selection-end-column="25" />
+        <state relative-caret-position="150">
+          <caret line="10" column="49" selection-start-line="10" selection-start-column="49" selection-end-line="10" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="559">
+          <caret line="341" column="52" selection-start-line="341" selection-start-column="52" selection-end-line="341" selection-end-column="52" />
+          <folding>
+            <element signature="e#16182#16187#0" expanded="true" />
+            <element signature="e#16187#16192#0" expanded="true" />
+            <element signature="e#16305#16309#0" expanded="true" />
+            <element signature="e#17402#17407#0" expanded="true" />
+            <element signature="e#17407#17412#0" expanded="true" />
+            <element signature="e#17531#17536#0" expanded="true" />
+            <element signature="e#17536#17541#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

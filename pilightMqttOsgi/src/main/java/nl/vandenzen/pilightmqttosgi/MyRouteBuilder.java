@@ -15,15 +15,10 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import javafx.scene.effect.Light;
 import nl.vandenzen.pilightmqttosgi.json.*;
-import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.broker.BrokerService;
-import org.apache.activemq.broker.TransportConnection;
-import org.apache.activemq.broker.TransportConnector;
 import org.apache.camel.*;
 import org.apache.camel.component.paho.PahoConstants;
 import org.apache.camel.component.properties.PropertiesComponent;
 import org.apache.camel.model.dataformat.*;
-import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.gson.GsonDataFormat;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -131,14 +126,6 @@ public class MyRouteBuilder {
         getContext().getShutdownStrategy().setShutdownNowOnTimeout(true);
 
         try {
-            // activemq is http mqtt
-
-            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://amq-broker");
-            ActiveMQComponent ac = ActiveMQComponent.activeMQComponent();
-            ac.setConnectionFactory(connectionFactory);
-            ac.setUsername("karaf");
-            ac.setPassword("karaf");
-            context.addComponent("activemq", ac);
             context.addComponent("stream", new org.apache.camel.component.stream.StreamComponent());
             context.addComponent("paho", new org.apache.camel.component.paho.PahoComponent());
             context.addComponent("netty4", new org.apache.camel.component.netty4.NettyComponent());
@@ -211,9 +198,9 @@ public class MyRouteBuilder {
                             .startupOrder(1)
                             .log(LoggingLevel.INFO, log1, "${body}")
                             .setExchangePattern(ExchangePattern.InOnly)
-                            .to(ExchangePattern.InOnly, "activemq:queue:test.queue");
+                            .to(ExchangePattern.InOnly, "direct:pilight");
 
-                    from("activemq:queue:test.queue")
+                    from("direct:pilight")
                             .routeId("ActivemqToPaho")
                             .autoStartup(false)
                             .log(LoggingLevel.INFO, log1, "${body}")

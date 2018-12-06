@@ -338,11 +338,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 </javaScript>
             </setBody>
             <bean ref="bg_w_tv_w_stable" method="setValue"/>
-            <setBody>
-                <javaScript>'Stable count is '+request.body</javaScript>
-            </setBody>
             <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
-            <log message="Increment: Stable count is ${body}"/>
+            <log message="Increment bg_w_tv_w_stable: Stable count is ${body}"/>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
