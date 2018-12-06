@@ -5,21 +5,8 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="password in paho calls for user hab for mqtt broker changed">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__commons_logging_commons_logging_1_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_pool2_2_4_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_j2ee_management_1_1_spec_1_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_jms_1_1_spec_1_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_jta_1_0_1B_spec_1_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_xbean_xbean_spring_4_2.xml" beforeDir="false" />
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Added sub packages to export to pom.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -33,11 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="341" column="52" selection-start-line="341" selection-start-column="52" selection-end-line="341" selection-end-column="52" />
+            <state relative-caret-position="440">
+              <caret line="457" column="38" selection-start-line="457" selection-start-column="38" selection-end-line="457" selection-end-column="38" />
               <folding>
                 <element signature="e#16182#16187#0" expanded="true" />
                 <element signature="e#16187#16192#0" expanded="true" />
@@ -102,11 +89,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" selection-start-line="16" selection-end-line="16" />
+            <state relative-caret-position="331">
+              <caret line="205" column="106" selection-start-line="205" selection-start-column="106" selection-end-line="205" selection-end-column="106" />
             </state>
           </provider>
         </entry>
@@ -149,9 +136,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>com.pi4j.io.gpio</find>
-      <find>beans</find>
-      <find>cron</find>
       <find>bh1750</find>
       <find>lightsensor</find>
       <find>javascript</find>
@@ -179,6 +163,9 @@
       <find>direct:</find>
       <find>pilig</find>
       <find>stable count</find>
+      <find>4</find>
+      <find>stable count is</find>
+      <find>json</find>
     </findStrings>
     <replaceStrings>
       <replace>${camel.vesion}</replace>
@@ -186,6 +173,7 @@
       <replace>vandenzen</replace>
     </replaceStrings>
     <dirStrings>
+      <dir>$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/Users/carl/Downloads/apache-karaf-4.1.5</dir>
       <dir>$PROJECT_DIR$</dir>
     </dirStrings>
   </component>
@@ -250,12 +238,12 @@
         <option value="$PROJECT_DIR$/.classpath" />
         <option value="$PROJECT_DIR$/pilightMqttOsgi.eml" />
         <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
   </component>
@@ -493,20 +481,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00022" summary="logging instead of system.out">
-      <created>1533074089167</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1533074089168</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Received data from Pilight processing">
-      <created>1533158786461</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1533158786462</updated>
     </task>
     <task id="LOCAL-00024" summary="pilight to camel to mqtt working (but have to think about mqtt subject)">
       <created>1533390239169</created>
@@ -837,7 +811,21 @@
       <option name="project" value="LOCAL" />
       <updated>1544020542931</updated>
     </task>
-    <option name="localTasksCounter" value="71" />
+    <task id="LOCAL-00071" summary="Comments, stable count message">
+      <created>1544126554222</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1544126554223</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Added sub packages to export to pom.">
+      <created>1544127484292</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1544127484292</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -958,8 +946,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Lijkt te werken, pir, ups squarewave (heartbeat), lightsensor." />
-    <MESSAGE value="oh scripting in blueprint, first steps" />
     <MESSAGE value="util boolean integer float for blueprint use" />
     <MESSAGE value="Redelijk werkende maar nog niet complete blueprint file" />
     <MESSAGE value="pir alleen gebruiken als het donker is" />
@@ -983,7 +969,9 @@
     <MESSAGE value="activemq version" />
     <MESSAGE value="removed activemq, will be started in separate karaf container to avoid javax.jms version/dependency chain problems" />
     <MESSAGE value="password in paho calls for user hab for mqtt broker changed" />
-    <option name="LAST_COMMIT_MESSAGE" value="password in paho calls for user hab for mqtt broker changed" />
+    <MESSAGE value="Comments, stable count message" />
+    <MESSAGE value="Added sub packages to export to pom." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added sub packages to export to pom." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/credentials.properties">
@@ -1240,13 +1228,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" selection-start-line="16" selection-end-line="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.classpath">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1170">
@@ -1294,8 +1275,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="341" column="52" selection-start-line="341" selection-start-column="52" selection-end-line="341" selection-end-column="52" />
+        <state relative-caret-position="440">
+          <caret line="457" column="38" selection-start-line="457" selection-start-column="38" selection-end-line="457" selection-end-column="38" />
           <folding>
             <element signature="e#16182#16187#0" expanded="true" />
             <element signature="e#16187#16192#0" expanded="true" />
@@ -1305,6 +1286,13 @@
             <element signature="e#17531#17536#0" expanded="true" />
             <element signature="e#17536#17541#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="205" column="106" selection-start-line="205" selection-start-column="106" selection-end-line="205" selection-end-column="106" />
         </state>
       </provider>
     </entry>
