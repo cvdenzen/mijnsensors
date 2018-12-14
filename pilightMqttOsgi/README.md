@@ -1,4 +1,5 @@
 Status 20180215: UNDER DEVELOPMENT
+Beware: there is another README.md file at mijnsensors/
 
 repo-add activemq
 feature:install activemq-broker
