@@ -48,6 +48,7 @@ public class PirSensor {
                     logger.info("Sending message: " + message.toString());
                     client.publish("f0/nnw/pir", message);
                     client.disconnect();
+                    client.close();
                 }
                 catch (MqttException ex1) {
                     logger.log(Level.SEVERE, "PIR send message to paho mqtt error", ex1);

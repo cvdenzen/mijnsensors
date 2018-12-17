@@ -430,6 +430,9 @@ public class MyRouteBuilder {
 
             // Light sensor init
             try {
+                // - I2CBus.BUS_1 are pins 3 and 5 (bij RP A en B rev. 1 this is BUS_0)
+                // - I2CBus.BUS_2 uses header pin CON6:3 as SDA and header pin CON6:5 as SCL
+                // - I2CBus.BUS_3 uses header pin CON6:27 as SDA and header pin CON6:28 as SCL
                 I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
                 bh1750 = new LightSensorReaderBH1750(bus);
                 bh1750.init();
