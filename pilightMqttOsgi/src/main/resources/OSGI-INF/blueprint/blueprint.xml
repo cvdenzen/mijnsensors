@@ -343,6 +343,16 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
+        <route id="ReportMemoryUsage" autoStartup="true" startupOrder="304">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz2://groep/timer3?cron=4+3/15+*+*+*+?"/>
+            <bean ref="Runtime" method="maxMemory"/>
+            <to uri="paho:sensors/all/runtime/maxMemory"/>
+            <bean ref="Runtime" method="totalMemory"/>
+            <to uri="paho:sensors/all/runtime/totalMemory"/>
+            <bean ref="Runtime" method="freeMemory"/>
+            <to uri="paho:sensors/all/runtime/freeMemory"/>
+    </route>
 
 
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
@@ -479,5 +489,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- The uri to call when delay has finished -->
         <argument value="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
     </bean>
+    <!-- For memory size reporting -->
+    <bean id="Runtime" class="java.lang.Runtime"
+          factory-method="getRuntime"/>
 
 </blueprint>
