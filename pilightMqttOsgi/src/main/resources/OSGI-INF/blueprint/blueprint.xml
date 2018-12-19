@@ -352,7 +352,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
         <route id="ReportMemoryUsage" autoStartup="true" startupOrder="304">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz2://groep/timer3?cron=4+3/15+*+*+*+?"/>
+            <from uri="quartz2://groep/timer4?cron=4+3/15+*+*+*+?"/>
             <bean ref="Runtime" method="maxMemory"/>
             <to uri="paho:sensors/all/runtime/maxMemory"/>
             <bean ref="Runtime" method="totalMemory"/>
