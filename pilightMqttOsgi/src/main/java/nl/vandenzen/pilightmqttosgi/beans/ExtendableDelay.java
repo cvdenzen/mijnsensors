@@ -100,6 +100,24 @@ public class ExtendableDelay {
         }
 
     }
+
+    /**
+     * Cancel the timer
+     */
+    public void cancel() {
+        logger.log(Level.INFO,"Start method cancel timer, lock="+lock+", timer="+timer);
+        try {
+            lock.lock();
+            if (timer!=null) {
+                logger.log(Level.INFO, "Cancel timer");
+                timer.cancel();
+                timer=null; // signal nothing is running
+            }
+        }
+        finally {
+            lock.unlock();
+        }
+    }
     public long getDelay() {
         return delay;
     }

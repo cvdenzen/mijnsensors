@@ -307,6 +307,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
         </route>
+        <!-- Listen to kaku remote control -->
+        <route id="KakuRemoteControl_3_0" autoStartup="true" startupOrder="107">
+            <from uri="paho:f0/kaku_switch_old/rc/3/0"/>
+            <!-- this is a manual intervention, stop scheduled actions -->
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="cancel"/>
+        </route>
+
         <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="301">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz2://groep/timer1?cron=0+0+12+*+*+?"/>
