@@ -50,6 +50,11 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold" />
                 <log message="Response LightsOnIntensityThreshold is ${body}"/>
             </choice>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>GET</constant>
+            </setHeader>
+            <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold" />
+            <log message="Test: Response LightsOnIntensityThreshold is ${body}"/>
         </route>
 
         <!-- Zet lichten aan -->
