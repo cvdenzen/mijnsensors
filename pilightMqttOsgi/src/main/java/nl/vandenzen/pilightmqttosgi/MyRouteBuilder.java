@@ -130,6 +130,7 @@ public class MyRouteBuilder {
             context.addComponent("paho", new org.apache.camel.component.paho.PahoComponent());
             context.addComponent("netty4", new org.apache.camel.component.netty4.NettyComponent());
             context.addComponent("quartz2", new org.apache.camel.component.quartz2.QuartzComponent());
+            context.addComponent("http4", new org.apache.camel.component.http4.HttpComponent());
 
 
             GsonDataFormat formatPojoStatusResponse = new GsonDataFormat();
