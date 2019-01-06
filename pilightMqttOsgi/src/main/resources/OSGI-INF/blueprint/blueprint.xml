@@ -30,227 +30,28 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
 
-        <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
-            <from uri="paho:oh/LichtIntensiteit_Woonkamer/state"/>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Float"/>
-            <bean ref="LichtIntensiteit_Woonkamer" method="setValue"/>
-            <to uri="direct:Enable_lights_on_by_daylight"/>
-        </route>
-
-        <route id="pir_gf_achterdeur17_updated" autoStartup="true" startupOrder="201">
-            <from uri="direct:pir_gf_achterdeur17_updated"/>
-            <!-- set states of light etc. in header of the message -->
-            <to uri="direct:SetHeaders"/>
-            <setBody>
-                <javaScript>
-                    "Light_GF_Huiskamer_Achterdeur_Schemerlamp="
-                    +request.headers.get('Light_GF_Huiskamer_Achterdeur_Schemerlamp')
-                </javaScript>
-            </setBody>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+        <!-- Request a setting if not yet set -->
+        <route id="requestLightsOnIntensityThreshold" autoStartup="true">
+            <from uri="quartz2://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
+            <setHeader headerName="LightsOnIntensityThreshold">
+                <method ref="LightsOnIntensityThreshold" method="getValue"/>
+            </setHeader>
+            <!-- check whether set or not. The check !xxx means: null or 0,
+             see https://stackoverflow.com/questions/6003884/how-do-i-check-for-null-values-in-javascript -->
             <choice>
                 <when>
                     <javaScript>
-                        request.headers.get('pir_gf_achterdeur17')
-                        &amp;&amp;
-                        request.headers.get('LichtIntensiteit_Woonkamer')&lt;request.headers.get('LightsOnIntensityThreshold')
-                        &amp;&amp;
-                        !request.headers.get('Light_GF_Huiskamer_Achterdeur_Schemerlamp') // licht is uit
+                        !request.headers.get('LightsOnIntensityThreshold')
                     </javaScript>
-                    <setBody>
-                        <simple>het licht is uit</simple>
-                    </setBody>
-                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
-                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-                    <convertBodyTo type="java.lang.String"/>
-                    <convertBodyTo type="java.lang.Long"/>
-                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
-                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="schedule"/>
                 </when>
+                <setHeader headerName="CamelHttpMethod">
+                    <constant>GET</constant>
+                </setHeader>
+                <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold" />
+                <log message="Response LightsOnIntensityThreshold is ${body}"/>
             </choice>
-            <!-- delay, extend with each action on pir -->
-            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-            <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Long"/>
-            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
-            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="extend"/>
         </route>
 
-        <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="202">
-            <from uri="paho:oh/AutoOnEnabled/state"/>
-            <convertBodyTo type="java.lang.String"/>
-            <choice>
-                <when>
-                    <simple>${in.body} == "1"</simple>
-                    <setBody>
-                        <constant>true</constant>
-                    </setBody>
-                </when>
-                <otherwise>
-                    <setBody>
-                        <constant>false</constant>
-                    </setBody>
-                </otherwise>
-            </choice>
-            <convertBodyTo type="java.lang.Boolean"/>
-            <bean ref="AutoOnEnabled" method="setValue"/>
-            <!-- Turn on lights? -->
-            <to uri="direct:Enable_lights_on_by_daylight"/>
-        </route>
-        <route id="listenLightsOnIntensityThreshold" autoStartup="true" startupOrder="203">
-            <from uri="paho:oh/LightsOnIntensityThreshold/state"/>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <convertBodyTo type="java.lang.String"/>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <convertBodyTo type="java.lang.Integer"/>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <bean ref="LightsOnIntensityThreshold" method="setValue"/>
-            <!-- Turn on lights? -->
-            <to uri="direct:Enable_lights_on_by_daylight"/>
-        </route>
-        <route id="listenLight_GF_Huiskamer_Achterdeur_Schemerlamp" autoStartup="true" startupOrder="204">
-            <from uri="paho:oh/Light_GF_Huiskamer_Achterdeur_Schemerlamp/state"/>
-            <choice>
-                <when>
-                    <simple>${in.body} == "ON"</simple>
-                    <setBody>
-                        <constant>true</constant>
-                    </setBody>
-                </when>
-                <otherwise>
-                    <setBody>
-                        <constant>false</constant>
-                    </setBody>
-                </otherwise>
-            </choice>
-            <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="setValue"/>
-        </route>
-        <route id="listenGF_Passenger_minutes" autoStartup="true" startupOrder="205">
-            <from uri="paho:oh/GF_Passenger_minutes/state"/>
-            <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Integer"/>
-            <bean ref="GF_Passenger_minutes" method="setValue"/>
-        </route>
-        <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
-            <from uri="paho:oh/bg_w_tv_w/state"/>
-            <!-- get old value of bg_w_tv_w -->
-            <setHeader headerName="bg_w_tv_w">
-                <method ref="bg_w_tv_w" method="getValue"/>
-            </setHeader>
-            <!-- get old value of bg_w_tv_w_stable -->
-            <setHeader headerName="bg_w_tv_w_stable">
-                <method ref="bg_w_tv_w_stable" method="getValue"/>
-            </setHeader>
-            <choice>
-                <when>
-                    <simple>${in.body} == "ON"</simple>
-                    <setBody>
-                        <constant>true</constant>
-                    </setBody>
-                </when>
-                <otherwise>
-                    <setBody>
-                        <constant>false</constant>
-                    </setBody>
-                </otherwise>
-            </choice>
-            <bean ref="bg_w_tv_w" method="setValue"/>
-            <log message="Values old: ${headers.bg_w_tv_w}, new: ${body}; Stable: ${headers.bg_w_tv_w_stable}"/>
-            <setBody>
-                <javaScript>
-                    'request.headers.get='+request.headers.get('bg_w_tv_w')+', request.body='+request.body
-                </javaScript>
-            </setBody>
-            <log message="${body}"/>
-            <!-- restore body contents after log javaScript message -->
-            <bean ref="bg_w_tv_w" method="getValue"/>
-            <!-- calculate stable count -->
-            <choice>
-                <when>
-                    <!-- normally this would not happen, as only changes are reported -->
-                    <javaScript>request.headers.get('bg_w_tv_w')==request.body</javaScript>
-                    <log message="Same value old: ${headers.bg_w_tv_w}, new: ${body}"/>
-                </when>
-                <otherwise>
-                    <setBody>
-                        <constant>0</constant>
-                        <bean ref="bg_w_tv_w_stable" method="setValue"/>
-                    </setBody>
-                </otherwise>
-            </choice>
-            <setBody>
-                <javaScript>'Stable count is '+request.body</javaScript>
-            </setBody>
-            <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
-            <log message="Stable count is ${body}"/>
-            <!-- check whether to turn lights off -->
-            <to uri="direct:LightsOffCalc"/>
-        </route>
-
-        <route id="listenbg_x_imac2" autoStartup="true" startupOrder="207">
-            <from uri="paho:oh/bg_x_imac2/state"/>
-            <choice>
-                <when>
-                    <simple>${in.body} == "ON"</simple>
-                    <setBody>
-                        <constant>true</constant>
-                    </setBody>
-                </when>
-                <otherwise>
-                    <setBody>
-                        <constant>false</constant>
-                    </setBody>
-                </otherwise>
-            </choice>
-            <bean ref="bg_x_imac2" method="setValue"/>
-            <!-- check whether to turn lights off -->
-            <to uri="direct:LightsOffCalc"/>
-        </route>
-
-        <route id="listenbg_x_imac3" autoStartup="true" startupOrder="208">
-            <from uri="paho:oh/bg_x_imac3/state"/>
-            <choice>
-                <when>
-                    <simple>${in.body} == "ON"</simple>
-                    <setBody>
-                        <constant>true</constant>
-                    </setBody>
-                </when>
-                <otherwise>
-                    <setBody>
-                        <constant>false</constant>
-                    </setBody>
-                </otherwise>
-            </choice>
-            <bean ref="bg_x_imac3" method="setValue"/>
-            <!-- check whether to turn lights off -->
-            <to uri="direct:LightsOffCalc"/>
-        </route>
-
-        <route id="listenPir_gf_achterdeur17" autoStartup="true" startupOrder="209">
-            <from uri="paho:oh/pir_gf_achterdeur17/state"/>
-            <convertBodyTo type="java.lang.String"/>
-            <choice>
-                <when>
-                    <simple>${in.body} == "CLOSED"</simple>
-                    <setBody>
-                        <constant>true</constant>
-                    </setBody>
-                </when>
-                <otherwise>
-                    <setBody>
-                        <constant>false</constant>
-                    </setBody>
-                </otherwise>
-            </choice>
-            <convertBodyTo type="java.lang.Boolean"/>
-            <bean ref="pir_gf_achterdeur17" method="setValue"/>
-            <!-- Turn on lights? -->
-            <to uri="direct:pir_gf_achterdeur17_updated"/>
-        </route>
         <!-- Zet lichten aan -->
         <route id="ZetLichtenAan" autoStartup="true" startupOrder="101">
             <from uri="direct:ZetLichtenAan"/>
@@ -312,6 +113,228 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <from uri="paho:f0/kaku_switch_old/rc/3/0"/>
             <!-- this is a manual intervention, stop scheduled actions -->
             <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="cancel"/>
+        </route>
+
+        <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
+            <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Float"/>
+            <bean ref="LichtIntensiteit_Woonkamer" method="setValue"/>
+            <to uri="direct:Enable_lights_on_by_daylight"/>
+        </route>
+
+        <route id="pir_gf_achterdeur17_updated" autoStartup="true" startupOrder="201">
+            <from uri="direct:pir_gf_achterdeur17_updated"/>
+            <!-- set states of light etc. in header of the message -->
+            <to uri="direct:SetHeaders"/>
+            <setBody>
+                <javaScript>
+                    "Light_GF_Huiskamer_Achterdeur_Schemerlamp="
+                    +request.headers.get('Light_GF_Huiskamer_Achterdeur_Schemerlamp')
+                </javaScript>
+            </setBody>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <choice>
+                <when>
+                    <javaScript>
+                        request.headers.get('pir_gf_achterdeur17')
+                        &amp;&amp;
+                        request.headers.get('LichtIntensiteit_Woonkamer')&lt;request.headers.get('LightsOnIntensityThreshold')
+                        &amp;&amp;
+                        !request.headers.get('Light_GF_Huiskamer_Achterdeur_Schemerlamp') // licht is uit
+                    </javaScript>
+                    <setBody>
+                        <simple>het licht is uit</simple>
+                    </setBody>
+                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                    <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
+                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                    <convertBodyTo type="java.lang.String"/>
+                    <convertBodyTo type="java.lang.Long"/>
+                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="schedule"/>
+                </when>
+            </choice>
+            <!-- delay, extend with each action on pir -->
+            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Long"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="extend"/>
+        </route>
+
+        <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="202">
+            <from uri="paho:oh/all/AutoOnEnabled/state"/>
+            <convertBodyTo type="java.lang.String"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "1"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="AutoOnEnabled" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:Enable_lights_on_by_daylight"/>
+        </route>
+        <route id="listenLightsOnIntensityThreshold" autoStartup="true" startupOrder="203">
+            <from uri="paho:oh/all/LightsOnIntensityThreshold/state"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <bean ref="LightsOnIntensityThreshold" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:Enable_lights_on_by_daylight"/>
+        </route>
+        <route id="listenLight_GF_Huiskamer_Achterdeur_Schemerlamp" autoStartup="true" startupOrder="204">
+            <from uri="paho:oh/all/Light_GF_Huiskamer_Achterdeur_Schemerlamp/state"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "ON"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="setValue"/>
+        </route>
+        <route id="listenGF_Passenger_minutes" autoStartup="true" startupOrder="205">
+            <from uri="paho:oh/all/GF_Passenger_minutes/state"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <bean ref="GF_Passenger_minutes" method="setValue"/>
+        </route>
+        <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
+            <from uri="paho:oh/all/bg_w_tv_w/state"/>
+            <!-- get old value of bg_w_tv_w -->
+            <setHeader headerName="bg_w_tv_w">
+                <method ref="bg_w_tv_w" method="getValue"/>
+            </setHeader>
+            <!-- get old value of bg_w_tv_w_stable -->
+            <setHeader headerName="bg_w_tv_w_stable">
+                <method ref="bg_w_tv_w_stable" method="getValue"/>
+            </setHeader>
+            <choice>
+                <when>
+                    <simple>${in.body} == "ON"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <bean ref="bg_w_tv_w" method="setValue"/>
+            <log message="Values old: ${headers.bg_w_tv_w}, new: ${body}; Stable: ${headers.bg_w_tv_w_stable}"/>
+            <setBody>
+                <javaScript>
+                    'request.headers.get='+request.headers.get('bg_w_tv_w')+', request.body='+request.body
+                </javaScript>
+            </setBody>
+            <log message="${body}"/>
+            <!-- restore body contents after log javaScript message -->
+            <bean ref="bg_w_tv_w" method="getValue"/>
+            <!-- calculate stable count -->
+            <choice>
+                <when>
+                    <!-- normally this would not happen, as only changes are reported -->
+                    <javaScript>request.headers.get('bg_w_tv_w')==request.body</javaScript>
+                    <log message="Same value old: ${headers.bg_w_tv_w}, new: ${body}"/>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>0</constant>
+                        <bean ref="bg_w_tv_w_stable" method="setValue"/>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <setBody>
+                <javaScript>'Stable count is '+request.body</javaScript>
+            </setBody>
+            <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <log message="Stable count is ${body}"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
+
+        <route id="listenbg_x_imac2" autoStartup="true" startupOrder="207">
+            <from uri="paho:oh/all/bg_x_imac2/state"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "ON"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <bean ref="bg_x_imac2" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
+
+        <route id="listenbg_x_imac3" autoStartup="true" startupOrder="208">
+            <from uri="paho:oh/all/bg_x_imac3/state"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "ON"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <bean ref="bg_x_imac3" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
+
+        <route id="listenPir_gf_achterdeur17" autoStartup="true" startupOrder="209">
+            <from uri="paho:oh/all/pir_gf_achterdeur17/state"/>
+            <convertBodyTo type="java.lang.String"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "CLOSED"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="pir_gf_achterdeur17" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:pir_gf_achterdeur17_updated"/>
         </route>
 
         <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="301">
