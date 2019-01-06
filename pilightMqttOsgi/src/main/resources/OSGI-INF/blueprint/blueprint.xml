@@ -43,17 +43,17 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <javaScript>
                         !request.headers.get('LightsOnIntensityThreshold')
                     </javaScript>
+                    <setHeader headerName="CamelHttpMethod">
+                        <constant>GET</constant>
+                    </setHeader>
+                    <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
+                    <log message="Response LightsOnIntensityThreshold is ${body}"/>
                 </when>
-                <setHeader headerName="CamelHttpMethod">
-                    <constant>GET</constant>
-                </setHeader>
-                <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold" />
-                <log message="Response LightsOnIntensityThreshold is ${body}"/>
             </choice>
             <setHeader headerName="CamelHttpMethod">
                 <constant>GET</constant>
             </setHeader>
-            <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold" />
+            <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
             <log message="Test: Response LightsOnIntensityThreshold is ${body}"/>
         </route>
 
@@ -390,7 +390,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <bean ref="Runtime" method="freeMemory"/>
             <convertBodyTo type="java.lang.String"/>
             <to uri="paho:sensors/all/runtime/freeMemory"/>
-    </route>
+        </route>
 
 
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
@@ -431,7 +431,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         request.headers.get('AutoOffEnabled')
                         &amp;&amp;
                         (!request.headers.get('bg_w_tv_w') // tv is off for at least x times
-                         &amp;&amp; (request.headers.get('bg_w_tv_w_stable')>14)
+                        &amp;&amp; (request.headers.get('bg_w_tv_w_stable')>14)
                         )
                         &amp;&amp;
                         !request.headers.get('bg_x_imac2') // and imac is off

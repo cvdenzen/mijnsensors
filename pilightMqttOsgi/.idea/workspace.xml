@@ -2,13 +2,13 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" line="384" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" line="389" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Added DHT11 connection">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,19 +22,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4380">
-              <caret line="377" column="53" selection-start-line="377" selection-start-column="53" selection-end-line="377" selection-end-column="53" />
+            <state relative-caret-position="397">
+              <caret line="50" column="23" selection-start-line="50" selection-start-column="23" selection-end-line="50" selection-end-column="23" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="884">
+            <state relative-caret-position="504">
               <caret line="178" selection-start-line="121" selection-end-line="178" />
             </state>
           </provider>
@@ -238,8 +238,8 @@
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" />
         <option value="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
       </list>
     </option>
   </component>
@@ -301,7 +301,43 @@
           <select />
         </subPane>
       </pane>
-      <pane id="ProjectPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="blueprint" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -776,7 +812,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5279762" side_tool="true" weight="0.32765532" />
-      <window_info active="true" anchor="bottom" id="Messages" order="8" sideWeight="0.47202381" visible="true" weight="0.3265306" />
+      <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.47202381" visible="true" weight="0.3265306" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Dependency Viewer" order="10" visible="true" weight="0.32857144" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.46666667" weight="0.32857144" />
@@ -1143,13 +1179,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4380">
-          <caret line="377" column="53" selection-start-line="377" selection-start-column="53" selection-end-line="377" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1545">
@@ -1217,8 +1246,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="884">
+        <state relative-caret-position="504">
           <caret line="178" selection-start-line="121" selection-end-line="178" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="397">
+          <caret line="50" column="23" selection-start-line="50" selection-start-column="23" selection-end-line="50" selection-end-column="23" />
         </state>
       </provider>
     </entry>
