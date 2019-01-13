@@ -1,5 +1,7 @@
 Status 20180215: UNDER DEVELOPMENT
-Beware: there is another README.md file at mijnsensors/
+Beware: there is another (old) README.md file at mijnsensors/
+
+This files describes the actions to take for the separate karaf instance, NOT for the openhab instance
 
 repo-add activemq
 feature:install activemq-broker
@@ -9,7 +11,10 @@ feature:install camel
 #feature:repo-add spring-legacy
 
 #
-# feature install can be done by pilightmqttosgi-features.xml
+# feature install can be done by pilightmqttosgi-features.xml.
+# Copy this file (nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml) to /usr/share/openhab2/addons:
+# iMac: scp /Users/carl/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml pi@rpi2:tmp
+# rpi: user openhab, cp -a /home/pi/tmp/pilightmqttosgi-features.xml /usr/share/openhab2/addons
 # feature:install pilightmqttosgi
 #
 # since karaf 4.2 (20180820) needs next features for activemq
