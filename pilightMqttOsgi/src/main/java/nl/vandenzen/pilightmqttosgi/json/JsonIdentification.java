@@ -4,7 +4,7 @@ package nl.vandenzen.pilightmqttosgi.json;
 public class JsonIdentification {
     public JsonIdentification(String action, Integer core, Integer receiver, Integer config, Integer forward, String uuid, String media) {
         this.action = action;
-        JsonIdentification.IdentificationOptions options=this.new IdentificationOptions(core,receiver,config,forward);
+        JsonIdentification.IdentificationOptions options = this.new IdentificationOptions(core, receiver, config, forward);
         this.options = options;
         this.uuid = uuid;
         this.media = media;
@@ -16,12 +16,13 @@ public class JsonIdentification {
     public String media;
 
     public class IdentificationOptions {
-        public IdentificationOptions(Integer core,Integer receiver,Integer config,Integer forward) {
-            this.core=core;
-            this.receiver=receiver;
-            this.config=config;
-            this.forward=forward;
+        public IdentificationOptions(Integer core, Integer receiver, Integer config, Integer forward) {
+            this.core = core;
+            this.receiver = receiver;
+            this.config = config;
+            this.forward = forward;
         }
+
         public Integer core;
         public Integer receiver;
         public Integer config;
@@ -29,10 +30,10 @@ public class JsonIdentification {
     }
 }
 
-    /**
-     * pilightIdentify without newlines because it is input to pilight. I am not
-     * sure whether newlines are allowed.
-     */
+/**
+ * pilightIdentify without newlines because it is input to pilight. I am not
+ * sure whether newlines are allowed.
+ */
     /*
     final static String pilightIdentify = "{" +
             "\"action\":\"identify\"," +

@@ -1,0 +1,47 @@
+
+{
+  "devices": {
+    "kaku_d_0": {
+      "protocol": [ "kaku_switch_old" ],
+      "id": [{
+        "id": 3,
+        "unit": 0
+      }],
+      "state": "on"
+    }
+  },
+  "rules": {},
+  "gui": {},
+  "settings": {
+    "port": 5017,
+    "log-level": 6,
+    "pid-file": "/var/run/pilight.pid",
+    "log-file": "/var/log/pilight.log",
+    "webserver-enable": 1,
+    "webserver-root": "/usr/local/share/pilight/webgui",
+    "webserver-http-port": 5001,
+    "webserver-https-port": 5002,
+    "webserver-cache": 1,
+    "gpio-platform": "raspberrypi2"
+  },
+  "hardware": {
+    "433gpio": {
+      "sender": 0,
+      "receiver": 1
+    }
+  },
+  "registry": {
+    "webserver": {
+      "ssl": {
+        "certificate": {
+          "location": "/etc/pilight/pilight.pem"
+        }
+      }
+    },
+    "pilight": {
+      "version": {
+        "current": "8.1.4"
+      }
+    }
+  }
+}

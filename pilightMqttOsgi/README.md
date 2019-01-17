@@ -114,7 +114,7 @@ git commit
 git push
 
 Connect to openhab system (raspberry):
-Terminal, ssh pi@192.168.2.9
+Terminal, ssh pi@192.168.2.9 (ssh pi@rpi2)
 (su is niet nodig voor deze app, draait onder user pi ?, beter om openhab met env te doen: sudo -E -s -u openhab)
 cd ~/gitrepos/mijnsensors
 git pull
@@ -124,6 +124,26 @@ service pimatic-app restart
 plugin homeduino laden (eenmalig). Geen pilight (wordt niet meer ondersteund).
 
 openhab@raspberrypi:/home/pi/gitrepos/etc_openhab2$ gpio readall
+
+============================================================================
+MySensors:
+gateway on rpi:
+git clone ....
+edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197
+
+./configure --my-transport=rfm69 --my-rfm69-frequency=868 \
+--my-gateway=mqtt --my-controller-ip-address=127.0.0.1 \
+--my-mqtt-publish-topic-prefix=mysensors/all \
+--my-mqtt-subscribe-topic-prefix=+/mysensors \
+--my-mqtt-client-id=mygateway1 \
+--my-mqtt-user=mysensors \
+--my-mqtt-password='<PASS>'
+# <PASS>: see lastpass, activemq.xml, user mysensors, passwd. Do not use strange characters like #^&$ (?),
+# shell/make can be confused.
+make
+sudo make install
+*/
+============================================================================
 
 ============================================================================
 rpi board connection (as of dec 2018), should be usable on rpi2 and rpi3.

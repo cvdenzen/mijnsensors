@@ -14,7 +14,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
              http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
-
+        <dataFormats>
+            <json id="jsonJsonOHRestItem" library="Gson" unmarshalTypeName="nl.vandenzen.pilightmqttosgi.json.JsonOHRestItem"/>
+        </dataFormats>
         <!-- hopeloos, te weinig documentatie om dit goed te krijgen -->
         <!-- route id="DefineCache" autoStartup="true" startupOrder="5">
 		<from uri="ehcache://oh?configurationUri=file:${karaf.home}/etc/ehcache.xml"/>
@@ -55,6 +57,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setHeader>
             <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
             <log message="Test: Response LightsOnIntensityThreshold is ${body}"/>
+            <unmarshal ref="jsonJsonOHRestItem"/>
+            <log message="Test, unmarshalled is ${body}"/>
         </route>
 
         <!-- Zet lichten aan -->
