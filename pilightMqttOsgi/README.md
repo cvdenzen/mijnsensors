@@ -1,7 +1,8 @@
 Status 20180215: UNDER DEVELOPMENT
 Beware: there is another (old) README.md file at mijnsensors/
 
-This files describes the actions to take for the separate karaf instance, NOT for the openhab instance
+This files describes the actions to take for the separate karaf instance, NOT for the openhab instance.
+Install karaf (instructions somewhere else in this README.md file).
 
 repo-add activemq
 feature:install activemq-broker
@@ -43,21 +44,9 @@ feature:install camel-quartz2
 
 feature:install jms
 
-feature:install service-wrapper # just to create karaf.service file, because the wrapper gives (tool readelf) machine Intel 80386 code
-
 #
 # end of feature install commands
 #
-
-wrapper:install
-
-# vi bin/karaf.service, add User=openhab in [Service]
-# See https://www.dexterindustries.com/howto/run-a-program-on-your-raspberry-pi-at-startup/
-# cp bin/karaf.service /etc/systemd/system # or make a link
-
-
-# if already in use by e.g. openhab, change ssh port in etc/apache.karaf.shell.cfg from 8101 in e.g. 8102.
-# and etc/jetty.xml change secure.port to e.g. 8444.
 
 # on raspberry, user root. (if chown -R openhab.openhab /usr/apache-karaf
 adduser pi openhab
@@ -72,13 +61,6 @@ scp ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.j
 # On raspberry:
 sudo -s -E -u openhab
 cp /home/pi/tmp/pilightMqttOsgi-1.0-SNAPSHOT.jar /usr/share/apache-karaf/deploy
-
-# karaf service (systemd) on rpi is not possible through the service-wrapper (that only supports 80386 architecture).
-# see https://karaf.apache.org/manual/latest/#_service_script_templates
-cd bin/contrib
-./karaf-service.sh  -k /usr/share/apache-karaf -u openhab
-cp karaf*service /etc/systemd/system
-systemctl enable karaf
 
 Try to make pilight to mqtt gateway, something like pilight2mqtt. But there is a problem with pilight2mqtt: it cannot
 handle multiple top level json objects and crashes. Because I prefer Java over Python, I decided to rebuild pilight2mqtt
@@ -150,7 +132,13 @@ Config is in addons.cfg file, no more cvd-openhab-features.xml
 ============================================================================
 Karaf (for pilightMqttOsgi):
 Install karaf as service in systemd in Linux: see web site karaf:
-karaf runtime, documentation, service wrapper.
+karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
+Run in subdir contrib karaf-service.sh -k /usr/share/apache-4.2.2
+# if already in use by e.g. openhab, change ssh port in etc/org.apache.karaf.shell.cfg from 8101 in e.g. 8102.
+# and etc/jetty.xml change secure.port to e.g. 8444.
+
+sudo systemctl enable /usr/share/apache-karaf-4.2.2/bin/contrib/karaf.service
+And then client, repo-add etc (see sowewhere else in this README.md).
 
 ============================================================================
 rpi board connection (as of dec 2018), should be usable on rpi2 and rpi3.
