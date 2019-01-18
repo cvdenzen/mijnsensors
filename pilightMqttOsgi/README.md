@@ -144,6 +144,13 @@ make
 sudo make install
 */
 ============================================================================
+Openhab2:
+apt-get openhab2, openhab2-addons, openhab2-addons-legacy, see web site openhab.
+Config is in addons.cfg file, no more cvd-openhab-features.xml
+============================================================================
+Karaf (for pilightMqttOsgi):
+Install karaf as service in systemd in Linux: see web site karaf:
+karaf runtime, documentation, service wrapper.
 
 ============================================================================
 rpi board connection (as of dec 2018), should be usable on rpi2 and rpi3.
