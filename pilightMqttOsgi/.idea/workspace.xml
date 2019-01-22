@@ -6,7 +6,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Syntax error in blueprint (closing /when in wrong place)">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/pilight/config_board_2019_1.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
@@ -23,15 +22,6 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/json/JsonRequestIdentification.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="2505">
@@ -40,11 +30,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="713">
-              <caret line="153" lean-forward="true" selection-start-line="153" selection-end-line="153" />
+            <state relative-caret-position="675">
+              <caret line="45" selection-start-line="45" selection-end-line="45" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="3" column="40" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -53,12 +52,12 @@
         <entry file="file://$PROJECT_DIR$/src/main/resources/pilight/config_board_2019_1.json">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="705">
-              <caret line="47" lean-forward="true" selection-start-line="47" selection-end-line="47" />
+              <caret line="47" selection-start-line="47" selection-end-line="47" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="855">
@@ -123,7 +122,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>spring</find>
       <find>geroni</find>
       <find>geronimo</find>
       <find>userName</find>
@@ -153,6 +151,7 @@
       <find>mysensors</find>
       <find>pilight.con</find>
       <find>config.json</find>
+      <find>port</find>
     </findStrings>
     <replaceStrings>
       <replace>${camel.vesion}</replace>
@@ -275,23 +274,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <expand>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="pilightMqttOsgi" type="cbb8eebc:String" user="pilightMqttOsgi" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="pilightMqttOsgi" type="cbb8eebc:String" user="pilightMqttOsgi" />
-              <item name="src/main" type="cbb8eebc:String" user="src/main" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -369,13 +351,30 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <expand>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pilightMqttOsgi" type="cbb8eebc:String" user="pilightMqttOsgi" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="pilightMqttOsgi" type="cbb8eebc:String" user="pilightMqttOsgi" />
+              <item name="src/main" type="cbb8eebc:String" user="src/main" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="true" />
     <property name="Repository.Attach.Sources" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547821691736" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547826406507" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.09113608" />
@@ -828,7 +827,7 @@
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.53265303" visible="true" weight="0.2735043" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.53265303" visible="true" weight="0.2765568" />
       <window_info id="Structure" order="1" sideWeight="0.422449" side_tool="true" weight="0.30586082" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="3" />
@@ -1129,13 +1128,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="38" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1305">
@@ -1233,10 +1225,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/pilight/config_board_2019_1.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="855">
-          <caret line="57" column="72" selection-start-line="57" selection-start-column="72" selection-end-line="57" selection-end-column="72" />
+        <state relative-caret-position="705">
+          <caret line="47" selection-start-line="47" selection-end-line="47" />
         </state>
       </provider>
     </entry>
@@ -1244,6 +1236,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="45">
           <caret line="3" column="17" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/pilight/config.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="690">
+          <caret line="46" column="1" selection-start-line="46" selection-start-column="1" selection-end-line="46" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -1268,24 +1267,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/pilight/config.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
-          <caret line="46" column="1" selection-start-line="46" selection-start-column="1" selection-end-line="46" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/pilight/config_board_2019_1.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="705">
-          <caret line="47" lean-forward="true" selection-start-line="47" selection-end-line="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="713">
-          <caret line="153" lean-forward="true" selection-start-line="153" selection-end-line="153" />
+        <state relative-caret-position="675">
+          <caret line="45" selection-start-line="45" selection-end-line="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="40" selection-start-line="3" selection-start-column="40" selection-end-line="3" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="855">
+          <caret line="57" column="72" selection-start-line="57" selection-start-column="72" selection-end-line="57" selection-end-column="72" />
         </state>
       </provider>
     </entry>
