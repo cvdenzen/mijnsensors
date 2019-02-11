@@ -32,6 +32,19 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
 
+        <!-- Set sensible defaults at startup (direct:init, manual for testing purposes) -->
+        <route id="SettingDefaults" autoStartup="true">
+            <!-- from uri="timer:SettingDefaultsTimer?period=5000&amp;repeatCount=1"/ -->
+            <from uri="activemq:topic:init"/>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>GET</constant>
+            </setHeader>
+            <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
+            <log message="TestA: Response LightsOnIntensityThreshold is ${body}"/>
+            <unmarshal ref="jsonJsonOHRestItem"/>
+            <log message="TestA:, unmarshalled is ${body}"/>
+        </route>
+
         <!-- Request a setting if not yet set -->
         <route id="requestLightsOnIntensityThreshold" autoStartup="true">
             <from uri="quartz2://groep/timerRq001?cron=0/10+*+*+*+*+?"/>

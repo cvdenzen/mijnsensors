@@ -8,6 +8,7 @@
         <feature>camel-paho</feature>
         <feature>camel-gson</feature>
         <feature>camel-stream</feature>
+        <feature>camel-http4</feature>
         <feature>camel-netty4</feature>
         <feature>camel-mqtt</feature>
         <feature>camel-quartz2</feature>
