@@ -2,28 +2,14 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
-    <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" line="406" />
+    <bookmark url="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" line="407" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Syntax error in blueprint (closing /when in wrong place)">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="http4 as feature (necessary). Some failed experiments in blueprint.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/Activator$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/Activator.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/OTAProtocolExtractor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionControl$ControlCode.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionControl$ControlCodes.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionControl.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionSend$ActionCode.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonActionSend.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonIdentification$IdentificationOptions.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonIdentification.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse$Message.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonReceiverResponse.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonRequestIdentification.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/nl/vandenzen/pilightmqttosgi/json/JsonStatusResponse.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
@@ -41,17 +27,35 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2730">
-              <caret line="182" column="35" selection-start-line="182" selection-start-column="30" selection-end-line="182" selection-end-column="35" />
+            <state relative-caret-position="3360">
+              <caret line="224" column="64" selection-start-line="224" selection-start-column="64" selection-end-line="224" selection-end-column="64" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="165">
+              <caret line="370" column="57" selection-start-line="370" selection-start-column="57" selection-end-line="370" selection-end-column="57" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="27" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
+            <state relative-caret-position="270">
+              <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jar://$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar!/META-INF/MANIFEST.MF">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="300">
+              <caret line="20" column="30" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -121,9 +125,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>password</find>
-      <find>active</find>
-      <find>ACTIVEMQ</find>
       <find>sif</find>
       <find>foo</find>
       <find>activemq</find>
@@ -151,6 +152,9 @@
       <find>Test:</find>
       <find>jsonJsonOHRestItem</find>
       <find>camel</find>
+      <find>freeMem</find>
+      <find>gson.reflec</find>
+      <find>gson</find>
     </findStrings>
     <replaceStrings>
       <replace>${camel.vesion}</replace>
@@ -226,9 +230,9 @@
         <option value="$PROJECT_DIR$/src/main/resources/pilight/config.json" />
         <option value="$PROJECT_DIR$/src/main/resources/pilight/config_board_2019_1.json" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml" />
+        <option value="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" />
       </list>
     </option>
   </component>
@@ -260,7 +264,7 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1680" />
     <option name="height" value="1023" />
@@ -289,7 +293,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -300,6 +303,11 @@
             <path>
               <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
               <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -307,30 +315,6 @@
               <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="pilightmqttosgi" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="pilightmqttosgi" type="462c0819:PsiDirectoryNode" />
-              <item name="json" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
@@ -338,14 +322,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="etc" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
@@ -363,25 +339,18 @@
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="blueprint" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="pilightMqttOsgi" type="b2602c69:ProjectViewProjectNode" />
-              <item name="pilightMqttOsgi" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="pilight" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="Downloaded.Files.Path.Enabled" value="true" />
     <property name="Repository.Attach.JavaDocs" value="true" />
     <property name="Repository.Attach.Sources" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547826406507" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550002435786" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.09113608" />
@@ -390,18 +359,18 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint" />
-      <recent name="$PROJECT_DIR$/lib" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="nl.vandenzen.pilightmqttosgi" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/resources" />
       <recent name="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="nl.vandenzen.pilightmqttosgi" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib" />
+      <recent name="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -483,13 +452,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00034" summary="Routes are working!">
-      <created>1535278003910</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1535278003911</updated>
     </task>
     <task id="LOCAL-00035" summary="bueprint restored but not (yet) used. Too difficult to get bh1750 object into blueprint route.">
       <created>1535281711418</created>
@@ -827,14 +789,21 @@
       <option name="project" value="LOCAL" />
       <updated>1547763725509</updated>
     </task>
-    <option name="localTasksCounter" value="83" />
+    <task id="LOCAL-00083" summary="http4 as feature (necessary). Some failed experiments in blueprint.">
+      <created>1549917369615</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1549917369616</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1680" height="1050" extended-state="6" />
+    <frame x="0" y="23" width="1680" height="1023" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.53265303" visible="true" weight="0.3003663" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.53265303" visible="true" weight="0.32234433" />
       <window_info id="Structure" order="1" sideWeight="0.422449" side_tool="true" weight="0.30586082" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Designer" order="3" />
@@ -849,7 +818,7 @@
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.5279762" side_tool="true" weight="0.32765532" />
-      <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.47202381" visible="true" weight="0.3265306" />
+      <window_info anchor="bottom" id="Messages" order="8" sideWeight="0.47202381" weight="0.3265306" />
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Dependency Viewer" order="10" visible="true" weight="0.32857144" />
       <window_info anchor="bottom" id="Version Control" order="11" sideWeight="0.46666667" weight="0.32857144" />
@@ -948,7 +917,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="pir beter gemaakt met timer" />
     <MESSAGE value="lights off better: if tv or imac is on, do not turn off lights at night" />
     <MESSAGE value="Delay in lights off. New strategy, cleaner delay timer. javaScript used to compose log message." />
     <MESSAGE value="Calculate stable count. Prepare for check for e.g. tv (that sometimes misses the ON state because of network/tv problems)" />
@@ -973,7 +941,8 @@
     <MESSAGE value="Added DHT11 connection" />
     <MESSAGE value="Syntax error in blueprint (closing /when in wrong place)" />
     <MESSAGE value="pilight/config.json added. Is config file for package pilight" />
-    <option name="LAST_COMMIT_MESSAGE" value="pilight/config.json added. Is config file for package pilight" />
+    <MESSAGE value="http4 as feature (necessary). Some failed experiments in blueprint." />
+    <option name="LAST_COMMIT_MESSAGE" value="http4 as feature (necessary). Some failed experiments in blueprint." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/InboundDelimiterBasedHandler.java" />
@@ -1030,7 +999,6 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/BH1750Processor.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/Users/carl/Downloads/apache-karaf-4.1.5/etc/pilightmqttosgi.properties" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/pir_blueprint.xml" />
-    <entry file="jar://$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar!/OSGI-INF/blueprint/blueprint.xml" />
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/UPSPIcoRoutePolicy.java" />
     <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/blueprint.xml" />
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyBlueprintRouteBuilder.java" />
@@ -1059,13 +1027,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="135">
           <caret line="13" column="33" selection-start-line="13" selection-start-column="33" selection-end-line="13" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar!/META-INF/MANIFEST.MF">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
         </state>
       </provider>
     </entry>
@@ -1204,13 +1165,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="630">
-          <caret line="42" column="50" selection-start-line="42" selection-start-column="50" selection-end-line="42" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/json/JsonOHRestItem.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1260">
@@ -1239,10 +1193,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar!/OSGI-INF/blueprint/blueprint.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="34" column="89" selection-start-line="34" selection-start-column="89" selection-end-line="34" selection-end-column="89" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2730">
-          <caret line="182" column="35" selection-start-line="182" selection-start-column="30" selection-end-line="182" selection-end-column="35" />
+        <state relative-caret-position="3360">
+          <caret line="224" column="64" selection-start-line="224" selection-start-column="64" selection-end-line="224" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar!/META-INF/MANIFEST.MF">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="20" column="30" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="30" />
         </state>
       </provider>
     </entry>
@@ -1288,10 +1263,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="27" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
+        <state relative-caret-position="165">
+          <caret line="370" column="57" selection-start-line="370" selection-start-column="57" selection-end-line="370" selection-end-column="57" />
         </state>
       </provider>
     </entry>

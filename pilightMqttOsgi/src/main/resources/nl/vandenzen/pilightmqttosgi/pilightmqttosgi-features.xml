@@ -16,6 +16,7 @@
         <feature>camel-script</feature>
         <feature>camel-script-javascript</feature>
         <feature>jms</feature>
+        <feature>activemq-camel</feature>
         <feature>service-wrapper</feature>
         <!--bundle>pilightMqttOsgi OSGi Bundle</bundle -->
         <bundle>file:/home/pi/tmp/pilightMqttOsgi-1.0-SNAPSHOT.jar</bundle>
