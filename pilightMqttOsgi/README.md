@@ -6,16 +6,15 @@ Install karaf (instructions somewhere else in this README.md file).
 
 repo-add activemq
 feature:install activemq-broker
-# camel 2.23.0
-repo-add camel
+repo-add camel 2.23.1
 feature:install camel
 #feature:repo-add spring-legacy
 
 #
 # feature install can be done by pilightmqttosgi-features.xml.
-# Copy this file (nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml) to /usr/share/openhab2/addons:
+# Copy this file (nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml) to karaf deploy directory
 # iMac: scp /Users/carl/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml pi@rpi2:tmp
-# rpi: user openhab, cp -a /home/pi/tmp/pilightmqttosgi-features.xml /usr/share/openhab2/addons
+# rpi: user openhab, cp -a /home/pi/tmp/pilightmqttosgi-features.xml /usr/share/apache-karaf/deploy
 # feature:install pilightmqttosgi
 #
 # since karaf 4.2 (20180820) needs next features for activemq
@@ -54,8 +53,8 @@ chmod g+w /usr/share/apache-karaf/etc
 chmod g+w /usr/share/apache-karaf/deploy
 
 # pilight, in a unix shell on iMac
-scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@192.168.2.9:/usr/share/apache-karaf/etc/
-scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/activemq.xml pi@192.168.2.9:/usr/share/apache-karaf/etc/
+scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@1rpi2:/usr/share/apache-karaf/etc/
+copy activemq.xml from lastpass to /usr/share/apache-karaf/etc/activemq.xml
 # copy jar from imac to raspberry
 scp ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@192.168.2.9:tmp
 # On raspberry:
@@ -133,7 +132,9 @@ Config is in addons.cfg file, no more cvd-openhab-features.xml
 Karaf (for pilightMqttOsgi):
 Install karaf as service in systemd in Linux: see web site karaf:
 karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
-Run in subdir contrib karaf-service.sh -k /usr/share/apache-4.2.2
+Run in subdir contrib karaf-service.sh -k /usr/share/apache-karaf
+vi karaf.service, change user/group
+cp karaf.service /usr/share/apache-karaf/bin (er is een symlink vanuit /etc/systemd/system)
 # if already in use by e.g. openhab, change ssh port in etc/org.apache.karaf.shell.cfg from 8101 in e.g. 8102.
 # and etc/jetty.xml change secure.port to e.g. 8444.
 

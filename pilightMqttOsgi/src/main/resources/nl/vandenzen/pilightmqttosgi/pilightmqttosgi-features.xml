@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <features name="pilightmqttosgixml" xmlns="http://karaf.apache.org/xmlns/features/v1.3.0">
     <feature name="pilightmqttosgi" version="1.0.0-SNAPSHOT">
-        <feature version="[4.2.1,4.2.1]">aries-blueprint</feature>
+        <feature>aries-blueprint</feature>
         <feature>shell-compat</feature>
         <feature>camel</feature>
         <feature>camel-jms</feature>

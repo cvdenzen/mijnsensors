@@ -17,7 +17,7 @@
 
 -->
 <!-- Seems to work on 24 july 2018. Socket 1883 is not visible in netstat -a, but it is working (at least telnet localhost 1883 works) -->
-
+<!-- DEPRECATED. Now in LastPass -->
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
