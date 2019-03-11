@@ -196,4 +196,5 @@ backlight led: 5V 23mA (isolated from rest)
 RS=register select
 RW=H=read, L=write. USE WRITE ONLY, otherwise 5V will be supplied to raspberry pins!
 pwm, resistor, transistor.
+2019-03-11 BME280 added (i2c address 76, python bme280.py works).
 
