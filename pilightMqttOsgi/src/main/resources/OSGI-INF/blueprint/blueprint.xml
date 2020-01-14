@@ -33,8 +33,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
         <!-- Set sensible defaults at startup (direct:init, manual for testing purposes)
-             DISABLED! Openhab is down (feb 2019) -->
-        <route id="SettingDefaults" autoStartup="false">
+        <route id="SettingDefaults" autoStartup="true">
             <!-- from uri="timer:SettingDefaultsTimer?period=5000&amp;repeatCount=1"/ -->
             <from uri="activemq:topic:init"/>
             <setHeader headerName="CamelHttpMethod">
@@ -46,8 +45,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <log message="TestA:, unmarshalled is ${body}"/>
         </route>
 
-        <!-- Request a setting if not yet set. DISABLED, OpenHAB is down as of feb 2019 -->
-        <route id="requestLightsOnIntensityThreshold" autoStartup="false">
+
+        <route id="requestLightsOnIntensityThreshold" autoStartup="true">
             <from uri="quartz2://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
             <setHeader headerName="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
@@ -147,7 +146,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
 
-        <route id="pir_gf_achterdeur17_updated" autoStartup="false" startupOrder="201">
+        <route id="pir_gf_achterdeur17_updated" autoStartup="true" startupOrder="201">
             <from uri="direct:pir_gf_achterdeur17_updated"/>
             <!-- set states of light etc. in header of the message -->
             <to uri="direct:SetHeaders"/>
@@ -368,7 +367,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setBody>
             <bean ref="AutoOnEnabled" method="setValue"/>
         </route>
-        <route id="AutoOffEnabled_aan" autoStartup="false" startupOrder="302">
+        <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz2://groep/timer2?cron=47+50+22+*+*+?"/>
             <setBody>
