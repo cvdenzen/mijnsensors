@@ -32,7 +32,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
 
-        <!-- Set sensible defaults at startup (direct:init, manual for testing purposes)
+        <!-- Set sensible defaults at startup (direct:init, manual for testing purposes) -->
         <route id="SettingDefaults" autoStartup="true">
             <!-- from uri="timer:SettingDefaultsTimer?period=5000&amp;repeatCount=1"/ -->
             <from uri="activemq:topic:init"/>
