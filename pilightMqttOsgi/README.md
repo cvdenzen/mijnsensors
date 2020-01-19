@@ -55,8 +55,9 @@ chmod g+w /usr/share/apache-karaf/deploy
 # pilight, in a unix shell on iMac
 scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@1rpi2:/usr/share/apache-karaf/etc/
 copy activemq.xml from lastpass to /usr/share/apache-karaf/etc/activemq.xml
-# copy jar from imac to raspberry
-scp ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@192.168.2.9:tmp
+# copy jar from imac to raspberry (rpi2=192.168.2.9 jan 2020)
+scp ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi2:/usr/share/apache-karaf/deploy
+scp ~/gitrepos/mijnsensors/pilightMqttOsgi/ pi@rpi2:/usr/share/apache-karaf/deploy
 # On raspberry:
 sudo -s -E -u openhab
 cp /home/pi/tmp/pilightMqttOsgi-1.0-SNAPSHOT.jar /usr/share/apache-karaf/deploy

@@ -15,7 +15,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
         <dataFormats>
-            <json id="jsonJsonOHRestItem" library="Gson" unmarshalTypeName="nl.vandenzen.pilightmqttosgi.json.JsonOHRestItem"/>
+            <json id="jsonJsonOHRestItem" library="Gson"
+                  unmarshalTypeName="nl.vandenzen.pilightmqttosgi.json.JsonOHRestItem"/>
         </dataFormats>
         <!-- hopeloos, te weinig documentatie om dit goed te krijgen -->
         <!-- route id="DefineCache" autoStartup="true" startupOrder="5">
@@ -45,6 +46,80 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <log message="TestA:, unmarshalled is ${body}"/>
         </route>
 
+        <!-- Set item to value. Input: header.OHItem, body -->
+        <route id="setOHItem" autoStartup="false">
+            <from uri="direct:setOHItem"/>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+            <setHeader headerName="Content-Type">
+                <constant>text/plain</constant>
+            </setHeader>
+            <setHeader headerName="Accept">
+                <constant>application/json</constant>
+            </setHeader>
+            <setBody>
+                <simple>log from setOHItem http4://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+            </setBody>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <to uri="http4://127.0.0.1:8080/rest/items/${header.OHItem}"/>
+        </route>
+
+
+        <!-- Test setOHItem-->
+        <route id="testSetOHItem" autoStartup="true">
+            <from uri="quartz2://groep/timerTestSetOHItem?cron=0/10+*+*+*+*+?"/>
+            <setHeader headerName="OHItem">
+                <constant>LampAchterdeur_Brightness</constant>
+            </setHeader>
+            <setBody>
+                <simple>log from testSetOHItem http4://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+            </setBody>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <setBody>
+                <!-- percentage 0..100 -->
+                <simple>50</simple>
+            </setBody>
+            <to uri="direct:setOHItem"/>
+        </route>
+
+        <!-- Deze werkt 17 jan 2020.-->
+        <route id="achterlichtAan2020" autoStartup="false">
+            <from uri="direct:achterlichtaan2020"/>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+            <setHeader headerName="Content-Type">
+                <constant>text/plain</constant>
+            </setHeader>
+            <setHeader headerName="Accept">
+                <constant>application/json</constant>
+            </setHeader>
+            <setBody>
+                <!-- percentage 0..100 -->
+                <simple>100</simple>
+            </setBody>
+            <to uri="http4://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
+        </route>
+
+
+        <route id="achterlichtUit2020" autoStartup="false">
+            <from uri="direct:achterlichtuit2020"/>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>POST</constant>
+            </setHeader>
+            <setHeader headerName="Content-Type">
+                <constant>text/plain</constant>
+            </setHeader>
+            <setHeader headerName="Accept">
+                <constant>application/json</constant>
+            </setHeader>
+            <setBody>
+                <!-- percentage 0..100 -->
+                <simple>0</simple>
+            </setBody>
+            <to uri="http4://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
+        </route>
 
         <route id="requestLightsOnIntensityThreshold" autoStartup="true">
             <from uri="quartz2://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
@@ -101,19 +176,24 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Zet 1 licht aan -->
         <route id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan" autoStartup="true" startupOrder="103">
             <from uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
+            <!-- old jan 2020 -->
             <setBody>
                 <constant>on</constant>
             </setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
+            <to uri="direct:achterlichtaan2020"/>
         </route>
         <!-- Zet 1 licht uit -->
         <route id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit" autoStartup="true" startupOrder="104">
             <from uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
+            <!-- old jan 2020 -->
             <setBody>
                 <constant>off</constant>
             </setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
+            <to uri="direct:achterlichtuit2020"/>
         </route>
+
         <!-- Zet 1 licht aan -->
         <route id="Light_GF_Huiskamer_Achter_Staandelamp_aan" autoStartup="true" startupOrder="105">
             <from uri="direct:Light_GF_Huiskamer_Achter_Staandelamp_aan"/>
@@ -164,13 +244,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         &amp;&amp;
                         request.headers.get('LichtIntensiteit_Woonkamer')&lt;request.headers.get('LightsOnIntensityThreshold')
                         &amp;&amp;
-                        !request.headers.get('Light_GF_Huiskamer_Achterdeur_Schemerlamp') // licht is uit
+                        request.headers.get('LampAchterdeur_Brightness')&lt;1 // licht is uit
                     </javaScript>
                     <setBody>
                         <simple>het licht is uit</simple>
                     </setBody>
                     <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <to uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
+                    <to uri="direct:achterlichtaan2020"/>
                     <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
                     <convertBodyTo type="java.lang.String"/>
                     <convertBodyTo type="java.lang.Long"/>
@@ -337,12 +417,37 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:LightsOffCalc"/>
         </route>
 
+        <!-- not used 17 jan 2020 -->
         <route id="listenPir_gf_achterdeur17" autoStartup="true" startupOrder="209">
             <from uri="paho:oh/all/pir_gf_achterdeur17/state"/>
             <convertBodyTo type="java.lang.String"/>
             <choice>
                 <when>
                     <simple>${in.body} == "CLOSED"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="pir_gf_achterdeur17" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:pir_gf_achterdeur17_updated"/>
+        </route>
+
+
+        <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item -->
+        <route id="listenPir_gf_achterdeur17a" autoStartup="true" startupOrder="220">
+            <from uri="paho:mysensors/all/153/1/1/0/2"/>
+            <convertBodyTo type="java.lang.String"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "1"</simple>
                     <setBody>
                         <constant>true</constant>
                     </setBody>
@@ -479,6 +584,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- SetHeaders. Body contents not altered -->
         <route id="SetHeaders" autoStartup="true" startupOrder="501">
             <from uri="direct:SetHeaders"/>
+            <!-- Save body contents in header BodyContents -->
+            <setHeader headerName="BodyContents">
+                <simple>${body}</simple>
+            </setHeader>
             <setHeader headerName="LichtIntensiteit_Woonkamer">
                 <method ref="LichtIntensiteit_Woonkamer" method="getValue"/>
             </setHeader>
@@ -512,6 +621,18 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setHeader headerName="Light_GF_Huiskamer_Achterdeur_Schemerlamp">
                 <method ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
             </setHeader>
+            <setHeader headerName="CamelHttpMethod">
+                <constant>GET</constant>
+            </setHeader>
+            <to uri="http4://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
+            <log message="Response LampAchterdeur_Brightness is ${body}"/>
+            <setHeader headerName="LampAchterdeur_Brightness">
+                <simple>${body}</simple>
+            </setHeader>
+            <!-- Restore body -->
+            <setBody>
+                <javaScript>request.headers.get('BodyContents')</javaScript>
+            </setBody>
         </route>
 
     </camelContext>
@@ -542,7 +663,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <bean id="bg_x_imac3" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->
-        <argument value="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
+        <argument value="direct:achterlichtuit2020"/>
     </bean>
     <!-- For memory size reporting -->
     <bean id="Runtime" class="java.lang.Runtime"
