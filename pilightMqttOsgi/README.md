@@ -41,6 +41,8 @@ feature:install camel-netty4
 feature:install camel-mqtt
 feature:install camel-quartz2
 
+feature:install camel-jsonpath maar die werkt niet
+
 feature:install jms
 
 #

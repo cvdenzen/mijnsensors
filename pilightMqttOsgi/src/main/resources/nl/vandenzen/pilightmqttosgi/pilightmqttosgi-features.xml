@@ -15,6 +15,7 @@
         <feature>camel-http4</feature>
         <feature>camel-script</feature>
         <feature>camel-script-javascript</feature>
+        <feature>camel-jsonpath</feature>
         <feature>jms</feature>
         <feature>activemq-camel</feature>
         <feature>service-wrapper</feature>

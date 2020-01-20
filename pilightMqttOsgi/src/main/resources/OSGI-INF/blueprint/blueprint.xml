@@ -47,7 +47,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
         <!-- Set item to value. Input: header.OHItem, body -->
-        <route id="setOHItem" autoStartup="false">
+        <route id="setOHItem" autoStartup="true">
             <from uri="direct:setOHItem"/>
             <setHeader headerName="CamelHttpMethod">
                 <constant>POST</constant>
@@ -80,7 +80,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <!-- percentage 0..100 -->
                 <simple>50</simple>
             </setBody>
-            <to uri="direct:setOHItem"/>
+            <!-- to uri="direct:setOHItem"/ -->
         </route>
 
         <!-- Deze werkt 17 jan 2020.-->
@@ -621,18 +621,40 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setHeader headerName="Light_GF_Huiskamer_Achterdeur_Schemerlamp">
                 <method ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
             </setHeader>
+        </route>
+
+        <route id="test1" autoStartup="true" startupOrder="9002">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz2://groep/timer2?cron=0/10+*+*+*+*+?"/>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <log message="Body voordat headers voor http4 worden geset: ${body}"/>
             <setHeader headerName="CamelHttpMethod">
                 <constant>GET</constant>
             </setHeader>
+            <setHeader headerName="Content-Type">
+                <constant>text/plain</constant>
+            </setHeader>
+            <setHeader headerName="Accept">
+                <constant>application/json</constant>
+            </setHeader>
+            <setBody><constant> </constant></setBody>
+            <log message="setHeaders locL ${body}"/>
+            <!-- 21 jan: LampAchterdeur_Brightness is 89 procent, instelling door Hester -->
             <to uri="http4://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
             <log message="Response LampAchterdeur_Brightness is ${body}"/>
+            <setBody><jsonpath>$.state</jsonpath></setBody>
+            <log message="setHeaders locjsonpath ${body}"/>
             <setHeader headerName="LampAchterdeur_Brightness">
                 <simple>${body}</simple>
             </setHeader>
+            <log message="setHeaders locM ${body}"/>
             <!-- Restore body -->
-            <setBody>
+            <!--setBody>
                 <javaScript>request.headers.get('BodyContents')</javaScript>
-            </setBody>
+            </setBody -->
+            <log message="setHeaders locN ${body}"/>
         </route>
 
     </camelContext>

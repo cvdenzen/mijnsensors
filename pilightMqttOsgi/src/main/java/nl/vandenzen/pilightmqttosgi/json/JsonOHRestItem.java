@@ -12,6 +12,18 @@ package nl.vandenzen.pilightmqttosgi.json;
  * "tags":[],
  * "groupNames":["LightSensor","gInitializeZero"]}
  */
+/*
+20 jan 2020:
+{"link":"http://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness",
+"state":"89",
+"editable":true,
+"type":"Dimmer",
+"name":"LampAchterdeur_Brightness",
+"label":"Brightness",
+"category":"DimmableLight",
+"tags":[],
+"groupNames":[]}
+ */
 public class JsonOHRestItem {
 
     private String link;
@@ -21,6 +33,7 @@ public class JsonOHRestItem {
     private String type;
     private String name;
     private String label;
+    private String category;
     private String[] tags;
     private String[] groupNames;
 
@@ -78,6 +91,14 @@ public class JsonOHRestItem {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String[] getTags() {
