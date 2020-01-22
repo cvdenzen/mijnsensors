@@ -5,7 +5,7 @@ import org.apache.camel.EndpointInject;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.impl.DefaultExchange;
+import org.apache.camel.support.DefaultExchange;
 
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;

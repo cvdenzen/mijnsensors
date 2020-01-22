@@ -4,17 +4,24 @@ Beware: there is another (old) README.md file at mijnsensors/
 This files describes the actions to take for the separate karaf instance, NOT for the openhab instance.
 Install karaf (instructions somewhere else in this README.md file).
 
-repo-add activemq
+repo-add activemq (1.15.11 heb ik op 21 jan 2020)
 feature:install activemq-broker
-repo-add camel 2.23.1
+repo-add camel 3.0.1
 feature:install camel
 #feature:repo-add spring-legacy
 
 #
 # feature install can be done by pilightmqttosgi-features.xml.
-# Copy this file (nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml) to karaf deploy directory
+# Copy the file nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml to karaf deploy directory, but you also need the jar!!!
+
+# Do this:
 # iMac: scp /Users/carl/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml pi@rpi2:tmp
 # rpi: user openhab, cp -a /home/pi/tmp/pilightmqttosgi-features.xml /usr/share/apache-karaf/deploy
+
+# And not this:
+# deprecated: iMac: scp /Users/carl/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml pi@rpi2:tmp
+# deprecated: rpi: user openhab, cp -a /home/pi/tmp/pilightmqttosgi-features.xml /usr/share/apache-karaf/deploy
+
 # feature:install pilightmqttosgi
 #
 # since karaf 4.2 (20180820) needs next features for activemq
@@ -28,12 +35,11 @@ feature:install camel
 # karaf, install camel and camel-blueprint:
 feature:install camel
 
+feature:install camel-activemq
+
 feature:install camel-jms
 feature:install camel-paho
 
-#feature:install activemq-camel
-#feature:install activemq-cf # (connection factory)
-#feature:install activemq-blueprint # (no idea why)
 
 feature:install camel-gson
 feature:install camel-stream
@@ -41,7 +47,7 @@ feature:install camel-netty4
 feature:install camel-mqtt
 feature:install camel-quartz2
 
-feature:install camel-jsonpath maar die werkt niet
+feature:install camel-jsonpath maar die werkt niet, fout lijkt <!-- https://mvnrepository.com/artifact/net.minidev/accessors-smart not resolved
 
 feature:install jms
 
@@ -54,12 +60,13 @@ adduser pi openhab
 chmod g+w /usr/share/apache-karaf/etc
 chmod g+w /usr/share/apache-karaf/deploy
 
-# pilight, in a unix shell on iMac
+# pilight, in a unix shell on iMac (jan 2020: deprecated, no more pilight, everything is Philips Hue)
 scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@1rpi2:/usr/share/apache-karaf/etc/
 copy activemq.xml from lastpass to /usr/share/apache-karaf/etc/activemq.xml
+# rpi2: chmod g+w /usr/share/apache-karaf/deploy
 # copy jar from imac to raspberry (rpi2=192.168.2.9 jan 2020)
 scp ~/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi2:/usr/share/apache-karaf/deploy
-scp ~/gitrepos/mijnsensors/pilightMqttOsgi/ pi@rpi2:/usr/share/apache-karaf/deploy
+# deprecated, needed if deploy is not writable by user pi: cp ~/gitrepos/mijnsensors/pilightMqttOsgi/ pi@rpi2:/usr/share/apache-karaf/deploy
 # On raspberry:
 sudo -s -E -u openhab
 cp /home/pi/tmp/pilightMqttOsgi-1.0-SNAPSHOT.jar /usr/share/apache-karaf/deploy
@@ -136,10 +143,12 @@ Karaf (for pilightMqttOsgi):
 Install karaf as service in systemd in Linux: see web site karaf:
 karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
 Run in subdir contrib karaf-service.sh -k /usr/share/apache-karaf
-vi karaf.service, change user/group
+vi karaf.service, change user/group to openhab / openhab
 cp karaf.service /usr/share/apache-karaf/bin (er is een symlink vanuit /etc/systemd/system)
 # if already in use by e.g. openhab, change ssh port in etc/org.apache.karaf.shell.cfg from 8101 in e.g. 8102.
 # and etc/jetty.xml change secure.port to e.g. 8444.
+
+bin/client to connect to running karaf. User is karaf, password ?????
 
 sudo systemctl enable /usr/share/apache-karaf-4.2.2/bin/contrib/karaf.service
 And then client, repo-add etc (see sowewhere else in this README.md).

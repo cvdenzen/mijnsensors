@@ -17,16 +17,16 @@ import javafx.scene.effect.Light;
 import nl.vandenzen.pilightmqttosgi.json.*;
 import org.apache.camel.*;
 import org.apache.camel.component.paho.PahoConstants;
-import org.apache.camel.component.properties.PropertiesComponent;
+import org.apache.camel.spi.PropertiesComponent;
 import org.apache.camel.model.dataformat.*;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.gson.GsonDataFormat;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.impl.PropertyPlaceholderDelegateRegistry;
-import org.apache.camel.impl.SimpleRegistry;
+import org.apache.camel.support.DefaultRegistry;
+import org.apache.camel.support.SimpleRegistry;
 import org.apache.camel.processor.ExchangePatternProcessor;
 import org.apache.camel.spi.Registry;
-import org.apache.camel.component.netty4.*;
+import org.apache.camel.component.netty.*;
 import org.apache.camel.component.stream.*;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.DataFormatDefinition;
@@ -41,7 +41,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.Properties;
 
-import org.apache.camel.component.netty4.NettyServerBootstrapConfiguration;
+import org.apache.camel.component.netty.NettyServerBootstrapConfiguration;
 
 
 import com.pi4j.io.i2c.I2CBus;
@@ -97,27 +97,27 @@ public class MyRouteBuilder {
         context = new DefaultCamelContext(new SimpleRegistry());
 
         registry = context.getRegistry();
-        if (registry instanceof PropertyPlaceholderDelegateRegistry) {
+        if (registry instanceof DefaultRegistry) {
             registry
-                    = ((PropertyPlaceholderDelegateRegistry) registry).getRegistry();
+                    = ((DefaultRegistry) registry).getFallbackRegistry();
         }
 
         // bean in simple map
-        ((SimpleRegistry) registry).put("jsonReceiverResponse", new JsonReceiverResponse());
+        ((DefaultRegistry) registry).bind("jsonReceiverResponse", new JsonReceiverResponse());
 
         // over the air protocol (433 MHz protocol name, used in mqtt topic name)
         final OTAProtocolExtractor otaProtocolExtractor = new OTAProtocolExtractor();
-        ((SimpleRegistry) registry).put("otaProtocolExtractor", otaProtocolExtractor);
+        ((DefaultRegistry) registry).bind("otaProtocolExtractor", otaProtocolExtractor);
         //org.eclipse.paho.client.mqttv3.MqttClient a=new org.eclipse.paho.client.mqttv3.MqttClient("","").
 
         // The string decoder and encoder for connection to pilight
         StringDecoder stringDecoder=new StringDecoder();
         StringEncoder stringEncoder=new StringEncoder();
-        ((SimpleRegistry) registry).put("string-decoder",stringDecoder);
-        ((SimpleRegistry) registry).put("string-encoder",stringEncoder);
+        ((DefaultRegistry) registry).bind("string-decoder",stringDecoder);
+        ((DefaultRegistry) registry).bind("string-encoder",stringEncoder);
 
         MqttConnectOptions mqttConnectOptions=connectOptions();
-        ((SimpleRegistry) registry).put("dummyName",mqttConnectOptions);
+        ((DefaultRegistry) registry).bind("dummyName",mqttConnectOptions);
 
 
         // Default timeout is 300s (5 mins), which is too long to wait for in testing situations. Shutdown takes too long.
@@ -128,9 +128,9 @@ public class MyRouteBuilder {
         try {
             context.addComponent("stream", new org.apache.camel.component.stream.StreamComponent());
             context.addComponent("paho", new org.apache.camel.component.paho.PahoComponent());
-            context.addComponent("netty4", new org.apache.camel.component.netty4.NettyComponent());
-            context.addComponent("quartz2", new org.apache.camel.component.quartz2.QuartzComponent());
-            context.addComponent("http4", new org.apache.camel.component.http4.HttpComponent());
+            context.addComponent("netty", new org.apache.camel.component.netty.NettyComponent());
+            context.addComponent("quartz", new org.apache.camel.component.quartz.QuartzComponent());
+            context.addComponent("http", new org.apache.camel.component.http.HttpComponent());
 
 
             GsonDataFormat formatPojoStatusResponse = new GsonDataFormat();
@@ -168,7 +168,7 @@ public class MyRouteBuilder {
             //NettyServerBootstrapConfiguration bootstrapConfiguration=new NettyServerBootstrapConfiguration();
             //((SimpleRegistry) registry).put("bsc", bootstrapConfiguration); // 2018-07-02 not used
             ServerInitializerFactory pilightServerInitializerFactory=new PilightServerInitializerFactory();
-            ((SimpleRegistry) registry).put("sif", pilightServerInitializerFactory); // Server Initializer Factory
+            ((DefaultRegistry) registry).bind("sif", pilightServerInitializerFactory); // Server Initializer Factory
             //bootstrapConfiguration.setPort(5017);
 
             // misschien beter om hier te kijken: https://stackoverflow.com/questions/49682080/netty-message-on-connect
@@ -176,14 +176,14 @@ public class MyRouteBuilder {
 
             // Client/producer initialisation
             ClientInitializerFactory pilightClientInitializerFactory=new PilightClientInitializerFactory();
-            ((SimpleRegistry) registry).put("cif", pilightClientInitializerFactory); // Client Initializer Factory
+            ((DefaultRegistry) registry).bind("cif", pilightClientInitializerFactory); // Client Initializer Factory
 
             // Make pilight server configurable in properties file in karaf etc/pilightmqttosgi.properties
-            PropertiesComponent pc= new PropertiesComponent();
+            PropertiesComponent pc= context.getPropertiesComponent();
             pc.setLocation("file:${karaf.home}/etc/pilightmqttosgi.properties");
-            context.addComponent("properties", pc);
+            //context.addComponent("properties", pc);
             //final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&serverInitializerFactory=#sif";
-            final String pilightServerUri = "netty4:tcp://{{pilightserver}}:{{pilightport}}";
+            final String pilightServerUri = "netty:tcp://{{pilightserver}}:{{pilightport}}";
 
             context.addRoutes(new RouteBuilder() {
                 @Override
@@ -412,7 +412,7 @@ public class MyRouteBuilder {
             try {
                 upsPico = new UPSPIco();
                 upsPico.init();
-                ((SimpleRegistry) registry).put("UPSPIco",upsPico);
+                ((DefaultRegistry) registry).bind("UPSPIco",upsPico);
             }
             catch (Exception ex) {
                 logger.log(Level.SEVERE,"Error initialising UPSPIco",ex);
@@ -464,7 +464,7 @@ public class MyRouteBuilder {
             msg = dateFormat.format(new Date()) + " main: sendBody identification to pilight through camel netty4 done";
             logger.info(msg);
             Thread.sleep(2000);
-            context.startRoute("fromPahoToPilight"); // first identify, then start listening to mqtt broker
+            context.getRouteController().startRoute("fromPahoToPilight"); // first identify, then start listening to mqtt broker
 
             // Start pilight listener
 
@@ -472,8 +472,8 @@ public class MyRouteBuilder {
                 // Next routes are from pilight to mqtt
                 // Goal: commands from remote control must be sent to mqtt.
                 // Status August 10, 2018: working.
-                context.startRoute("PilightListener");
-                context.startRoute("ActivemqToPaho"); // waited for mqtt broker to start
+                context.getRouteController().startRoute("PilightListener");
+                context.getRouteController().startRoute("ActivemqToPaho"); // waited for mqtt broker to start
                 msg = dateFormat.format(new Date()) + " PilightListener and ActivemqToPaho started";
                 logger.info(msg);
             }

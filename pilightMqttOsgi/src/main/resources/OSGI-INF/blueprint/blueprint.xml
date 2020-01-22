@@ -40,7 +40,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setHeader headerName="CamelHttpMethod">
                 <constant>GET</constant>
             </setHeader>
-            <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
+            <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
             <log message="TestA: Response LightsOnIntensityThreshold is ${body}"/>
             <unmarshal ref="jsonJsonOHRestItem"/>
             <log message="TestA:, unmarshalled is ${body}"/>
@@ -59,10 +59,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>application/json</constant>
             </setHeader>
             <setBody>
-                <simple>log from setOHItem http4://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+                <simple>log from setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
             </setBody>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <to uri="http4://127.0.0.1:8080/rest/items/${header.OHItem}"/>
+            <to uri="http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
         </route>
 
 
@@ -73,7 +73,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>LampAchterdeur_Brightness</constant>
             </setHeader>
             <setBody>
-                <simple>log from testSetOHItem http4://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+                <simple>log from testSetOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
             </setBody>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <setBody>
@@ -99,7 +99,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <!-- percentage 0..100 -->
                 <simple>100</simple>
             </setBody>
-            <to uri="http4://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
+            <to uri="http://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
         </route>
 
 
@@ -118,7 +118,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <!-- percentage 0..100 -->
                 <simple>0</simple>
             </setBody>
-            <to uri="http4://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
+            <to uri="http://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
         </route>
 
         <route id="requestLightsOnIntensityThreshold" autoStartup="true">
@@ -136,14 +136,14 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <setHeader headerName="CamelHttpMethod">
                         <constant>GET</constant>
                     </setHeader>
-                    <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
+                    <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
                     <log message="Response LightsOnIntensityThreshold is ${body}"/>
                 </when>
             </choice>
             <setHeader headerName="CamelHttpMethod">
                 <constant>GET</constant>
             </setHeader>
-            <to uri="http4://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
+            <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
             <log message="Test: Response LightsOnIntensityThreshold is ${body}"/>
             <unmarshal ref="jsonJsonOHRestItem"/>
             <log message="Test, unmarshalled is ${body}"/>
@@ -161,6 +161,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
             <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
+        </route>
         </route>
 
         <!-- Zet lichten uit -->
@@ -629,7 +630,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setBody>
                 <constant>true</constant>
             </setBody>
-            <log message="Body voordat headers voor http4 worden geset: ${body}"/>
+            <log message="Body voordat headers voor http worden geset: ${body}"/>
             <setHeader headerName="CamelHttpMethod">
                 <constant>GET</constant>
             </setHeader>
@@ -642,7 +643,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setBody><constant> </constant></setBody>
             <log message="setHeaders locL ${body}"/>
             <!-- 21 jan: LampAchterdeur_Brightness is 89 procent, instelling door Hester -->
-            <to uri="http4://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
+            <to uri="http://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
             <log message="Response LampAchterdeur_Brightness is ${body}"/>
             <setBody><jsonpath>$.state</jsonpath></setBody>
             <log message="setHeaders locjsonpath ${body}"/>

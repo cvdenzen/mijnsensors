@@ -11,12 +11,12 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.CharsetUtil;
-import org.apache.camel.component.netty4.ClientInitializerFactory;
-import org.apache.camel.component.netty4.NettyConsumer;
-import org.apache.camel.component.netty4.NettyProducer;
-import org.apache.camel.component.netty4.ServerInitializerFactory;
-import org.apache.camel.component.netty4.codec.DelimiterBasedFrameDecoder;
-import org.apache.camel.component.netty4.handlers.ClientChannelHandler;
+import org.apache.camel.component.netty.ClientInitializerFactory;
+import org.apache.camel.component.netty.NettyConsumer;
+import org.apache.camel.component.netty.NettyProducer;
+import org.apache.camel.component.netty.ServerInitializerFactory;
+import org.apache.camel.component.netty.codec.DelimiterBasedFrameDecoder;
+import org.apache.camel.component.netty.handlers.ClientChannelHandler;
 
 public class PilightClientInitializerFactory extends ClientInitializerFactory {
     @Override

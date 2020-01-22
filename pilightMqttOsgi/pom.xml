@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <camel.version>2.23.1</camel.version>
+        <camel.version>3.0.1</camel.version>
         <netty-version>4.1.24.Final</netty-version>
     </properties>
     <repositories>
@@ -68,18 +68,15 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-netty4-http</artifactId>
+            <artifactId>camel-netty-http</artifactId>
             <version>${camel.version}</version>
-            <type>jar</type>
-            <!-- use the same version as your Camel core version -->
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-netty4</artifactId>
+            <artifactId>camel-netty</artifactId>
             <version>${camel.version}</version>
-            <type>jar</type>
-            <!-- use the same version as your Camel core version -->
         </dependency>
+
         <!-- for activmq ? -->
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -96,28 +93,11 @@
             <artifactId>json-schema-core</artifactId>
             <version>1.2.8</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-mqtt</artifactId>
-            <version>${camel.version}</version>
-            <!-- use the same version as your Camel core version -->
-        </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.fge/jackson-coreutils -->
         <dependency>
             <groupId>com.github.fge</groupId>
             <artifactId>jackson-coreutils</artifactId>
             <version>1.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-cache</artifactId>
-            <version>${camel.version}</version>
-            <!-- use the same version as your Camel core version -->
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-script</artifactId>
-            <version>${camel.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-beans -->
@@ -125,6 +105,26 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>5.0.4.RELEASE</version>
+        </dependency>
+
+        <!-- After error installing jsonpath -->
+        <!-- https://mvnrepository.com/artifact/net.minidev/accessors-smart -->
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>accessors-smart</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.7</version>
         </dependency>
 
         <dependency>
@@ -181,14 +181,14 @@
 
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-quartz2</artifactId>
+            <artifactId>camel-quartz</artifactId>
             <version>${camel.version}</version>
             <!-- use the same version as your Camel core version -->
         </dependency>
 
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-http4</artifactId>
+            <artifactId>camel-http</artifactId>
             <version>${camel.version}</version>
         </dependency>
 

@@ -7,11 +7,11 @@ import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;
-import org.apache.camel.component.netty4.NettyConsumer;
-import org.apache.camel.component.netty4.ServerInitializerFactory;
+import org.apache.camel.component.netty.NettyConsumer;
+import org.apache.camel.component.netty.ServerInitializerFactory;
 import io.netty.channel.ChannelPipeline;
-import org.apache.camel.component.netty4.codec.DelimiterBasedFrameDecoder;
-import org.apache.camel.component.netty4.handlers.ServerChannelHandler;
+import org.apache.camel.component.netty.codec.DelimiterBasedFrameDecoder;
+import org.apache.camel.component.netty.handlers.ServerChannelHandler;
 
 public class PilightServerInitializerFactory extends ServerInitializerFactory {
     @Override

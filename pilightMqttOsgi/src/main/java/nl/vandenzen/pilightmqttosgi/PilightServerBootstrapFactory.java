@@ -3,7 +3,7 @@ package nl.vandenzen.pilightmqttosgi;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import org.apache.camel.component.netty4.ClientModeTCPNettyServerBootstrapFactory;
+import org.apache.camel.component.netty.ClientModeTCPNettyServerBootstrapFactory;
 
 import static nl.vandenzen.pilightmqttosgi.MyRouteBuilder.pilightIdentify;
 /*

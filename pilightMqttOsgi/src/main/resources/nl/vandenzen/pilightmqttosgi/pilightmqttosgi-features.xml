@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <features name="pilightmqttosgixml" xmlns="http://karaf.apache.org/xmlns/features/v1.3.0">
-    <feature name="pilightmqttosgi" version="1.0.0-SNAPSHOT">
+    <feature name="pilightmqttosgibundles" version="1.0.0-SNAPSHOT">
         <feature>aries-blueprint</feature>
         <feature>shell-compat</feature>
         <feature>camel</feature>
@@ -8,18 +8,17 @@
         <feature>camel-paho</feature>
         <feature>camel-gson</feature>
         <feature>camel-stream</feature>
-        <feature>camel-http4</feature>
-        <feature>camel-netty4</feature>
-        <feature>camel-mqtt</feature>
-        <feature>camel-quartz2</feature>
-        <feature>camel-http4</feature>
-        <feature>camel-script</feature>
-        <feature>camel-script-javascript</feature>
+        <feature>camel-http</feature>
+        <feature>camel-netty</feature>
+        <feature>camel-quartz</feature>
         <feature>camel-jsonpath</feature>
         <feature>jms</feature>
-        <feature>activemq-camel</feature>
+        <feature>camel-activemq</feature>
         <feature>service-wrapper</feature>
+    </feature>
+    <feature name="pilightmqttosgi" version="1.0.0-SNAPSHOT">
         <!--bundle>pilightMqttOsgi OSGi Bundle</bundle -->
-        <bundle>file:/home/pi/tmp/pilightMqttOsgi-1.0-SNAPSHOT.jar</bundle>
+        <bundle>file:/usr/share/apache-karaf/deploy/pilightMqttOsgi-1.0-SNAPSHOT.jar</bundle>
+        <feature>pilightmqttosgibundles</feature>
     </feature>
 </features>
