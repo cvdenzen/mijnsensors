@@ -37,25 +37,25 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="SettingDefaults" autoStartup="true">
             <!-- from uri="timer:SettingDefaultsTimer?period=5000&amp;repeatCount=1"/ -->
             <from uri="activemq:topic:init"/>
-            <setHeader headerName="CamelHttpMethod">
+            <setHeader name="CamelHttpMethod">
                 <constant>GET</constant>
             </setHeader>
             <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
             <log message="TestA: Response LightsOnIntensityThreshold is ${body}"/>
-            <unmarshal ref="jsonJsonOHRestItem"/>
+            <!-- todo unmarshal -->
             <log message="TestA:, unmarshalled is ${body}"/>
         </route>
 
         <!-- Set item to value. Input: header.OHItem, body -->
         <route id="setOHItem" autoStartup="true">
             <from uri="direct:setOHItem"/>
-            <setHeader headerName="CamelHttpMethod">
+            <setHeader name="CamelHttpMethod">
                 <constant>POST</constant>
             </setHeader>
-            <setHeader headerName="Content-Type">
+            <setHeader name="Content-Type">
                 <constant>text/plain</constant>
             </setHeader>
-            <setHeader headerName="Accept">
+            <setHeader name="Accept">
                 <constant>application/json</constant>
             </setHeader>
             <setBody>
@@ -69,7 +69,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Test setOHItem-->
         <route id="testSetOHItem" autoStartup="true">
             <from uri="quartz2://groep/timerTestSetOHItem?cron=0/10+*+*+*+*+?"/>
-            <setHeader headerName="OHItem">
+            <setHeader name="OHItem">
                 <constant>LampAchterdeur_Brightness</constant>
             </setHeader>
             <setBody>
@@ -86,13 +86,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Deze werkt 17 jan 2020.-->
         <route id="achterlichtAan2020" autoStartup="false">
             <from uri="direct:achterlichtaan2020"/>
-            <setHeader headerName="CamelHttpMethod">
+            <setHeader name="CamelHttpMethod">
                 <constant>POST</constant>
             </setHeader>
-            <setHeader headerName="Content-Type">
+            <setHeader name="Content-Type">
                 <constant>text/plain</constant>
             </setHeader>
-            <setHeader headerName="Accept">
+            <setHeader name="Accept">
                 <constant>application/json</constant>
             </setHeader>
             <setBody>
@@ -105,13 +105,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <route id="achterlichtUit2020" autoStartup="false">
             <from uri="direct:achterlichtuit2020"/>
-            <setHeader headerName="CamelHttpMethod">
+            <setHeader name="CamelHttpMethod">
                 <constant>POST</constant>
             </setHeader>
-            <setHeader headerName="Content-Type">
+            <setHeader name="Content-Type">
                 <constant>text/plain</constant>
             </setHeader>
-            <setHeader headerName="Accept">
+            <setHeader name="Accept">
                 <constant>application/json</constant>
             </setHeader>
             <setBody>
@@ -123,29 +123,17 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <route id="requestLightsOnIntensityThreshold" autoStartup="true">
             <from uri="quartz2://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
-            <setHeader headerName="LightsOnIntensityThreshold">
+            <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
-            <!-- check whether set or not. The check !xxx means: null or 0,
-             see https://stackoverflow.com/questions/6003884/how-do-i-check-for-null-values-in-javascript -->
-            <choice>
-                <when>
-                    <javaScript>
-                        !request.headers.get('LightsOnIntensityThreshold')
-                    </javaScript>
-                    <setHeader headerName="CamelHttpMethod">
-                        <constant>GET</constant>
-                    </setHeader>
-                    <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
-                    <log message="Response LightsOnIntensityThreshold is ${body}"/>
-                </when>
-            </choice>
-            <setHeader headerName="CamelHttpMethod">
+            <setHeader name="CamelHttpMethod">
                 <constant>GET</constant>
             </setHeader>
             <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
             <log message="Test: Response LightsOnIntensityThreshold is ${body}"/>
-            <unmarshal ref="jsonJsonOHRestItem"/>
+            <setBody>
+                <jsonpath>state</jsonpath>
+            </setBody>
             <log message="Test, unmarshalled is ${body}"/>
         </route>
 
@@ -161,7 +149,6 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setBody>
             <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
             <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
-        </route>
         </route>
 
         <!-- Zet lichten uit -->
@@ -232,21 +219,20 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <!-- set states of light etc. in header of the message -->
             <to uri="direct:SetHeaders"/>
             <setBody>
-                <javaScript>
-                    "Light_GF_Huiskamer_Achterdeur_Schemerlamp="
-                    +request.headers.get('Light_GF_Huiskamer_Achterdeur_Schemerlamp')
-                </javaScript>
+                <simple>
+                    "Light_GF_Huiskamer_Achterdeur_Schemerlamp=${in.header.Light_GF_Huiskamer_Achterdeur_Schemerlamp})
+                </simple>
             </setBody>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <choice>
                 <when>
-                    <javaScript>
+                    <groovy>
                         request.headers.get('pir_gf_achterdeur17')
                         &amp;&amp;
                         request.headers.get('LichtIntensiteit_Woonkamer')&lt;request.headers.get('LightsOnIntensityThreshold')
                         &amp;&amp;
                         request.headers.get('LampAchterdeur_Brightness')&lt;1 // licht is uit
-                    </javaScript>
+                    </groovy>
                     <setBody>
                         <simple>het licht is uit</simple>
                     </setBody>
@@ -325,11 +311,11 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
             <from uri="paho:oh/all/bg_w_tv_w/state"/>
             <!-- get old value of bg_w_tv_w -->
-            <setHeader headerName="bg_w_tv_w">
+            <setHeader name="bg_w_tv_w">
                 <method ref="bg_w_tv_w" method="getValue"/>
             </setHeader>
             <!-- get old value of bg_w_tv_w_stable -->
-            <setHeader headerName="bg_w_tv_w_stable">
+            <setHeader name="bg_w_tv_w_stable">
                 <method ref="bg_w_tv_w_stable" method="getValue"/>
             </setHeader>
             <choice>
@@ -348,29 +334,29 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <bean ref="bg_w_tv_w" method="setValue"/>
             <log message="Values old: ${headers.bg_w_tv_w}, new: ${body}; Stable: ${headers.bg_w_tv_w_stable}"/>
             <setBody>
-                <javaScript>
-                    'request.headers.get='+request.headers.get('bg_w_tv_w')+', request.body='+request.body
-                </javaScript>
+                <groovy>
+                    "request.headers.get="+request.headers.get('bg_w_tv_w')+", request.body="+request.body
+                </groovy>
             </setBody>
             <log message="${body}"/>
-            <!-- restore body contents after log javaScript message -->
+            <!-- restore body contents after log message -->
             <bean ref="bg_w_tv_w" method="getValue"/>
             <!-- calculate stable count -->
             <choice>
                 <when>
                     <!-- normally this would not happen, as only changes are reported -->
-                    <javaScript>request.headers.get('bg_w_tv_w')==request.body</javaScript>
+                    <groovy>request.headers.get('bg_w_tv_w')==request.body</groovy>
                     <log message="Same value old: ${headers.bg_w_tv_w}, new: ${body}"/>
                 </when>
                 <otherwise>
                     <setBody>
                         <constant>0</constant>
-                        <bean ref="bg_w_tv_w_stable" method="setValue"/>
                     </setBody>
+                    <bean ref="bg_w_tv_w_stable" method="setValue"/>
                 </otherwise>
             </choice>
             <setBody>
-                <javaScript>'Stable count is '+request.body</javaScript>
+                <groovy>"Stable count is "+request.body</groovy>
             </setBody>
             <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
             <log message="Stable count is ${body}"/>
@@ -487,13 +473,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz2://groep/timer3?cron=0/10+*+*+*+*+?"/>
             <!-- get old value of bg_w_tv_w_stable -->
-            <setHeader headerName="bg_w_tv_w_stable">
+            <setHeader name="bg_w_tv_w_stable">
                 <method ref="bg_w_tv_w_stable" method="getValue"/>
             </setHeader>
             <setBody>
-                <javaScript>
+                <groovy>
                     request.headers.get('bg_w_tv_w_stable')+1
-                </javaScript>
+                </groovy>
             </setBody>
             <bean ref="bg_w_tv_w_stable" method="setValue"/>
             <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
@@ -524,13 +510,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:SetHeaders"/>
             <choice>
                 <when>
-                    <javaScript>
+                    <groovy>
                         request.headers.get('AutoOnEnabled')
                         &amp;&amp;
                         // it is dark
                         request.headers.get('LichtIntensiteit_Woonkamer') &lt;
                         request.headers.get('LightsOnIntensityThreshold')
-                    </javaScript>
+                    </groovy>
                     <setBody>
                         <simple>Licht gaat aan!</simple>
                     </setBody>
@@ -550,7 +536,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:SetHeaders"/>
             <choice>
                 <when>
-                    <javaScript>
+                    <groovy>
                         request.headers.get('AutoOffEnabled')
                         &amp;&amp;
                         (!request.headers.get('bg_w_tv_w') // tv is off for at least x times
@@ -560,7 +546,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         !request.headers.get('bg_x_imac2') // and imac is off
                         &amp;&amp;
                         !request.headers.get('bg_x_imac3') // and imac is off
-                    </javaScript>
+                    </groovy>
                     <setBody>
                         <simple>Licht gaat uit.</simple>
                     </setBody>
@@ -586,40 +572,40 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="SetHeaders" autoStartup="true" startupOrder="501">
             <from uri="direct:SetHeaders"/>
             <!-- Save body contents in header BodyContents -->
-            <setHeader headerName="BodyContents">
+            <setHeader name="BodyContents">
                 <simple>${body}</simple>
             </setHeader>
-            <setHeader headerName="LichtIntensiteit_Woonkamer">
+            <setHeader name="LichtIntensiteit_Woonkamer">
                 <method ref="LichtIntensiteit_Woonkamer" method="getValue"/>
             </setHeader>
-            <setHeader headerName="LightsOnIntensityThreshold">
+            <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
-            <setHeader headerName="LightsOnIntensityThreshold">
+            <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
-            <setHeader headerName="AutoOnEnabled">
+            <setHeader name="AutoOnEnabled">
                 <method ref="AutoOnEnabled" method="getValue"/>
             </setHeader>
-            <setHeader headerName="AutoOffEnabled">
+            <setHeader name="AutoOffEnabled">
                 <method ref="AutoOffEnabled" method="getValue"/>
             </setHeader>
-            <setHeader headerName="pir_gf_achterdeur17">
+            <setHeader name="pir_gf_achterdeur17">
                 <method ref="pir_gf_achterdeur17" method="getValue"/>
             </setHeader>
-            <setHeader headerName="bg_w_tv_w">
+            <setHeader name="bg_w_tv_w">
                 <method ref="bg_w_tv_w" method="getValue"/>
             </setHeader>
-            <setHeader headerName="bg_w_tv_w_stable">
+            <setHeader name="bg_w_tv_w_stable">
                 <method ref="bg_w_tv_w_stable" method="getValue"/>
             </setHeader>
-            <setHeader headerName="bg_x_imac2">
+            <setHeader name="bg_x_imac2">
                 <method ref="bg_x_imac2" method="getValue"/>
             </setHeader>
-            <setHeader headerName="bg_x_imac3">
+            <setHeader name="bg_x_imac3">
                 <method ref="bg_x_imac3" method="getValue"/>
             </setHeader>
-            <setHeader headerName="Light_GF_Huiskamer_Achterdeur_Schemerlamp">
+            <setHeader name="Light_GF_Huiskamer_Achterdeur_Schemerlamp">
                 <method ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp" method="getValue"/>
             </setHeader>
         </route>
@@ -631,29 +617,33 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>true</constant>
             </setBody>
             <log message="Body voordat headers voor http worden geset: ${body}"/>
-            <setHeader headerName="CamelHttpMethod">
+            <setHeader name="CamelHttpMethod">
                 <constant>GET</constant>
             </setHeader>
-            <setHeader headerName="Content-Type">
+            <setHeader name="Content-Type">
                 <constant>text/plain</constant>
             </setHeader>
-            <setHeader headerName="Accept">
+            <setHeader name="Accept">
                 <constant>application/json</constant>
             </setHeader>
-            <setBody><constant> </constant></setBody>
+            <setBody>
+                <constant></constant>
+            </setBody>
             <log message="setHeaders locL ${body}"/>
             <!-- 21 jan: LampAchterdeur_Brightness is 89 procent, instelling door Hester -->
             <to uri="http://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
             <log message="Response LampAchterdeur_Brightness is ${body}"/>
-            <setBody><jsonpath>$.state</jsonpath></setBody>
+            <setBody>
+                <jsonpath>$.state</jsonpath>
+            </setBody>
             <log message="setHeaders locjsonpath ${body}"/>
-            <setHeader headerName="LampAchterdeur_Brightness">
+            <setHeader name="LampAchterdeur_Brightness">
                 <simple>${body}</simple>
             </setHeader>
             <log message="setHeaders locM ${body}"/>
             <!-- Restore body -->
             <!--setBody>
-                <javaScript>request.headers.get('BodyContents')</javaScript>
+                <groovy>request.headers.get('BodyContents')</javaScript>
             </setBody -->
             <log message="setHeaders locN ${body}"/>
         </route>

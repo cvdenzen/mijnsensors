@@ -94,30 +94,30 @@ public class MyRouteBuilder {
         String msg = dateFormat.format(new Date()) + " Start MyRouteBuilder.main()";
         System.out.println(msg);
         logger.info(msg);
-        context = new DefaultCamelContext(new SimpleRegistry());
+        context = new DefaultCamelContext(new DefaultRegistry());
 
-        registry = context.getRegistry();
+        registry = (DefaultRegistry)context.getRegistry();
         if (registry instanceof DefaultRegistry) {
             registry
                     = ((DefaultRegistry) registry).getFallbackRegistry();
         }
 
         // bean in simple map
-        ((DefaultRegistry) registry).bind("jsonReceiverResponse", new JsonReceiverResponse());
+        registry.bind("jsonReceiverResponse", new JsonReceiverResponse());
 
         // over the air protocol (433 MHz protocol name, used in mqtt topic name)
         final OTAProtocolExtractor otaProtocolExtractor = new OTAProtocolExtractor();
-        ((DefaultRegistry) registry).bind("otaProtocolExtractor", otaProtocolExtractor);
+        registry.bind("otaProtocolExtractor", otaProtocolExtractor);
         //org.eclipse.paho.client.mqttv3.MqttClient a=new org.eclipse.paho.client.mqttv3.MqttClient("","").
 
         // The string decoder and encoder for connection to pilight
         StringDecoder stringDecoder=new StringDecoder();
         StringEncoder stringEncoder=new StringEncoder();
-        ((DefaultRegistry) registry).bind("string-decoder",stringDecoder);
-        ((DefaultRegistry) registry).bind("string-encoder",stringEncoder);
+        registry.bind("string-decoder",stringDecoder);
+        registry.bind("string-encoder",stringEncoder);
 
         MqttConnectOptions mqttConnectOptions=connectOptions();
-        ((DefaultRegistry) registry).bind("dummyName",mqttConnectOptions);
+        registry.bind("dummyName",mqttConnectOptions);
 
 
         // Default timeout is 300s (5 mins), which is too long to wait for in testing situations. Shutdown takes too long.
@@ -168,7 +168,7 @@ public class MyRouteBuilder {
             //NettyServerBootstrapConfiguration bootstrapConfiguration=new NettyServerBootstrapConfiguration();
             //((SimpleRegistry) registry).put("bsc", bootstrapConfiguration); // 2018-07-02 not used
             ServerInitializerFactory pilightServerInitializerFactory=new PilightServerInitializerFactory();
-            ((DefaultRegistry) registry).bind("sif", pilightServerInitializerFactory); // Server Initializer Factory
+            registry.bind("sif", pilightServerInitializerFactory); // Server Initializer Factory
             //bootstrapConfiguration.setPort(5017);
 
             // misschien beter om hier te kijken: https://stackoverflow.com/questions/49682080/netty-message-on-connect
@@ -176,7 +176,7 @@ public class MyRouteBuilder {
 
             // Client/producer initialisation
             ClientInitializerFactory pilightClientInitializerFactory=new PilightClientInitializerFactory();
-            ((DefaultRegistry) registry).bind("cif", pilightClientInitializerFactory); // Client Initializer Factory
+            registry.bind("cif", pilightClientInitializerFactory); // Client Initializer Factory
 
             // Make pilight server configurable in properties file in karaf etc/pilightmqttosgi.properties
             PropertiesComponent pc= context.getPropertiesComponent();

@@ -59,7 +59,11 @@
             <artifactId>camel-core</artifactId>
             <version>${camel.version}</version>
             <type>jar</type>
-        </dependency>
+        </dependency><dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-base</artifactId>
+        <version>${camel.version}</version>
+    </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-paho</artifactId>
@@ -203,6 +207,24 @@
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-parent</artifactId>
             <version>1.1</version>
+        </dependency -->
+
+
+
+
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-groovy</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+
+        <!-- ??? after error java.lang.NoClassDefFoundError: com/sun/istack/FinalArrayList -->
+        <!-- https://mvnrepository.com/artifact/com.sun.istack/istack-commons-runtime -->
+        <!--dependency>
+            <groupId>com.sun.istack</groupId>
+            <artifactId>istack-commons-runtime</artifactId>
+            <version>3.0.10</version>
         </dependency -->
 
 
