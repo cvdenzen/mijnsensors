@@ -119,7 +119,7 @@ openhab@raspberrypi:/home/pi/gitrepos/etc_openhab2$ gpio readall
 ============================================================================
 MySensors:
 gateway on rpi:
-git clone ....
+git clone https://github.com/mysensors/MySensors.git
 edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197
 
 ./configure --my-transport=rfm69 --my-rfm69-frequency=868 \
