@@ -682,4 +682,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <bean id="Runtime" class="java.lang.Runtime"
           factory-method="getRuntime"/>
 
+    <!-- Experimental LCD -->
+    <bean id="LCD" class="nl.vandenzen.pilightmqttosgi.LCD" factory-method="getLCD"/>
+
+
 </blueprint>
