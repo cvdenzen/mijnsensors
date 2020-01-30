@@ -19,12 +19,12 @@ public class LCD {
         // initialize LCD
         final GpioLcdDisplay lcd = new GpioLcdDisplay(2,    // number of row supported by LCD
                 16,       // number of columns supported by LCD
-                RaspiPin.GPIO_09,  // LCD RS pin
-                RaspiPin.GPIO_08,  // LCD strobe pin
-                RaspiPin.GPIO_07,  // LCD data bit D4
-                RaspiPin.GPIO_15,  // LCD data bit D5
-                RaspiPin.GPIO_16,  // LCD data bit D6
-                RaspiPin.GPIO_01); // LCD data bit D7
+                RaspiPin.GPIO_28,  // LCD RS pin
+                RaspiPin.GPIO_27,  // LCD strobe pin
+                RaspiPin.GPIO_22,  // LCD data bit D4
+                RaspiPin.GPIO_23,  // LCD data bit D5
+                RaspiPin.GPIO_24,  // LCD data bit D6
+                RaspiPin.GPIO_25); // LCD data bit D7
 
         lcd.clear();
         Thread.sleep(1000);
