@@ -199,7 +199,18 @@
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-core</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>1.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.pi4j/pi4j-device -->
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-device</artifactId>
+            <version>1.2</version>
+        </dependency><!-- https://mvnrepository.com/artifact/com.pi4j/pi4j-service -->
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-service</artifactId>
+            <version>1.1</version>
         </dependency>
 
 
@@ -245,12 +256,11 @@
                         <Embed-Dependency>com.pi4j.io.i2c.I2CFactory;inline=true,gson</Embed-Dependency>
                         <Include-Resource>lib</Include-Resource>
                         <!-- https://github.com/bndtools/bndtools/wiki/Big-Bad-Bundle -->
-                        <Bundle-ClassPath>.,pi4j-core.jar,gson-2.8.2.jar</Bundle-ClassPath>
+                        <Bundle-ClassPath>.</Bundle-ClassPath>
                         <Export-Package>
                             nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.json;version="1.0.0",\
                             nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.beans;version="1.0.0",\
-                            nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.util;version="1.0.0",\
-                            com.pi4j.io.i2c.I2CBus
+                            nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.util;version="1.0.0"
                         </Export-Package>
                         <Import-Package>!com.google.gson.reflect,*</Import-Package>
                         <Bundle-Activator>nl.vandenzen.pilightmqttosgi.Activator</Bundle-Activator>

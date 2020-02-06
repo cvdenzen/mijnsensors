@@ -180,6 +180,7 @@ public class MyRouteBuilder {
 
             // Make pilight server configurable in properties file in karaf etc/pilightmqttosgi.properties
             PropertiesComponent pc= context.getPropertiesComponent();
+            //pc.setLocation("file:${karaf.home}/etc/pilightmqttosgi.properties");
             pc.setLocation("file:${karaf.home}/etc/pilightmqttosgi.properties");
             //context.addComponent("properties", pc);
             //final String netty4Uri = "netty4:tcp://192.168.2.9:5017?clientMode=true&serverInitializerFactory=#sif";
@@ -356,7 +357,7 @@ public class MyRouteBuilder {
                     ;
 
                     // Light measurement
-                    from("quartz2://lightreadertimer?cron=0/10+*+*+*+*+?")
+                    from("quartz://lightreadertimer?cron=0/10+*+*+*+*+?")
 
                             .routeId("lightsensor")
                             .autoStartup(true)
@@ -385,7 +386,7 @@ public class MyRouteBuilder {
                             // power mode
                             .to("bean:UPSPIco?method=toggleGpio27");
                     // UPS status
-                    from("quartz2://picoupspublishertimer?cron=0/10+*+*+*+*+?")
+                    from("quartz://picoupspublishertimer?cron=0/10+*+*+*+*+?")
                             .routeId("PIcoUPSPublisher")
                             .autoStartup(true) // ups beeps unexpectly when enabled
                             .startupOrder(201)

@@ -3,10 +3,6 @@
 
 autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
-
-
-
-
 -->
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="
@@ -33,19 +29,6 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
 
-        <!-- Set sensible defaults at startup (direct:init, manual for testing purposes) -->
-        <route id="SettingDefaults" autoStartup="true">
-            <!-- from uri="timer:SettingDefaultsTimer?period=5000&amp;repeatCount=1"/ -->
-            <from uri="activemq:topic:init"/>
-            <setHeader name="CamelHttpMethod">
-                <constant>GET</constant>
-            </setHeader>
-            <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
-            <log message="TestA: Response LightsOnIntensityThreshold is ${body}"/>
-            <!-- todo unmarshal -->
-            <log message="TestA:, unmarshalled is ${body}"/>
-        </route>
-
         <!-- Set item to value. Input: header.OHItem, body -->
         <route id="setOHItem" autoStartup="true">
             <from uri="direct:setOHItem"/>
@@ -68,7 +51,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <!-- Test setOHItem-->
         <route id="testSetOHItem" autoStartup="true">
-            <from uri="quartz2://groep/timerTestSetOHItem?cron=0/10+*+*+*+*+?"/>
+            <from uri="quartz://groep/timerTestSetOHItem?cron=0/10+*+*+*+*+?"/>
             <setHeader name="OHItem">
                 <constant>LampAchterdeur_Brightness</constant>
             </setHeader>
@@ -122,7 +105,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
         <route id="requestLightsOnIntensityThreshold" autoStartup="true">
-            <from uri="quartz2://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
+            <from uri="quartz://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
             <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
@@ -286,7 +269,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
         <route id="listenLight_GF_Huiskamer_Achterdeur_Schemerlamp" autoStartup="true" startupOrder="204">
-            <from uri="paho:oh/all/Light_GF_Huiskamer_Achterdeur_Schemerlamp/state"/>
+            <from uri="paho:oh/all/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm/state"/>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <choice>
                 <when>
                     <simple>${in.body} == "ON"</simple>
@@ -453,7 +438,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="301">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz2://groep/timer1?cron=0+0+12+*+*+?"/>
+            <from uri="quartz://groep/timer1?cron=0+0+12+*+*+?"/>
             <setBody>
                 <constant>true</constant>
             </setBody>
@@ -461,7 +446,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
         <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz2://groep/timer2?cron=47+50+22+*+*+?"/>
+            <from uri="quartz://groep/timer2?cron=47+50+22+*+*+?"/>
             <setBody>
                 <constant>true</constant>
             </setBody>
@@ -471,7 +456,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
         <route id="Increment_bg_w_tv_w_stable" autoStartup="true" startupOrder="303">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz2://groep/timer3?cron=0/10+*+*+*+*+?"/>
+            <from uri="quartz://groep/timer3?cron=0/10+*+*+*+*+?"/>
             <!-- get old value of bg_w_tv_w_stable -->
             <setHeader name="bg_w_tv_w_stable">
                 <method ref="bg_w_tv_w_stable" method="getValue"/>
@@ -489,7 +474,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
         <route id="ReportMemoryUsage" autoStartup="true" startupOrder="304">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz2://groep/timer4?cron=4+*+*+*+*+?"/>
+            <from uri="quartz://groep/timer4?cron=4+*+*+*+*+?"/>
             <bean ref="Runtime" method="maxMemory"/>
             <convertBodyTo type="java.lang.String"/>
             <to uri="paho:sensors/all/runtime/maxMemory"/>
@@ -612,7 +597,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <route id="test1" autoStartup="true" startupOrder="9002">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz2://groep/timer2?cron=0/10+*+*+*+*+?"/>
+            <from uri="quartz://groep/timer2?cron=0/10+*+*+*+*+?"/>
             <setBody>
                 <constant>true</constant>
             </setBody>
