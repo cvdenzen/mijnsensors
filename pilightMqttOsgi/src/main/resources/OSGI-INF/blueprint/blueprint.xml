@@ -212,23 +212,24 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <choice>
                 <when>
-                    <groovy>
-                        request.headers.get('pir_gf_achterdeur17')
-                        &amp;&amp;
-                        request.headers.get('LichtIntensiteit_Woonkamer')&lt;request.headers.get('LightsOnIntensityThreshold')
-                        &amp;&amp;
-                        request.headers.get('LampAchterdeur_Brightness')&lt;1 // licht is uit
-                    </groovy>
-                    <setBody>
-                        <simple>het licht is uit</simple>
-                    </setBody>
-                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <to uri="direct:achterlichtaan2020"/>
-                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-                    <convertBodyTo type="java.lang.String"/>
-                    <convertBodyTo type="java.lang.Long"/>
-                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
-                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="schedule"/>
+                    <simple>${in.header.pir_gf_achterdeur17}</simple>
+                    <when>
+                        <simple>${in.header.LichtIntensiteit_Woonkamer} &lt; ${in.header.LightsOnIntensityThreshold}
+                        </simple>
+                        <when>
+                            <simple>${in.header.LampAchterdeur_Brightness} &lt; 1</simple>
+                            <setBody>
+                                <simple>het licht is uit</simple>
+                            </setBody>
+                            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                            <to uri="direct:achterlichtaan2020"/>
+                            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                            <convertBodyTo type="java.lang.String"/>
+                            <convertBodyTo type="java.lang.Long"/>
+                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="schedule"/>
+                        </when>
+                    </when>
                 </when>
             </choice>
             <!-- delay, extend with each action on pir -->
