@@ -323,9 +323,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <bean ref="bg_w_tv_w" method="setValue"/>
             <log message="Values old: ${headers.bg_w_tv_w}, new: ${body}; Stable: ${headers.bg_w_tv_w_stable}"/>
             <setBody>
-                <groovy>
-                    "request.headers.get="+request.headers.get('bg_w_tv_w')+", request.body="+request.body
-                </groovy>
+                <simple>
+                    request.headers.get= ${in.headers.bg_w_tv_w}, request.body=${body}
+                </simple>
             </setBody>
             <log message="${body}"/>
             <!-- restore body contents after log message -->
@@ -334,7 +334,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <choice>
                 <when>
                     <!-- normally this would not happen, as only changes are reported -->
-                    <groovy>request.headers.get('bg_w_tv_w')==request.body</groovy>
+                    <simple>${in.headers.bg_w_tv_w} == ${body}</simple>
                     <log message="Same value old: ${headers.bg_w_tv_w}, new: ${body}"/>
                 </when>
                 <otherwise>
@@ -345,7 +345,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 </otherwise>
             </choice>
             <setBody>
-                <groovy>"Stable count is "+request.body</groovy>
+                <simple>Stable count is ${body}</simple>
             </setBody>
             <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
             <log message="Stable count is ${body}"/>
@@ -466,9 +466,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <method ref="bg_w_tv_w_stable" method="getValue"/>
             </setHeader>
             <setBody>
-                <groovy>
-                    request.headers.get('bg_w_tv_w_stable')+1
-                </groovy>
+                <simple>
+                    ${in.header.bg_w_tv_w_stable} + 1
+                </simple>
             </setBody>
             <bean ref="bg_w_tv_w_stable" method="setValue"/>
             <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
@@ -499,23 +499,25 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:SetHeaders"/>
             <choice>
                 <when>
-                    <groovy>
-                        request.headers.get('AutoOnEnabled')
-                        &amp;&amp;
-                        // it is dark
-                        request.headers.get('LichtIntensiteit_Woonkamer') &lt;
-                        request.headers.get('LightsOnIntensityThreshold')
-                    </groovy>
-                    <setBody>
-                        <simple>Licht gaat aan!</simple>
-                    </setBody>
-                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <to uri="direct:ZetLichtenAan"/>
-                    <!-- disable automatic turning on the lights -->
-                    <setBody>
-                        <constant>false</constant>
-                    </setBody>
-                    <bean ref="AutoOnEnabled" method="setValue"/>
+                    <simple>
+                        ${header.AutoOnEnabled} == 1
+                    </simple>
+                    <when>
+                        <!-- it is dark -->
+                        <simple>
+                            ${header.LichtIntensiteit_Woonkamer} &lt; ${header.LightsOnIntensityThreshold}
+                        </simple>
+                        <setBody>
+                            <simple>Licht gaat aan!</simple>
+                        </setBody>
+                        <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                        <to uri="direct:ZetLichtenAan"/>
+                        <!-- disable automatic turning on the lights -->
+                        <setBody>
+                            <constant>false</constant>
+                        </setBody>
+                        <bean ref="AutoOnEnabled" method="setValue"/>
+                    </when>
                 </when>
             </choice>
         </route>
@@ -525,17 +527,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:SetHeaders"/>
             <choice>
                 <when>
-                    <groovy>
-                        request.headers.get('AutoOffEnabled')
-                        &amp;&amp;
-                        (!request.headers.get('bg_w_tv_w') // tv is off for at least x times
-                        &amp;&amp; (request.headers.get('bg_w_tv_w_stable')>14)
-                        )
-                        &amp;&amp;
-                        !request.headers.get('bg_x_imac2') // and imac is off
-                        &amp;&amp;
-                        !request.headers.get('bg_x_imac3') // and imac is off
-                    </groovy>
+                    <simple>
+                        ${header.AutoOffEnabled} == 1
+                        &amp;&amp; ${header.bg_w_tv_w} == false
+                        &amp;&amp; ${header.bg_w_tv_w_stable} > 14
+                        &amp;&amp; ${header.bg_x_imac2} == false
+                        &amp;&amp; ${header.bg_x_imac3} == false <!-- // and imac is off -->
+                    </simple>
                     <setBody>
                         <simple>Licht gaat uit.</simple>
                     </setBody>

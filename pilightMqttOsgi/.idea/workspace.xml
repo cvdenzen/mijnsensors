@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="json jackson for oh rest working">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="no more groovy, replaced by simple language">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
     </list>
@@ -164,20 +164,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00045" summary="Lijkt te werken, pir, ups squarewave (heartbeat), lightsensor.">
-      <created>1537134936000</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1537134936001</updated>
-    </task>
-    <task id="LOCAL-00046" summary="oh scripting in blueprint, first steps">
-      <created>1538235439321</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1538235439321</updated>
     </task>
     <task id="LOCAL-00047" summary="util boolean integer float for blueprint use">
       <created>1538432506358</created>
@@ -508,7 +494,21 @@
       <option name="project" value="LOCAL" />
       <updated>1581171595903</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="no more groovy, replaced by simple language">
+      <created>1581175489777</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1581175489778</updated>
+    </task>
+    <task id="LOCAL-00095" summary="no more groovy, replaced by simple language">
+      <created>1581175527221</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1581175527221</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -551,7 +551,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="removed activemq, will be started in separate karaf container to avoid javax.jms version/dependency chain problems" />
     <MESSAGE value="password in paho calls for user hab for mqtt broker changed" />
     <MESSAGE value="Comments, stable count message" />
     <MESSAGE value="Added sub packages to export to pom." />
@@ -576,17 +575,18 @@
     <MESSAGE value="Veel wijzigingen ivm Camel v2 naar v3. Error sun istack class not found" />
     <MESSAGE value="Removed activemq direct dependency, no activemq-camel needed (which made karaf hang/crash)" />
     <MESSAGE value="json jackson for oh rest working" />
-    <option name="LAST_COMMIT_MESSAGE" value="json jackson for oh rest working" />
+    <MESSAGE value="no more groovy, replaced by simple language" />
+    <option name="LAST_COMMIT_MESSAGE" value="no more groovy, replaced by simple language" />
   </component>
   <component name="WindowStateProjectService">
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="467" y="130" key="CommitChangelistDialog2" timestamp="1581175488852">
+    <state x="467" y="130" key="CommitChangelistDialog2" timestamp="1581175526824">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
-    <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175488852" />
+    <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175526824" />
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog" timestamp="1579732911277">
       <screen x="0" y="23" width="1680" height="1023" />
     </state>
@@ -596,10 +596,10 @@
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="695" y="443" key="FileChooserDialogImpl/0.0.1680.1046@0.0.1680.1046" timestamp="1579815844474" />
-    <state x="440" y="266" key="Vcs.Push.Dialog.v2" timestamp="1581175493759">
+    <state x="440" y="266" key="Vcs.Push.Dialog.v2" timestamp="1581175532989">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
-    <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175493759" />
+    <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175532989" />
     <state x="629" y="449" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1580760303809">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
