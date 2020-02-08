@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Veel wijzigingen ivm Camel v2 naar v3. Error sun istack class not found">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Removed activemq direct dependency, no activemq-camel needed (which made karaf hang/crash)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LCD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/LCD.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/pilightMqttOsgi-1.0-SNAPSHOT.jar" afterDir="false" />
@@ -169,13 +167,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00043" summary="Removed translation from activeMQ queue to mqtt, because activeMQ published to mqtt on itself!">
-      <created>1536694265954</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1536694265954</updated>
     </task>
     <task id="LOCAL-00044" summary="Werkende versie, ook met GPIO27">
       <created>1536875781800</created>
@@ -513,7 +504,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579818432195</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="Removed activemq direct dependency, no activemq-camel needed (which made karaf hang/crash)">
+      <created>1581020702253</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1581020702254</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -556,7 +554,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="camel version to 2.23.0, built" />
     <MESSAGE value="activemq version" />
     <MESSAGE value="removed activemq, will be started in separate karaf container to avoid javax.jms version/dependency chain problems" />
     <MESSAGE value="password in paho calls for user hab for mqtt broker changed" />
@@ -581,17 +578,18 @@
     <MESSAGE value="niet werkende versie door jsonpath" />
     <MESSAGE value="Veel wijzigingen ivm Camel v2 naar v3" />
     <MESSAGE value="Veel wijzigingen ivm Camel v2 naar v3. Error sun istack class not found" />
-    <option name="LAST_COMMIT_MESSAGE" value="Veel wijzigingen ivm Camel v2 naar v3. Error sun istack class not found" />
+    <MESSAGE value="Removed activemq direct dependency, no activemq-camel needed (which made karaf hang/crash)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed activemq direct dependency, no activemq-camel needed (which made karaf hang/crash)" />
   </component>
   <component name="WindowStateProjectService">
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="467" y="130" key="CommitChangelistDialog2" timestamp="1579818431080">
+    <state x="467" y="130" key="CommitChangelistDialog2" timestamp="1581020700965">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
-    <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1579818431080" />
+    <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581020700965" />
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog" timestamp="1579732911277">
       <screen x="0" y="23" width="1680" height="1023" />
     </state>
@@ -601,10 +599,10 @@
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="695" y="443" key="FileChooserDialogImpl/0.0.1680.1046@0.0.1680.1046" timestamp="1579815844474" />
-    <state x="440" y="266" key="Vcs.Push.Dialog.v2" timestamp="1579818434682">
+    <state x="440" y="266" key="Vcs.Push.Dialog.v2" timestamp="1581020705491">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
-    <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1579818434682" />
+    <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581020705491" />
     <state x="629" y="449" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1580760303809">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>

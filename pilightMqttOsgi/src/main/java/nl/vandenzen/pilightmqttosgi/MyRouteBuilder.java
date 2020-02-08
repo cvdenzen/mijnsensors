@@ -16,6 +16,7 @@ import io.netty.handler.codec.string.StringEncoder;
 import javafx.scene.effect.Light;
 import nl.vandenzen.pilightmqttosgi.json.*;
 import org.apache.camel.*;
+import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.component.paho.PahoConstants;
 import org.apache.camel.spi.PropertiesComponent;
 import org.apache.camel.model.dataformat.*;
@@ -160,6 +161,9 @@ public class MyRouteBuilder {
             Type genericTypeIdentification = new TypeToken<JsonIdentification>() { }.getType();
             formatPojoIdentification.setUnmarshalGenericType(genericTypeIdentification); // no idea as what the effect is of this
 
+            // Jackson supports unmarshal to List<Map>
+            JacksonDataFormat format = new JacksonDataFormat();
+            format.useList();
 
             // Configure the pilight listener (a netty4 consumer) to make it send a subscribe (identify) message
             // to the pilight server. Use a custom bootstrapConfiguration to define a custom ServerBootstrapFactory
@@ -413,7 +417,7 @@ public class MyRouteBuilder {
             try {
                 upsPico = new UPSPIco();
                 upsPico.init();
-                ((DefaultRegistry) registry).bind("UPSPIco",upsPico);
+                registry.bind("UPSPIco",upsPico);
             }
             catch (Exception ex) {
                 logger.log(Level.SEVERE,"Error initialising UPSPIco",ex);

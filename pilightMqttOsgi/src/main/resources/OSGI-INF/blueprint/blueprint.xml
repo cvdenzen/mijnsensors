@@ -13,7 +13,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <dataFormats>
             <json id="jsonJsonOHRestItem" library="Gson"
                   unmarshalTypeName="nl.vandenzen.pilightmqttosgi.json.JsonOHRestItem"/>
+            <!-- unmarshal to List<Map> is supported by Jackson json -->
+            <json id="jsonjackson" library="Jackson" useList="true"/>
         </dataFormats>
+
         <!-- hopeloos, te weinig documentatie om dit goed te krijgen -->
         <!-- route id="DefineCache" autoStartup="true" startupOrder="5">
 		<from uri="ehcache://oh?configurationUri=file:${karaf.home}/etc/ehcache.xml"/>
@@ -104,7 +107,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="http://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
         </route>
 
-        <route id="requestLightsOnIntensityThreshold" autoStartup="true">
+        <route id="requestLightsOnIntensityThreshold" autoStartup="false">
             <from uri="quartz://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
             <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
@@ -488,7 +491,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
 
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
-        <route id="Enable_lights_on_by_daylight" autoStartup="true" startupOrder="401">
+        <route id="Enable_lights_on_by_daylight" autoStartup="false" startupOrder="401">
             <from uri="direct:Enable_lights_on_by_daylight"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
@@ -516,7 +519,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </choice>
         </route>
         <!-- Generic entry point for turning off the lights automatically based on light settings -->
-        <route id="LightsOffCalc" autoStartup="true" startupOrder="402">
+        <route id="LightsOffCalc" autoStartup="false" startupOrder="402">
             <from uri="direct:LightsOffCalc"/>
             <to uri="direct:SetHeaders"/>
             <choice>
@@ -595,9 +598,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setHeader>
         </route>
 
-        <route id="test1" autoStartup="true" startupOrder="9002">
+        <route id="test1" autoStartup="true" startupOrder="9002" streamCache="true">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz://groep/timer2?cron=0/10+*+*+*+*+?"/>
+            <from uri="quartz://groep/timer9002?cron=0/10+*+*+*+*+?"/>
             <setBody>
                 <constant>true</constant>
             </setBody>
@@ -606,7 +609,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>GET</constant>
             </setHeader>
             <setHeader name="Content-Type">
-                <constant>text/plain</constant>
+                <constant>application/json</constant>
             </setHeader>
             <setHeader name="Accept">
                 <constant>application/json</constant>
@@ -616,13 +619,20 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setBody>
             <log message="setHeaders locL ${body}"/>
             <!-- 21 jan: LampAchterdeur_Brightness is 89 procent, instelling door Hester -->
-            <to uri="http://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
-            <log message="Response LampAchterdeur_Brightness is ${body}"/>
+            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
+            <log message="Response Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm is ${body}"/>
+            <!--setBody><simple>[${body}]</simple></setBody -->
+            <log message="Response Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm locC is ${body}"/>
+            <unmarshal>
+                <custom ref="jsonJsonOHRestItem"/>
+            </unmarshal>
+            <log message="After unmarshal jsonjackson body=${body}"/>
             <setBody>
-                <jsonpath>$.state</jsonpath>
+                <!-- jsonpath>$.state</jsonpath -->
+                <simple>${body.state}</simple>
             </setBody>
-            <log message="setHeaders locjsonpath ${body}"/>
-            <setHeader name="LampAchterdeur_Brightness">
+            <log message="setHeaders state: ${body}"/>
+            <setHeader name="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm">
                 <simple>${body}</simple>
             </setHeader>
             <log message="setHeaders locM ${body}"/>
