@@ -11,10 +11,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <camel.version>3.0.1</camel.version>
-        <netty-version>4.1.24.Final</netty-version>
     </properties>
     <repositories>
         <repository>
@@ -147,11 +146,6 @@
             <!-- use the same version as your Camel core version -->
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-stream</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-jms -->
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -184,12 +178,6 @@
             <artifactId>leveldb-project</artifactId>
             <version>0.10</version>
             <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-            <version>${camel.version}</version>
         </dependency>
 
         <dependency>
@@ -256,7 +244,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>4.2.1</version>
                 <extensions>true</extensions>
 
                 <configuration>
@@ -264,13 +252,13 @@
                     <instructions>
 
                         <Embed-Dependency>com.pi4j.io.i2c.I2CFactory;inline=true,gson</Embed-Dependency>
-                        <Include-Resource>lib</Include-Resource>
+                        <!-- Include-Resource>lib</Include-Resource -->
                         <!-- https://github.com/bndtools/bndtools/wiki/Big-Bad-Bundle -->
                         <Bundle-ClassPath>.</Bundle-ClassPath>
                         <Export-Package>
-                            nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.json;version="1.0.0",\
-                            nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.beans;version="1.0.0",\
-                            nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.util;version="1.0.0"
+                            nl.vandenzen.pilightmqttosgi;version="1.0.0",nl.vandenzen.pilightmqttosgi.json;version="1.0.0",
+                            nl.vandenzen.pilightmqttosgi.beans;version="1.0.0",
+                            nl.vandenzen.pilightmqttosgi.util;version="1.0.0"
                         </Export-Package>
                         <Import-Package>!com.google.gson.reflect,*</Import-Package>
                         <Bundle-Activator>nl.vandenzen.pilightmqttosgi.Activator</Bundle-Activator>

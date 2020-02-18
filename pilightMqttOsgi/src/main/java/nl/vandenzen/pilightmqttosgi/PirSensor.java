@@ -27,7 +27,10 @@ public class PirSensor {
     }
 
     public void init() {
+        logger.info("Start gpio.provisionDigitalInputPin GPIO_04 pir");
+        try { Thread.sleep(2000L);} catch(Exception ex) {};
         gpioPir = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, "PIR"); // 02 and 03 conflicts with i2c?
+        logger.info("End gpio.provisionDigitalInputPin GPIO_04 pir");
         gpioPir.addListener(new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {

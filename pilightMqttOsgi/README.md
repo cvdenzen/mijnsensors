@@ -173,9 +173,7 @@ pilight https://manual.pilight.org/electronics/wiring.html
 Except pin 8: changed to pin 7, also changed in /etc/avrdude.conf gpio reset=7.
 
 mysensors rfm69: https://www.mysensors.org/build/raspberry
-https://forum.mysensors.org/topic/9953/mqtt-gateway-floods-logfile-if-broker-is-not-reachable
-An edit in core/MyGatewayTransportMQTTClient.cpp:
- (I added a "delay(3000)" after line 148 in reconnectMQTT(void))
+
 
 lcd:
 4 bit mode: lcd display use d4..d7
@@ -183,5 +181,6 @@ backlight led: 5V 23mA (isolated from rest)
 RS=register select
 RW=H=read, L=write. USE WRITE ONLY, otherwise 5V will be supplied to raspberry pins!
 pwm, resistor, transistor.
-2019-03-11 BME280 added (i2c address 76, python bme280.py displays values).
+2019-03-11 BME280 added (i2c address 76, python bme280.py displays values TEMP HUM PRESSURE).
+Lightsensor??
 

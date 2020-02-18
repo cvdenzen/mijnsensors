@@ -6,7 +6,7 @@ import com.pi4j.io.i2c.I2CFactory;
 import com.pi4j.platform.Platform;
 import com.pi4j.platform.PlatformAlreadyAssignedException;
 import com.pi4j.platform.PlatformManager;
-import com.sun.tools.javadoc.Start;
+// import com.sun.tools.javadoc.Start;
 
 import java.io.IOException;
 import java.math.BigDecimal;

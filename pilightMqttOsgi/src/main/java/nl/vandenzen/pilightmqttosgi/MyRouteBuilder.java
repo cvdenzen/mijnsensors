@@ -11,9 +11,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.pi4j.io.i2c.I2CFactory;
+import com.pi4j.wiringpi.Gpio;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import javafx.scene.effect.Light;
+//import javafx.scene.effect.Light;
 import nl.vandenzen.pilightmqttosgi.json.*;
 import org.apache.camel.*;
 import org.apache.camel.component.jackson.JacksonDataFormat;
@@ -45,7 +46,7 @@ import java.util.Properties;
 import org.apache.camel.component.netty.NettyServerBootstrapConfiguration;
 
 
-import com.pi4j.io.i2c.I2CBus;
+//import com.pi4j.io.i2c.I2CBus;
 import org.apache.camel.support.ExpressionAdapter;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
@@ -86,6 +87,10 @@ public class MyRouteBuilder {
     CamelContext context;
     Registry registry;
     public void start() {
+
+        logger.info("MyRouteBuilder start wiringPiSetupGpio");
+        Gpio.wiringPiSetupGpio();
+        logger.info("MyRouteBuilder end wiringPiSetupGpio");
 
         //JsonDataFormat jsonDataFormat = new JacksonDataFormat(JsonReceiverResponse.class);
         XStreamDataFormat xStreamDataFormat = new XStreamDataFormat(); // (JsonReceiverResponse.class);
@@ -380,29 +385,6 @@ public class MyRouteBuilder {
                             .recipientList(simple("paho:{{mqtt.topic.lightsensor.local.i2c.23}}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
 
 
-                    // UPS toggle (heartbeat)
-
-                    from("timer:picoUPS?period=250")
-
-                            .routeId("picoUPSSquareWave")
-                            .autoStartup(true)
-                            .startupOrder(200)
-                            // power mode
-                            .to("bean:UPSPIco?method=toggleGpio27");
-                    // UPS status
-                    from("quartz://picoupspublishertimer?cron=0/10+*+*+*+*+?")
-                            .routeId("PIcoUPSPublisher")
-                            .autoStartup(true) // ups beeps unexpectly when enabled
-                            .startupOrder(201)
-                            // power mode
-                            .process(new Processor() {
-                                @Override
-                                public void process(Exchange exchange) throws Exception {
-                                    String pwrMode="todo"; // upsPico.upsGetPwrMode();
-                                    exchange.getIn().setBody(pwrMode);// value
-                                }
-                            })
-                            .recipientList(simple("paho:picoups/pwrmode?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
                 }
             });
             // Broker started via karaf, feature activemq-broker
@@ -412,16 +394,6 @@ public class MyRouteBuilder {
             //broker.start();
             //System.out.println(broker.toString());
             //Thread.sleep(2000);
-
-            // UPS
-            try {
-                upsPico = new UPSPIco();
-                upsPico.init();
-                registry.bind("UPSPIco",upsPico);
-            }
-            catch (Exception ex) {
-                logger.log(Level.SEVERE,"Error initialising UPSPIco",ex);
-            }
 
             // PirSensor
             try {

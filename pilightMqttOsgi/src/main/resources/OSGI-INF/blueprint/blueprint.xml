@@ -467,7 +467,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setHeader>
             <setBody>
                 <simple>
-                    ${in.header.bg_w_tv_w_stable} + 1
+                    ${in.header.bg_w_tv_w_stable}++
                 </simple>
             </setBody>
             <bean ref="bg_w_tv_w_stable" method="setValue"/>
@@ -600,6 +600,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="test1" autoStartup="true" startupOrder="9002" streamCache="true">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer9002?cron=0/10+*+*+*+*+?"/>
+            <!-- Save body contents -->
+            <setHeader name="BodyContents">
+                <simple>${body}</simple>
+            </setHeader>
             <setBody>
                 <constant>true</constant>
             </setBody>
@@ -617,7 +621,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant></constant>
             </setBody>
             <log message="setHeaders locL ${body}"/>
-            <!-- 21 jan: LampAchterdeur_Brightness is 89 procent, instelling door Hester -->
+            <!-- 21 jan 2020: LampAchterdeur_Brightness is 89 procent, instelling door Hester -->
             <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
             <log message="Response Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm is ${body}"/>
             <!--setBody><simple>[${body}]</simple></setBody -->
