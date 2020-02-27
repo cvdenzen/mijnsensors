@@ -39,15 +39,12 @@ feature:install camel
 # not needed, no unnecessary dependencies! feature:install camel-activemq
 
 feature:install camel-jms
-feature:install camel-paho
-
-
 feature:install camel-gson
 feature:install camel-stream
+feature:install camel-http
 feature:install camel-netty
 feature:install camel-quartz
 
-# camel-jsonpath niet in java8, fout lijkt <!-- https://mvnrepository.com/artifact/net.minidev/accessors-smart not resolved
 feature:install camel-jsonpath
 feature:install jms
 

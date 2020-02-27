@@ -9,8 +9,8 @@
         <module name="pilightMqttOsgi" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
-      <module name="pilightMqttOsgi" target="1.8" />
+    <bytecodeTargetLevel>
+      <module name="pilightMqttOsgi" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

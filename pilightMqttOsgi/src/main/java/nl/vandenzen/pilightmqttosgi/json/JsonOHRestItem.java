@@ -160,7 +160,7 @@ public class JsonOHRestItem {
                 + "{\n"
                 + "link=" + link + ", "
                 + "state=" + state + ", "
-                + "stateDescription=" + stateDescription
+                + "stateDescription=" + stateDescription + ", "
                 + "editable=" + editable + ", "
                 + "type=" + type + ", "
                 + "name=" + name + ", "

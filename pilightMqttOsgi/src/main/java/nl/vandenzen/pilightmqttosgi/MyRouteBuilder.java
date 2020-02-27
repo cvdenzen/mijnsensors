@@ -46,7 +46,7 @@ import java.util.Properties;
 import org.apache.camel.component.netty.NettyServerBootstrapConfiguration;
 
 
-//import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CBus;
 import org.apache.camel.support.ExpressionAdapter;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
@@ -395,6 +395,8 @@ public class MyRouteBuilder {
             //System.out.println(broker.toString());
             //Thread.sleep(2000);
 
+            msg = dateFormat.format(new Date()) + " start pir";
+            logger.info(msg);
             // PirSensor
             try {
                 pirSensor = new PirSensor();
@@ -403,11 +405,15 @@ public class MyRouteBuilder {
             catch (Exception ex) {
                 logger.log(Level.SEVERE,"Error initialising PirSensor",ex);
             }
+            msg = dateFormat.format(new Date()) + " started pir";
+            logger.info(msg);
 
 
 
             // Light sensor init
             try {
+                msg = dateFormat.format(new Date()) + " start i2cbus lightsensor";
+                logger.info(msg);
                 // - I2CBus.BUS_1 are pins 3 and 5 (bij RP A en B rev. 1 this is BUS_0)
                 // - I2CBus.BUS_2 uses header pin CON6:3 as SDA and header pin CON6:5 as SCL
                 // - I2CBus.BUS_3 uses header pin CON6:27 as SDA and header pin CON6:28 as SCL

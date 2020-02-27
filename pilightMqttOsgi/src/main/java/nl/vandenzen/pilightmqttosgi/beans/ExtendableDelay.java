@@ -25,7 +25,7 @@ public class ExtendableDelay {
      */
     public ExtendableDelay(String uri) {
         this.uri = uri;
-        logger.log(Level.INFO,"Extendable delay: Bean created with uri "+uri);
+        logger.log(Level.INFO,"Extendable delay, Bean created with uri "+uri);
     }
 
     /**

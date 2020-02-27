@@ -4,6 +4,7 @@ package nl.vandenzen.pilightmqttosgi;
 import com.pi4j.io.gpio.*;
 import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
+import com.pi4j.wiringpi.Gpio;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -16,19 +17,26 @@ import java.util.logging.Logger;
 
 public class PirSensor {
 
-    // create gpio controller
-    final GpioController gpio = GpioFactory.getInstance();
-
 
     //@Resource(lookup = "jms/ConnectionFactory")
     //private static ConnectionFactory connectionFactory;
 
     public PirSensor() {
+        logger.info("Start Gpio.wiringPiSetupGpio pir");
+        Gpio.wiringPiSetupGpio();
+        try {
+            Thread.sleep(2000L);
+        } catch (Exception ex) {
+        }
+        ;
+        // create gpio controller
+        gpio = GpioFactory.getInstance();
+
+
     }
 
     public void init() {
         logger.info("Start gpio.provisionDigitalInputPin GPIO_04 pir");
-        try { Thread.sleep(2000L);} catch(Exception ex) {};
         gpioPir = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, "PIR"); // 02 and 03 conflicts with i2c?
         logger.info("End gpio.provisionDigitalInputPin GPIO_04 pir");
         gpioPir.addListener(new GpioPinListenerDigital() {
@@ -52,13 +60,13 @@ public class PirSensor {
                     client.publish("f0/nnw/pir", message);
                     client.disconnect();
                     client.close();
-                }
-                catch (MqttException ex1) {
+                } catch (MqttException ex1) {
                     logger.log(Level.SEVERE, "PIR send message to paho mqtt error", ex1);
                 }
             }
         });
     }
+
     public void destroy() {
         gpioPir.removeAllListeners();
         gpio.unprovisionPin(gpioPir);
@@ -67,4 +75,6 @@ public class PirSensor {
     public GpioPinDigitalInput gpioPir;
 
     final static Logger logger = Logger.getLogger(PirSensor.class.toString());
+    // create gpio controller
+    final GpioController gpio;
 }

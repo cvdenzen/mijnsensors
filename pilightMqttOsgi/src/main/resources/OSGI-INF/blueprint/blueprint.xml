@@ -70,7 +70,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
         <!-- Deze werkt 17 jan 2020.-->
-        <route id="achterlichtAan2020" autoStartup="false">
+        <route id="achterlichtAan2020" autoStartup="true">
             <from uri="direct:achterlichtaan2020"/>
             <setHeader name="CamelHttpMethod">
                 <constant>POST</constant>
@@ -89,7 +89,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
 
-        <route id="achterlichtUit2020" autoStartup="false">
+        <route id="achterlichtUit2020" autoStartup="true">
             <from uri="direct:achterlichtuit2020"/>
             <setHeader name="CamelHttpMethod">
                 <constant>POST</constant>
@@ -107,7 +107,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="http://127.0.0.1:8080/rest/items/LampAchterdeur_Brightness"/>
         </route>
 
-        <route id="requestLightsOnIntensityThreshold" autoStartup="false">
+        <route id="requestLightsOnIntensityThreshold" autoStartup="true" streamCache="true">
             <from uri="quartz://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
             <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
@@ -117,10 +117,15 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setHeader>
             <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
             <log message="Test: Response LightsOnIntensityThreshold is ${body}"/>
+            <unmarshal>
+                <custom ref="jsonJsonOHRestItem"/>
+            </unmarshal>
+            <log message="After unmarshal jsonjackson body=${body}"/>
             <setBody>
-                <jsonpath>state</jsonpath>
+                <!-- jsonpath>$.state</jsonpath -->
+                <simple>${body.state}</simple>
             </setBody>
-            <log message="Test, unmarshalled is ${body}"/>
+            <log message="Test, LightsOnIntensityThreshold unmarshalled is ${body}"/>
         </route>
 
         <!-- Zet lichten aan -->
@@ -421,6 +426,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="listenPir_gf_achterdeur17a" autoStartup="true" startupOrder="220">
             <from uri="paho:mysensors/all/153/1/1/0/2"/>
             <convertBodyTo type="java.lang.String"/>
+            <log message="listenPir_gf_achterdeur17a locA is ${body}"/>
             <choice>
                 <when>
                     <simple>${in.body} == "1"</simple>
@@ -492,7 +498,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
 
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
-        <route id="Enable_lights_on_by_daylight" autoStartup="false" startupOrder="401">
+        <route id="Enable_lights_on_by_daylight" autoStartup="true" startupOrder="401">
             <from uri="direct:Enable_lights_on_by_daylight"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
             <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
@@ -522,7 +528,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </choice>
         </route>
         <!-- Generic entry point for turning off the lights automatically based on light settings -->
-        <route id="LightsOffCalc" autoStartup="false" startupOrder="402">
+        <route id="LightsOffCalc" autoStartup="true" startupOrder="402">
             <from uri="direct:LightsOffCalc"/>
             <to uri="direct:SetHeaders"/>
             <choice>
@@ -674,14 +680,14 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <bean id="bg_x_imac3" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->
-        <argument value="direct:achterlichtuit2020"/>
+        <argument value="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
     </bean>
     <!-- For memory size reporting -->
     <bean id="Runtime" class="java.lang.Runtime"
           factory-method="getRuntime"/>
 
     <!-- Experimental LCD -->
-    <bean id="LCD" class="nl.vandenzen.pilightmqttosgi.LCD" factory-method="getLCD"/>
+    <!-- bean id="LCD" class="nl.vandenzen.pilightmqttosgi.LCD" factory-method="getLCD"/ -->
 
 
 </blueprint>
