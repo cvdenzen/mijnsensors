@@ -124,7 +124,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setBody>
             <log message="Test, LightsOnIntensityThreshold unmarshalled is ${body}"/>
             <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Integer"/>
+            <convertBodyTo type="java.lang.Float"/>
             <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
@@ -660,7 +660,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <bean id="AutoOnEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="AutoOffEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="pir_gf_achterdeur17" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
-    <bean id="LightsOnIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">
+    <bean id="LightsOnIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableFloat">
         <property name="value" value="4"/>
     </bean>
     <bean id="LightsEnableIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">

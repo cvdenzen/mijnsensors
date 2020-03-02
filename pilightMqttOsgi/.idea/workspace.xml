@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="no more groovy, replaced by simple language">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_9_10.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_10_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_9_10.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_10_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_9_10_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_10_1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__com_jayway_jsonpath_json_path_2_4_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_minidev_accessors_smart_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_minidev_json_smart_2_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__net_minidev_json_smart_action_2_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_camel_camel_jsonpath_3_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_ow2_asm_asm_5_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_beans_5_0_4_RELEASE.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_beans_5_2_1_RELEASE.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_core_5_0_4_RELEASE.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_core_5_2_1_RELEASE.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jcl_5_0_4_RELEASE.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_spring_jcl_5_2_1_RELEASE.xml" afterDir="false" />
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="init lightsonintensitythreshold">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
     </list>
@@ -177,13 +165,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00047" summary="util boolean integer float for blueprint use">
-      <created>1538432506358</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1538432506358</updated>
     </task>
     <task id="LOCAL-00048" summary="Redelijk werkende maar nog niet complete blueprint file">
       <created>1538436561741</created>
@@ -521,7 +502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581175527221</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="init lightsonintensitythreshold">
+      <created>1583186573067</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1583186573067</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -564,7 +552,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="password in paho calls for user hab for mqtt broker changed" />
     <MESSAGE value="Comments, stable count message" />
     <MESSAGE value="Added sub packages to export to pom." />
     <MESSAGE value="Addes reserved pins for UPS" />
@@ -589,17 +576,19 @@
     <MESSAGE value="Removed activemq direct dependency, no activemq-camel needed (which made karaf hang/crash)" />
     <MESSAGE value="json jackson for oh rest working" />
     <MESSAGE value="no more groovy, replaced by simple language" />
-    <option name="LAST_COMMIT_MESSAGE" value="no more groovy, replaced by simple language" />
+    <MESSAGE value="init lightsonintensitythreshold" />
+    <option name="LAST_COMMIT_MESSAGE" value="init lightsonintensitythreshold" />
   </component>
   <component name="WindowStateProjectService">
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="467" y="130" key="CommitChangelistDialog2" timestamp="1581175526824">
-      <screen x="0" y="0" width="1680" height="1046" />
+    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2" timestamp="1583186572996">
+      <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175526824" />
+    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583186572996" />
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog" timestamp="1579732911277">
       <screen x="0" y="23" width="1680" height="1023" />
     </state>
@@ -638,10 +627,11 @@
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="123" y="103" width="1024" height="852" key="SettingsEditor/0.27.1280.997@0.27.1280.997" timestamp="1583180241476" />
-    <state x="440" y="266" key="Vcs.Push.Dialog.v2" timestamp="1581175532989">
-      <screen x="0" y="0" width="1680" height="1046" />
+    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1583186574432">
+      <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175532989" />
+    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583186574432" />
     <state x="479" y="455" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1583079987848">
       <screen x="0" y="27" width="1280" height="997" />
     </state>
