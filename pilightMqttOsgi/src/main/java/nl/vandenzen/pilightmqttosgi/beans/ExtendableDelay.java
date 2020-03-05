@@ -33,7 +33,7 @@ public class ExtendableDelay {
      * @param exchange
      */
     public void restartTimer(Exchange exchange) {
-        logger.log(Level.INFO,"ExtendableDelay.restartTimer started");
+        logger.log(Level.INFO,"ExtendableDelay.restartTimer started with delay of "+this.delay);
         this.exchange=exchange;
 
         TimerTask timerTask = new TimerTask() {
@@ -42,7 +42,7 @@ public class ExtendableDelay {
                     lock.lock();
                     if (timer!=null) {
                         producer.send(uri, exchange);
-                        logger.log(Level.INFO, "ExtendableDelay: " + uri);
+                        logger.log(Level.INFO, "ExtendableDelay tripped and started: " + uri);
                         timer = null; // signal for restartTimer
                     }
                 } finally {
@@ -93,6 +93,8 @@ public class ExtendableDelay {
             if (timer!=null) {
                 logger.log(Level.INFO,"Extend timer");
                 restartTimer(exchange);
+            } else {
+                logger.log(Level.INFO,"timer is not running, hence no action");
             }
         }
         finally {

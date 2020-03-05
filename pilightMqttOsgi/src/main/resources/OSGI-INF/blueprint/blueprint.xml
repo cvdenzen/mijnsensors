@@ -44,10 +44,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setHeader name="Accept">
                 <constant>application/json</constant>
             </setHeader>
-            <setBody>
-                <simple>log from setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
-            </setBody>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <log message="from setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
             <to uri="http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
         </route>
 
@@ -227,6 +224,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="cancel"/>
         </route>
 
+        <!-- als de schakelaar gebruikt wordt, moet de pir-automaat gecancelled worden -->
+        <route id="dimmerSwitchBijTv" autoStartup="true" startupOrder="108">
+            <from uri="paho:oh/all/WoonkamerSchakelaarBijTv/state"/>
+            <log message="aho:oh/all/WoonkamerSchakelaarBijTv/state=${body}"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="cancel"/>
+        </route>
+
         <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
             <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
@@ -238,7 +242,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <route id="pir_gf_achterdeur17_updated" autoStartup="true" startupOrder="201">
             <from uri="direct:pir_gf_achterdeur17_updated"/>
-            <log message="Start pir_gf_achterdeur17_updated"/>
+            <log message="Start pir_gf_achterdeur17_updated, body=${body}"/>
             <!-- set states of light etc. in header of the message -->
             <to uri="direct:SetHeaders"/>
             <log message="header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
@@ -417,7 +421,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
         <!-- not used 17 jan 2020 -->
-        <route id="listenPir_gf_achterdeur17" autoStartup="true" startupOrder="209">
+        <route id="listenPir_gf_achterdeur17" autoStartup="false" startupOrder="209">
             <from uri="paho:oh/all/pir_gf_achterdeur17/state"/>
             <log message="listenPir_gf_achterdeur17 body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
