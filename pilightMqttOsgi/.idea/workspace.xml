@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="pir werkt nog niet">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Read DimmerSwitch Tv triggers via mqtt from openhab">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/beans/ExtendableDelay.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -166,13 +165,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00050" summary="Better logic, deploy script.">
-      <created>1538494161046</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1538494161048</updated>
     </task>
     <task id="LOCAL-00051" summary="moved deploy script">
       <created>1538494327809</created>
@@ -510,7 +502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583272317683</updated>
     </task>
-    <option name="localTasksCounter" value="99" />
+    <task id="LOCAL-00099" summary="Read DimmerSwitch Tv triggers via mqtt from openhab">
+      <created>1583444463398</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1583444463398</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -553,7 +552,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Addes reserved pins for UPS" />
     <MESSAGE value="PIR sensor pin number documented" />
     <MESSAGE value="mqtt client close to avoid (?) OutOfMemoryErrors ?" />
     <MESSAGE value="Memory usage report through paho/mqtt" />
@@ -578,18 +576,19 @@
     <MESSAGE value="init lightsonintensitythreshold" />
     <MESSAGE value="init lightsonintensitythreshold as float" />
     <MESSAGE value="pir werkt nog niet" />
-    <option name="LAST_COMMIT_MESSAGE" value="pir werkt nog niet" />
+    <MESSAGE value="Read DimmerSwitch Tv triggers via mqtt from openhab" />
+    <option name="LAST_COMMIT_MESSAGE" value="Read DimmerSwitch Tv triggers via mqtt from openhab" />
   </component>
   <component name="WindowStateProjectService">
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2" timestamp="1583272317528">
+    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2" timestamp="1583444463259">
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175526824" />
-    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583272317528" />
+    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583444463259" />
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog" timestamp="1579732911277">
       <screen x="0" y="23" width="1680" height="1023" />
     </state>
@@ -628,11 +627,11 @@
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="123" y="103" width="1024" height="852" key="SettingsEditor/0.27.1280.997@0.27.1280.997" timestamp="1583361429244" />
-    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1583272319311">
+    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1583444465674">
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175532989" />
-    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583272319311" />
+    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583444465674" />
     <state x="479" y="455" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1583079987848">
       <screen x="0" y="27" width="1280" height="997" />
     </state>

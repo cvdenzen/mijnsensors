@@ -44,21 +44,18 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <setHeader name="Accept">
                 <constant>application/json</constant>
             </setHeader>
-            <log message="from setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
+            <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
             <to uri="http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
+            <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/>
         </route>
-
 
         <!-- Test setOHItem-->
         <route id="testSetOHItem" autoStartup="true">
             <from uri="quartz://groep/timerTestSetOHItem?cron=0/10+*+*+*+*+?"/>
             <setHeader name="OHItem">
-                <constant>LampAchterdeur_Brightness</constant>
+                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm</constant>
             </setHeader>
-            <setBody>
-                <simple>log from testSetOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
-            </setBody>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <log message="log from testSetOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
             <setBody>
                 <!-- percentage 0..100 -->
                 <simple>50</simple>
@@ -531,15 +528,12 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <simple>
                         ${header.AutoOnEnabled} == 1
                     </simple>
-                    <when>
+                    <>
                         <!-- it is dark -->
                         <simple>
                             ${header.LichtIntensiteit_Woonkamer} &lt; ${header.LightsOnIntensityThreshold}
                         </simple>
-                        <setBody>
-                            <simple>Licht gaat aan!</simple>
-                        </setBody>
-                        <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                        <log message="Licht gaat aan!"/>
                         <to uri="direct:ZetLichtenAan"/>
                         <!-- disable automatic turning on the lights -->
                         <setBody>
