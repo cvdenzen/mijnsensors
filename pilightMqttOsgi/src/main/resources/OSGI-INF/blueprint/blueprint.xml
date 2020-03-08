@@ -45,12 +45,14 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>application/json</constant>
             </setHeader>
             <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
-            <to uri="http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
+            <recipientList>
+                <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+            </recipientList>
             <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/>
         </route>
 
         <!-- Test setOHItem-->
-        <route id="testSetOHItem" autoStartup="true">
+        <route id="testSetOHItem" autoStartup="false">
             <from uri="quartz://groep/timerTestSetOHItem?cron=0/10+*+*+*+*+?"/>
             <setHeader name="OHItem">
                 <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm</constant>
@@ -60,7 +62,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <!-- percentage 0..100 -->
                 <simple>50</simple>
             </setBody>
-            <!-- to uri="direct:setOHItem"/ -->
+            <to uri="direct:setOHItem"/>
         </route>
 
         <!-- Deze werkt 17 jan 2020.-->
@@ -153,18 +155,37 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
 
+        <!-- set OHItem to 100 -->
+        <route id="ZetLichtAan" autoStartup="true">
+            <from uri="direct:ZetLichtAan"/>
+            <log message="ZetLichtAan ${header.OHItem}"/>
+            <setBody>
+                <!-- percentage 0..100 -->
+                <constant>100</constant>
+            </setBody>
+            <to uri="direct:setOHItem"/>
+        </route>
         <!-- Zet lichten aan -->
         <route id="ZetLichtenAan" autoStartup="true" startupOrder="101">
             <from uri="direct:ZetLichtenAan"/>
-            <setBody>
-                <simple>Lichten gaan aan!</simple>
-            </setBody>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <setBody>
-                <constant>on</constant>
-            </setBody>
-            <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
-            <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
+            <log message="Lichten gaan aan!"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm</constant>
+            </setHeader>
+            <to uri="direct:ZetLichtAan"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_LampGroteKast_Dimm</constant>
+            </setHeader>
+            <to uri="direct:ZetLichtAan"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_LampLadenkastje_Dimm</constant>
+            </setHeader>
+            <to uri="direct:ZetLichtAan"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
+            </setHeader>
+            <setBody><constant>ON</constant></setBody>
+            <to uri="direct:setOHItem"/>
         </route>
 
         <!-- Zet lichten uit -->
@@ -520,15 +541,15 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
         <route id="Enable_lights_on_by_daylight" autoStartup="true" startupOrder="401">
             <from uri="direct:Enable_lights_on_by_daylight"/>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-            <bean ref="LichtIntensiteit_Woonkamer" method="getValue"/>
+            <log message="Start Enable_lights_on_by_daylight"/>
             <to uri="direct:SetHeaders"/>
             <choice>
                 <when>
                     <simple>
                         ${header.AutoOnEnabled} == 1
                     </simple>
-                    <>
+                    <log message="header.AutoOnEnabled==1"/>
+                    <when>
                         <!-- it is dark -->
                         <simple>
                             ${header.LichtIntensiteit_Woonkamer} &lt; ${header.LightsOnIntensityThreshold}
@@ -620,7 +641,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
         </route>
 
-        <route id="test1" autoStartup="true" startupOrder="9002" streamCache="true">
+        <route id="test1" autoStartup="false" startupOrder="9002" streamCache="true">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer9002?cron=0/10+*+*+*+*+?"/>
             <!-- Save body contents -->
