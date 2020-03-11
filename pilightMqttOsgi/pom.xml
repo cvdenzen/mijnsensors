@@ -188,12 +188,7 @@
             <artifactId>org.apache.servicemix.bundles.ant</artifactId>
             <version>1.7.0_6</version>
         </dependency>
-        <!-- Groovy doesn't work 7 feb 2020 classnotfound -->
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>2.5.8</version>
-        </dependency>
+
 
         <!-- ??? after error java.lang.NoClassDefFoundError: com/sun/istack/FinalArrayList -->
         <!-- https://mvnrepository.com/artifact/com.sun.istack/istack-commons-runtime -->
@@ -230,6 +225,9 @@
                             nl.vandenzen.pilightmqttosgi.util;version="1.0.0"
                         </Export-Package>
                         <Import-Package>*</Import-Package>
+                            <DynamicImport-Package>
+                                *
+                            </DynamicImport-Package>
                         <Bundle-Activator>nl.vandenzen.pilightmqttosgi.Activator</Bundle-Activator>
                         <!-- 20181130 https://issues.apache.org/jira/browse/KARAF-4730 -->
                         <_removeheaders>Import-Service,Export-Service</_removeheaders>

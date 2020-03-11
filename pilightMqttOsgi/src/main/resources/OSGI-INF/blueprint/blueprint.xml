@@ -32,30 +32,62 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
 
-        <!-- Set item to value. Input: header.OHItem, body -->
+        <!-- Set OpenHab Item to value: use a rest POST call to OpenHab. This will probably
+             send a command to the item.
+             Input: header.OHItem, body.
+             If header.OHItem contains a comma (,), it will be split and
+             all OHItems will be set to the value of the body -->
         <route id="setOHItem" autoStartup="true">
             <from uri="direct:setOHItem"/>
-            <setHeader name="CamelHttpMethod">
-                <constant>POST</constant>
-            </setHeader>
-            <setHeader name="Content-Type">
-                <constant>text/plain</constant>
-            </setHeader>
-            <setHeader name="Accept">
-                <constant>application/json</constant>
-            </setHeader>
-            <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
-            <recipientList>
-                <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
-            </recipientList>
-            <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/>
+            <choice>
+                <when>
+                    <groovy>headers.OHItem.contains(",")</groovy>
+                    <log message="header contains ,"/>
+                    <!-- save body contents -->
+                    <setHeader name="savedBody">
+                        <simple>${body}</simple>
+                    </setHeader>
+                    <split>
+                        <simple>${header.OHItem}</simple>
+                        <!-- restore header -->
+                        <!-- Header has been split into the body -->
+                        <setHeader name="OHItem">
+                            <simple>${body}</simple>
+                        </setHeader>
+                        <!-- restore body -->
+                        <setBody>
+                            <simple>${header.savedBody}</simple>
+                        </setBody>
+                        <log message="OHItem na split and restore is ${header.OHItem}"/>
+                        <log message="body na split and restore is ${body}"/>
+                        <to uri="direct:setOHItem"/>
+                    </split>
+                </when>
+                <otherwise>
+                    <setHeader name="CamelHttpMethod">
+                        <constant>POST</constant>
+                    </setHeader>
+                    <setHeader name="Content-Type">
+                        <constant>text/plain</constant>
+                    </setHeader>
+                    <setHeader name="Accept">
+                        <constant>application/json</constant>
+                    </setHeader>
+                    <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
+                    <recipientList>
+                        <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+                    </recipientList>
+                    <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/>
+                </otherwise>
+            </choice>
         </route>
 
         <!-- Test setOHItem-->
         <route id="testSetOHItem" autoStartup="false">
             <from uri="quartz://groep/timerTestSetOHItem?cron=0/10+*+*+*+*+?"/>
             <setHeader name="OHItem">
-                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm</constant>
+                <groovy>"Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm,Light_GF_Huiskamer_LampGroteKast_Dimm,"
+                    "Light_GF_Huiskamer_LampLadenkastje_Dimm"</groovy>
             </setHeader>
             <log message="log from testSetOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
             <setBody>
@@ -155,47 +187,42 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
 
-        <!-- set OHItem to 100 -->
-        <route id="ZetLichtAan" autoStartup="true">
-            <from uri="direct:ZetLichtAan"/>
-            <log message="ZetLichtAan ${header.OHItem}"/>
-            <setBody>
-                <!-- percentage 0..100 -->
-                <constant>100</constant>
-            </setBody>
-            <to uri="direct:setOHItem"/>
-        </route>
         <!-- Zet lichten aan -->
         <route id="ZetLichtenAan" autoStartup="true" startupOrder="101">
             <from uri="direct:ZetLichtenAan"/>
             <log message="Lichten gaan aan!"/>
             <setHeader name="OHItem">
-                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm</constant>
+                <groovy>"Light_GF_Huiskamer_LampGroteKast_Dimm,Light_GF_Huiskamer_LampLadenkastje_Dimm"
+                         "Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"</groovy>
             </setHeader>
-            <to uri="direct:ZetLichtAan"/>
-            <setHeader name="OHItem">
-                <constant>Light_GF_Huiskamer_LampGroteKast_Dimm</constant>
-            </setHeader>
-            <to uri="direct:ZetLichtAan"/>
-            <setHeader name="OHItem">
-                <constant>Light_GF_Huiskamer_LampLadenkastje_Dimm</constant>
-            </setHeader>
-            <to uri="direct:ZetLichtAan"/>
+            <setBody><constant>100</constant></setBody>
+            <to uri="direct:setOHItem"/>
             <setHeader name="OHItem">
                 <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
             </setHeader>
-            <setBody><constant>ON</constant></setBody>
+            <setBody>
+                <constant>ON</constant>
+            </setBody>
             <to uri="direct:setOHItem"/>
         </route>
 
-        <!-- Zet lichten uit -->
+        <!-- Zet lichten uit, behalve Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm, die gaat na een tijdje uit -->
         <route id="ZetLichtenUit" autoStartup="true" startupOrder="102">
             <from uri="direct:ZetLichtenUit"/>
+            <log message="Lichten gaan uit!"/>
+            <setHeader name="OHItem">
+                <groovy>"Light_GF_Huiskamer_LampGroteKast_Dimm,Light_GF_Huiskamer_LampLadenkastje_Dimm"
+                    </groovy>
+            </setHeader>
+            <setBody><constant>0</constant></setBody>
+            <to uri="direct:setOHItem"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
+            </setHeader>
             <setBody>
-                <constant>off</constant>
+                <constant>OFF</constant>
             </setBody>
-            <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
-            <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
+            <to uri="direct:setOHItem"/>
         </route>
 
         <!-- Zet 1 licht aan -->
@@ -299,6 +326,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="extend"/>
         </route>
 
+        <!-- This is not used, AutoOnEnabled is not handled by openhab (march 2020) -->
         <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="202">
             <from uri="paho:oh/all/AutoOnEnabled/state"/>
             <convertBodyTo type="java.lang.String"/>
@@ -318,6 +346,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <convertBodyTo type="java.lang.Boolean"/>
             <bean ref="AutoOnEnabled" method="setValue"/>
             <!-- Turn on lights? -->
+            <log message="listenAutoOnEnabled: AutoOnEnabled set to ${body}"/>
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
         <route id="listenLightsOnIntensityThreshold" autoStartup="true" startupOrder="203">
@@ -494,6 +523,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>true</constant>
             </setBody>
             <bean ref="AutoOnEnabled" method="setValue"/>
+            <log message="bean AutoOnEnabled set to ${body}"/>
         </route>
         <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->
@@ -520,6 +550,30 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <bean ref="bg_w_tv_w_stable" method="setValue"/>
             <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
             <log message="Increment bg_w_tv_w_stable: Stable count is ${body}"/>
+            <!-- get old value of xxxx_stable -->
+            <setHeader name="bg_x_imac2_stable">
+                <method ref="bg_x_imac2_stable" method="getValue"/>
+            </setHeader>
+            <setBody>
+                <simple>
+                    ${in.header.bg_x_imac2_stable}++
+                </simple>
+            </setBody>
+            <bean ref="bg_x_imac2_stable" method="setValue"/>
+            <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <log message="Increment bg_x_imac2_stable: Stable count is ${body}"/>
+            <!-- get old value of xxxx_stable -->
+            <setHeader name="bg_x_imac3_stable">
+                <method ref="bg_x_imac3_stable" method="getValue"/>
+            </setHeader>
+            <setBody>
+                <simple>
+                    ${in.header.bg_x_imac3_stable}++
+                </simple>
+            </setBody>
+            <bean ref="bg_x_imac3_stable" method="setValue"/>
+            <!--to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <log message="Increment bg_x_imac3_stable: Stable count is ${body}"/>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
@@ -541,14 +595,15 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
         <route id="Enable_lights_on_by_daylight" autoStartup="true" startupOrder="401">
             <from uri="direct:Enable_lights_on_by_daylight"/>
-            <log message="Start Enable_lights_on_by_daylight"/>
+            <log message="Start Enable_lights_on_by_daylight, header.AutoOnEnabled=${header.AutoOnEnabled}"/>
             <to uri="direct:SetHeaders"/>
             <choice>
                 <when>
                     <simple>
                         ${header.AutoOnEnabled} == 1
+                        || ${header.AutoOnEnabled} == true
                     </simple>
-                    <log message="header.AutoOnEnabled==1"/>
+                    <log message="header.AutoOnEnabled==true=${header.AutoOnEnabled}"/>
                     <when>
                         <!-- it is dark -->
                         <simple>
@@ -572,7 +627,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <choice>
                 <when>
                     <simple>
-                        ${header.AutoOffEnabled} == 1
+                        ${header.AutoOffEnabled} == true
                         &amp;&amp; ${header.bg_w_tv_w} == false
                         &amp;&amp; ${header.bg_w_tv_w_stable} > 14
                         &amp;&amp; ${header.bg_x_imac2} == false
@@ -582,13 +637,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         <simple>Licht gaat uit.</simple>
                     </setBody>
                     <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
-                    <!-- staande lamp direct uitzetten, achterdeurlamp pas na een delay -->
-                    <to uri="direct:Light_GF_Huiskamer_Achter_Staandelamp_uit"/>
                     <!-- disable automatic turning off the lights -->
                     <setBody>
                         <constant>false</constant>
                     </setBody>
                     <bean ref="AutoOffEnabled" method="setValue"/>
+                    <!-- alle lampen direct uitzetten, achterdeurlamp pas na een delay -->
+                    <to uri="direct:ZetLichtenUit"/>
                     <!-- delay for only one light (achterdeur)-->
                     <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
                     <convertBodyTo type="java.lang.String"/>
@@ -644,44 +699,42 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="test1" autoStartup="false" startupOrder="9002" streamCache="true">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer9002?cron=0/10+*+*+*+*+?"/>
+            <log message="Start test1"/>
             <!-- Save body contents -->
             <setHeader name="BodyContents">
                 <simple>${body}</simple>
             </setHeader>
+            <setHeader name="OHItem">
+                <constant>a,b,c</constant>
+            </setHeader>
+            <to uri="direct:testsplit"/>
             <setBody>
-                <constant>true</constant>
+                <constant>d</constant>
             </setBody>
-            <log message="Body voordat headers voor http worden geset: ${body}"/>
-            <setHeader name="CamelHttpMethod">
-                <constant>GET</constant>
-            </setHeader>
-            <setHeader name="Content-Type">
-                <constant>application/json</constant>
-            </setHeader>
-            <setHeader name="Accept">
-                <constant>application/json</constant>
-            </setHeader>
+            <to uri="direct:testsplit"/>
+            <!-- restore body -->
             <setBody>
-                <constant></constant>
+                <simple>${header.BodyContents}</simple>
             </setBody>
-            <log message="setHeaders locL ${body}"/>
-            <!-- 21 jan 2020: LampAchterdeur_Brightness is 89 procent, instelling door Hester -->
-            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
-            <log message="Response Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm is ${body}"/>
-            <!--setBody><simple>[${body}]</simple></setBody -->
-            <log message="Response Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm locC is ${body}"/>
-            <unmarshal>
-                <custom ref="jsonJsonOHRestItem"/>
-            </unmarshal>
-            <log message="After unmarshal jsonjackson body=${body}"/>
-            <setBody>
-                <!-- jsonpath>$.state</jsonpath -->
-                <simple>${body.state}</simple>
-            </setBody>
-            <log message="setHeaders state: ${body}"/>
-            <setHeader name="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm">
-                <simple>${body}</simple>
-            </setHeader>
+        </route>
+
+        <route id="testsplit">
+            <from uri="direct:testsplit"/>
+            <!-- als body een komma bevat, dan splitsen, anders niet. Test met groovy -->
+            <log message="Start testsplit, body=${body}, header OHItem=${header.OHItem}"/>
+            <when>
+                <groovy>headers.OHItem.contains(",")</groovy>
+                <log message="header contains ,"/>
+                <split>
+                    <simple>${header.OHItem}</simple>
+                    <log message="OHItem na split is ${header.OHItem}"/>
+                    <log message="body na split is ${body}"/>
+                </split>
+            </when>
+            <when>
+                <groovy>5==5</groovy>
+                <log message="5=5"/>
+            </when>
         </route>
 
     </camelContext>
@@ -709,7 +762,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <!-- for debounce, add history count -->
     <bean id="bg_w_tv_w_stable" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger"/>
     <bean id="bg_x_imac2" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="bg_x_imac2_stable" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="bg_x_imac3_stable" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger"/>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->
         <argument value="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
