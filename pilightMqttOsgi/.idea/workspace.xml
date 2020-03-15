@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="test rest">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="typo corrected and changed 100% to ON to turn light on with previous Dimm value">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
     </list>
@@ -165,13 +165,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00053" summary="logic">
-      <created>1538495848958</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1538495848958</updated>
     </task>
     <task id="LOCAL-00054" summary="logic">
       <created>1540382141015</created>
@@ -509,7 +502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583960864991</updated>
     </task>
-    <option name="localTasksCounter" value="102" />
+    <task id="LOCAL-00102" summary="typo corrected and changed 100% to ON to turn light on with previous Dimm value">
+      <created>1584306887395</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1584306887396</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -552,7 +552,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Memory usage report through paho/mqtt" />
     <MESSAGE value="cancel scheduled action on maual intervention throug kaku remote control" />
     <MESSAGE value="timer name must be unique" />
     <MESSAGE value="paho payload must be String (can not be type long)" />
@@ -577,19 +576,20 @@
     <MESSAGE value="Read DimmerSwitch Tv triggers via mqtt from openhab" />
     <MESSAGE value="test rest" />
     <MESSAGE value="groovy werkt, automatisch aan werkte vandaag voordat ik wijzigingen deed" />
-    <option name="LAST_COMMIT_MESSAGE" value="groovy werkt, automatisch aan werkte vandaag voordat ik wijzigingen deed" />
+    <MESSAGE value="typo corrected and changed 100% to ON to turn light on with previous Dimm value" />
+    <option name="LAST_COMMIT_MESSAGE" value="typo corrected and changed 100% to ON to turn light on with previous Dimm value" />
   </component>
   <component name="WindowStateProjectService">
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="0" y="158" width="1270" height="816" key="CommitChangelistDialog2" timestamp="1583960864778">
+    <state x="0" y="158" width="750" height="816" key="CommitChangelistDialog2" timestamp="1584306887154">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175526824" />
     <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583705730152" />
-    <state x="0" y="158" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1583960864777" />
+    <state x="0" y="158" width="750" height="816" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1584306887154" />
     <state x="6" y="102" width="1256" height="829" key="DiffContextDialog" timestamp="1583599496256">
       <screen x="0" y="27" width="1280" height="997" />
     </state>
@@ -629,12 +629,12 @@
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="123" y="103" width="1024" height="852" key="SettingsEditor/0.27.1280.997@0.27.1280.997" timestamp="1583361429244" />
-    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1583960866910">
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1584306889632">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175532989" />
     <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583705733250" />
-    <state x="503" y="295" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1583960866910" />
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1584306889632" />
     <state x="719" y="479" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1583960811766">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>

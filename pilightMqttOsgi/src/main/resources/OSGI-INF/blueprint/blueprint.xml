@@ -24,7 +24,14 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 		    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route -->
 
-        <route id="HelloWorldFromBlueprint" autoStartup="true">
+        <route id="Init" autoStartup="true" startupOrder="1">
+            <from uri="timer:inittimer?repeatCount=1"/>
+            <setBody><constant>false</constant></setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="Stable" method="setValue"/>
+        </route>
+
+        <route id="HelloWorldFromBlueprint" autoStartup="true" startupOrder="6">
             <from uri="timer:simple?period=5000&amp;repeatCount=3"/>
             <setBody>
                 <simple>Hello World from blueprint (Camel UPSPIco)</simple>
@@ -173,7 +180,6 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>application/json</constant>
             </setHeader>
             <setBody>
-                <!-- percentage 0..100 -->
                 <simple>ON</simple>
             </setBody>
             <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle"/>
@@ -247,6 +253,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>ON</constant>
             </setBody>
             <to uri="direct:setOHItem"/>
+            <!-- special case (but not anymore) because previous three bulbs were Dimm (but now also Toggle) -->
             <setHeader name="OHItem">
                 <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
             </setHeader>
@@ -275,7 +282,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>OFF</constant>
             </setBody>
             <to uri="direct:setOHItem"/>
-            <!-- delay -->
+            <!-- delayed switch off for AchterdeurSchemerlamp -->
             <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Long"/>
@@ -449,6 +456,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         <constant>0</constant>
                     </setBody>
                     <bean ref="bg_w_tv_w_stable" method="setValue"/>
+                    <to uri="direct:set_stable_false"/>
                 </otherwise>
             </choice>
             <setBody>
@@ -729,6 +737,28 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
         </route>
 
+        <!-- this route is called by bean DelaySetStableTrue -->
+        <route id="set_stable_true" autoStartup="true" startupOrder="511">
+            <from uri="direct:set_stable_true"/>
+            <log message="Start set_stable_true"/>
+            <setBody><constant>true</constant></setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="Stable" method="setValue"/>
+        </route>
+
+        <route id="set_stable_false" autoStartup="true" startupOrder="512">
+            <from uri="direct:set_stable_false"/>
+            <log message="Start set_stable_false"/>
+            <setBody><constant>false</constant></setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="Stable" method="setValue"/>
+            <!-- set timer (milliseconds) to set stable to true -->
+            <setBody><constant>45000</constant></setBody>
+            <convertBodyTo type="java.lang.Long"/>
+            <bean ref="DelaySetStableTrue" method="setDelay"/>
+            <bean ref="DelaySetStableTrue" method="restartTimer"/>
+        </route>
+
         <route id="test1" autoStartup="false" startupOrder="9002" streamCache="true">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer9002?cron=0/10+*+*+*+*+?"/>
@@ -794,9 +824,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <bean id="bg_x_imac2_stable" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="bg_x_imac3_stable" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger"/>
+    <bean id="Stable" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->
         <argument value="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
+    </bean>
+    <bean id="DelaySetStableTrue" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
+        <argument value="direct:set_stable_true"/>
     </bean>
     <!-- For memory size reporting -->
     <bean id="Runtime" class="java.lang.Runtime"
