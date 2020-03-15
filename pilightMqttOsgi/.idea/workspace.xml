@@ -166,13 +166,6 @@
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
     </task>
-    <task id="LOCAL-00052" summary="mqtt startupOrder to 300, hope that server is initialized before order 300 is started">
-      <created>1538494787675</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1538494787675</updated>
-    </task>
     <task id="LOCAL-00053" summary="logic">
       <created>1538495848958</created>
       <option name="number" value="00053" />
@@ -509,7 +502,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583593334689</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="groovy werkt, automatisch aan werkte vandaag voordat ik wijzigingen deed">
+      <created>1583960864990</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1583960864991</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -552,7 +552,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="mqtt client close to avoid (?) OutOfMemoryErrors ?" />
     <MESSAGE value="Memory usage report through paho/mqtt" />
     <MESSAGE value="cancel scheduled action on maual intervention throug kaku remote control" />
     <MESSAGE value="timer name must be unique" />
@@ -577,29 +576,31 @@
     <MESSAGE value="pir werkt nog niet" />
     <MESSAGE value="Read DimmerSwitch Tv triggers via mqtt from openhab" />
     <MESSAGE value="test rest" />
-    <option name="LAST_COMMIT_MESSAGE" value="test rest" />
+    <MESSAGE value="groovy werkt, automatisch aan werkte vandaag voordat ik wijzigingen deed" />
+    <option name="LAST_COMMIT_MESSAGE" value="groovy werkt, automatisch aan werkte vandaag voordat ik wijzigingen deed" />
   </component>
   <component name="WindowStateProjectService">
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2" timestamp="1583593334486">
-      <screen x="0" y="27" width="1280" height="997" />
+    <state x="0" y="158" width="1270" height="816" key="CommitChangelistDialog2" timestamp="1583960864778">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175526824" />
-    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583593334486" />
+    <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583705730152" />
+    <state x="0" y="158" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1583960864777" />
     <state x="6" y="102" width="1256" height="829" key="DiffContextDialog" timestamp="1583599496256">
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog/0.0.1680.1046@0.0.1680.1046" timestamp="1579467473604" />
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog/0.23.1680.1023@0.23.1680.1023" timestamp="1579732911277" />
     <state x="6" y="102" width="1256" height="829" key="DiffContextDialog/0.27.1280.997@0.27.1280.997" timestamp="1583599496256" />
-    <state x="530" y="449" width="479" height="521" key="FileChooserDialogImpl" timestamp="1583361420126">
+    <state x="530" y="449" width="479" height="521" key="FileChooserDialogImpl" timestamp="1583782245691">
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="695" y="443" key="FileChooserDialogImpl/0.0.1680.1046@0.0.1680.1046" timestamp="1579815844474" />
-    <state x="530" y="449" width="479" height="521" key="FileChooserDialogImpl/0.27.1280.997@0.27.1280.997" timestamp="1583361420126" />
+    <state x="530" y="449" width="479" height="521" key="FileChooserDialogImpl/0.27.1280.997@0.27.1280.997" timestamp="1583782245691" />
     <state width="1214" height="244" key="GridCell.Tab.0.bottom" timestamp="1583362514474">
       <screen x="0" y="27" width="1280" height="997" />
     </state>
@@ -628,16 +629,18 @@
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="123" y="103" width="1024" height="852" key="SettingsEditor/0.27.1280.997@0.27.1280.997" timestamp="1583361429244" />
-    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1583444465674">
-      <screen x="0" y="27" width="1280" height="997" />
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1583960866910">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175532989" />
-    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583444465674" />
-    <state x="479" y="455" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1583079987848">
-      <screen x="0" y="27" width="1280" height="997" />
+    <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583705733250" />
+    <state x="503" y="295" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1583960866910" />
+    <state x="719" y="479" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1583960811766">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="629" y="449" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1680.1046@0.0.1680.1046" timestamp="1580760303809" />
     <state x="479" y="455" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1280.997@0.27.1280.997" timestamp="1583079987848" />
+    <state x="719" y="479" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.1053@0.27.1920.1053" timestamp="1583960811766" />
     <state x="144" y="219" width="833" height="699" key="find.popup" timestamp="1583362401190">
       <screen x="0" y="27" width="1280" height="997" />
     </state>

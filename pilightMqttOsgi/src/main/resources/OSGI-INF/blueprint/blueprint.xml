@@ -39,6 +39,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
              all OHItems will be set to the value of the body -->
         <route id="setOHItem" autoStartup="true">
             <from uri="direct:setOHItem"/>
+            <log message="setOHItem header.OHItem=${header.OHItem}"/>
+            <log message="setOHItem body=${body}"/>
             <choice>
                 <when>
                     <groovy>headers.OHItem.contains(",")</groovy>
@@ -82,19 +84,80 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </choice>
         </route>
 
+        <!-- Do a REST call to OpenHab to get the value of one item who's name is in headers.OHItem, into body -->
+        <route id="getOHItem" autoStartup="true" streamCache="true">
+            <from uri="direct:getOHItem"/>
+            <log message="getOHItem header.OHItem=${header.OHItem}"/>
+            <log message="getOHItem body=${body}"/>
+            <choice>
+                <when>
+                    <groovy>headers.OHItem.contains(",")</groovy>
+                    <log message="header contains ,"/>
+                    <!-- save body contents -->
+                    <setHeader name="savedBody">
+                        <simple>${body}</simple>
+                    </setHeader>
+                    <split>
+                        <simple>${header.OHItem}</simple>
+                        <!-- restore header -->
+                        <!-- Header has been split into the body -->
+                        <setHeader name="OHItem">
+                            <simple>${body}</simple>
+                        </setHeader>
+                        <!-- restore body -->
+                        <setBody>
+                            <simple>${header.savedBody}</simple>
+                        </setBody>
+                        <log message="OHItem na split and restore is ${header.OHItem}"/>
+                        <log message="body na split and restore is ${body}"/>
+                        <log message="ERROR: multiple items is NOT SUPPORTED"/>
+                        <!-- to uri="direct:getOHItem"/ -->
+                    </split>
+                </when>
+                <otherwise>
+                    <setHeader name="CamelHttpMethod">
+                        <constant>GET</constant>
+                    </setHeader>
+                    <setHeader name="Content-Type">
+                        <constant>text/plain</constant>
+                    </setHeader>
+                    <setHeader name="Accept">
+                        <constant>application/json</constant>
+                    </setHeader>
+                    <log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
+                    <recipientList>
+                        <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+                    </recipientList>
+                    <log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/>
+                    <unmarshal>
+                        <custom ref="jsonJsonOHRestItem"/>
+                    </unmarshal>
+                    <log message="headers.OHItem na rest en unmarshall=${headers.OHItem}"/>
+                    <setBody>
+                        <groovy>body.state</groovy>
+                    </setBody>
+                    <log message="na groovy: headers.OHItem=${headers.OHItem}, body=${body}"/>
+                </otherwise>
+            </choice>
+        </route>
         <!-- Test setOHItem-->
-        <route id="testSetOHItem" autoStartup="false">
-            <from uri="quartz://groep/timerTestSetOHItem?cron=0/10+*+*+*+*+?"/>
+        <route id="testGetOHItem" autoStartup="false">
+            <from uri="quartz://groep/timerTestGetOHItem?cron=0/10+*+*+*+*+?"/>
             <setHeader name="OHItem">
-                <groovy>"Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm,Light_GF_Huiskamer_LampGroteKast_Dimm,"
-                    "Light_GF_Huiskamer_LampLadenkastje_Dimm"</groovy>
+                <groovy>"Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"
+                </groovy>
             </setHeader>
             <log message="log from testSetOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
             <setBody>
                 <!-- percentage 0..100 -->
-                <simple>50</simple>
+                <simple>ON</simple>
             </setBody>
-            <to uri="direct:setOHItem"/>
+            <to uri="direct:getOHItem"/>
+            <log message="body=${body}, headers.OHItem=${headers.OHItem}"/>
+            <log message="headers.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm=${headers.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm}"/>
+            <log message="headers.Light_GF_Huiskamer_LampGroteKast_Dimm=${headers.Light_GF_Huiskamer_LampGroteKast_Dimm}"/>
+            <log message="Light_GF_Huiskamer_LampLadenkastje_Dimm=${headers.Light_GF_Huiskamer_LampLadenkastje_Dimm}"/>
+            <log message="bg_w_tv_w=${headers.bg_w_tv_w}"/>
         </route>
 
         <!-- Deze werkt 17 jan 2020.-->
@@ -111,9 +174,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setHeader>
             <setBody>
                 <!-- percentage 0..100 -->
-                <simple>100</simple>
+                <simple>ON</simple>
             </setBody>
-            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
+            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle"/>
         </route>
 
 
@@ -137,18 +200,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <route id="requestLightsOnIntensityThreshold" autoStartup="true" streamCache="true">
             <from uri="quartz://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
-            <setHeader name="CamelHttpMethod">
-                <constant>GET</constant>
+            <setHeader name="OHItem">
+                <constant>LightsOnIntensityThreshold</constant>
             </setHeader>
-            <to uri="http://127.0.0.1:8080/rest/items/LightsOnIntensityThreshold"/>
-            <!-- log message="Test: Response LightsOnIntensityThreshold is ${body}"/ -->
-            <unmarshal>
-                <custom ref="jsonJsonOHRestItem"/>
-            </unmarshal>
-            <!-- log message="After unmarshal jsonjackson body=${body}"/ -->
-            <setBody>
-                <simple>${body.state}</simple>
-            </setBody>
+            <to uri="direct:getOHItem"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Float"/>
             <bean ref="LightsOnIntensityThreshold" method="setValue"/>
@@ -160,18 +215,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- set header and bean -->
         <route id="requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" autoStartup="true" streamCache="true">
             <from uri="direct:requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
-            <setHeader name="CamelHttpMethod">
-                <constant>GET</constant>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm</constant>
             </setHeader>
-            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
-            <log message="Test: Response Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm is ${body}"/>
-            <unmarshal>
-                <custom ref="jsonJsonOHRestItem"/>
-            </unmarshal>
-            <!-- log message="After unmarshal jsonjackson body=${body}"/ -->
-            <setBody>
-                <simple>${body.state}</simple>
-            </setBody>
+            <to uri="direct:getOHItem"/>
             <!-- send String that can be converted to Integer -->
             <to uri="direct:setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
         </route>
@@ -192,10 +239,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <from uri="direct:ZetLichtenAan"/>
             <log message="Lichten gaan aan!"/>
             <setHeader name="OHItem">
-                <groovy>"Light_GF_Huiskamer_LampGroteKast_Dimm,Light_GF_Huiskamer_LampLadenkastje_Dimm"
-                         "Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"</groovy>
+                <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle,"
+                    .concat("Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle")
+                </groovy>
             </setHeader>
-            <setBody><constant>100</constant></setBody>
+            <setBody>
+                <constant>ON</constant>
+            </setBody>
             <to uri="direct:setOHItem"/>
             <setHeader name="OHItem">
                 <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
@@ -211,10 +261,12 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <from uri="direct:ZetLichtenUit"/>
             <log message="Lichten gaan uit!"/>
             <setHeader name="OHItem">
-                <groovy>"Light_GF_Huiskamer_LampGroteKast_Dimm,Light_GF_Huiskamer_LampLadenkastje_Dimm"
-                    </groovy>
+                <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle"
+                </groovy>
             </setHeader>
-            <setBody><constant>0</constant></setBody>
+            <setBody>
+                <constant>OFF</constant>
+            </setBody>
             <to uri="direct:setOHItem"/>
             <setHeader name="OHItem">
                 <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
@@ -223,51 +275,14 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>OFF</constant>
             </setBody>
             <to uri="direct:setOHItem"/>
+            <!-- delay -->
+            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Long"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
         </route>
 
-        <!-- Zet 1 licht aan -->
-        <route id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan" autoStartup="true" startupOrder="103">
-            <from uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_aan"/>
-            <to uri="direct:achterlichtaan2020"/>
-            <!-- old jan 2020 -->
-            <setBody>
-                <constant>on</constant>
-            </setBody>
-            <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
-        </route>
-        <!-- Zet 1 licht uit -->
-        <route id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit" autoStartup="true" startupOrder="104">
-            <from uri="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
-            <to uri="direct:achterlichtuit2020"/>
-            <!-- old jan 2020 -->
-            <setBody>
-                <constant>off</constant>
-            </setBody>
-            <to uri="paho:f0/kaku_switch_old/cmd/3/0"/>
-        </route>
-
-        <!-- Zet 1 licht aan -->
-        <route id="Light_GF_Huiskamer_Achter_Staandelamp_aan" autoStartup="true" startupOrder="105">
-            <from uri="direct:Light_GF_Huiskamer_Achter_Staandelamp_aan"/>
-            <setBody>
-                <constant>on</constant>
-            </setBody>
-            <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
-        </route>
-        <!-- Zet 1 licht uit -->
-        <route id="Light_GF_Huiskamer_Achter_Staandelamp_uit" autoStartup="true" startupOrder="106">
-            <from uri="direct:Light_GF_Huiskamer_Achter_Staandelamp_uit"/>
-            <setBody>
-                <constant>off</constant>
-            </setBody>
-            <to uri="paho:f0/kaku_switch_old/cmd/3/1"/>
-        </route>
-        <!-- Listen to kaku remote control -->
-        <route id="KakuRemoteControl_3_0" autoStartup="true" startupOrder="107">
-            <from uri="paho:f0/kaku_switch_old/rc/3/0"/>
-            <!-- this is a manual intervention, stop scheduled actions -->
-            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="cancel"/>
-        </route>
 
         <!-- als de schakelaar gebruikt wordt, moet de pir-automaat gecancelled worden -->
         <route id="dimmerSwitchBijTv" autoStartup="true" startupOrder="108">
@@ -294,6 +309,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <log message="header.LightsOnIntensityThreshold=${header.LightsOnIntensityThreshold}"/>
             <log message="header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm=${header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm}"/>
             <log message="header.pir_gf_achterdeur17=${header.pir_gf_achterdeur17}"/>
+            <log message="headers.bg_w_tv_w=${headers.bg_w_tv_w}; Stable=${headers.bg_w_tv_w_stable}"/>
             <choice>
                 <when>
                     <simple>${header.pir_gf_achterdeur17}</simple>
@@ -371,8 +387,25 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <convertBodyTo type="java.lang.Integer"/>
             <bean ref="GF_Passenger_minutes" method="setValue"/>
         </route>
-        <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
+        <route id="listen_bg_w_tv_w_mqtt" autoStartup="true" startupOrder="216">
             <from uri="paho:oh/all/bg_w_tv_w/state"/>
+            <to uri="direct:listen_bg_w_tv_w"/>
+        </route>
+
+        <route id="listen_bg_w_tv_w_timer" autoStartup="true" startupOrder="217">
+            <from uri="quartz://groep/timer_bg_w_tv_w_?cron=3/15+*+*+*+*+?"/>
+            <setHeader name="OHItem">
+                <constant>bg_w_tv_w</constant>
+            </setHeader>
+            <!-- Get state of OpenHab item -->
+            <to uri="direct:getOHItem"/>
+            <to uri="direct:listen_bg_w_tv_w"/>
+        </route>
+
+        <!-- Input is body with value ON of OFF for tv -->
+        <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
+            <from uri="direct:listen_bg_w_tv_w"/>
+            <log message="bg_w_tv_w/state: new: ${body}; Stable: ${headers.bg_w_tv_w_stable}"/>
             <!-- get old value of bg_w_tv_w -->
             <setHeader name="bg_w_tv_w">
                 <method ref="bg_w_tv_w" method="getValue"/>
@@ -730,10 +763,6 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <log message="OHItem na split is ${header.OHItem}"/>
                     <log message="body na split is ${body}"/>
                 </split>
-            </when>
-            <when>
-                <groovy>5==5</groovy>
-                <log message="5=5"/>
             </when>
         </route>
 
