@@ -24,6 +24,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 		    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route -->
 
+        <!-- When started, not stable (we don't know whether tv is on or off etc.) -->
         <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimer?repeatCount=1"/>
             <setBody><constant>false</constant></setBody>
@@ -82,7 +83,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <setHeader name="Accept">
                         <constant>application/json</constant>
                     </setHeader>
-                    <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
+                    <og message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
                     <recipientList>
                         <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
                     </recipientList>
@@ -95,7 +96,6 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="getOHItem" autoStartup="true" streamCache="true">
             <from uri="direct:getOHItem"/>
             <log message="getOHItem header.OHItem=${header.OHItem}"/>
-            <log message="getOHItem body=${body}"/>
             <choice>
                 <when>
                     <groovy>headers.OHItem.contains(",")</groovy>
@@ -131,7 +131,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <setHeader name="Accept">
                         <constant>application/json</constant>
                     </setHeader>
-                    <log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
+                    <log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
                     <recipientList>
                         <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
                     </recipientList>
@@ -199,9 +199,9 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setHeader>
             <setBody>
                 <!-- percentage 0..100 -->
-                <simple>0</simple>
+                <simple>OFF</simple>
             </setBody>
-            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
+            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle"/>
         </route>
 
         <route id="requestLightsOnIntensityThreshold" autoStartup="true" streamCache="true">
@@ -316,7 +316,6 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <log message="header.LightsOnIntensityThreshold=${header.LightsOnIntensityThreshold}"/>
             <log message="header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm=${header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm}"/>
             <log message="header.pir_gf_achterdeur17=${header.pir_gf_achterdeur17}"/>
-            <log message="headers.bg_w_tv_w=${headers.bg_w_tv_w}; Stable=${headers.bg_w_tv_w_stable}"/>
             <choice>
                 <when>
                     <simple>${header.pir_gf_achterdeur17}</simple>
@@ -827,7 +826,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <bean id="Stable" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->
-        <argument value="direct:Light_GF_Huiskamer_Achterdeur_Schemerlamp_uit"/>
+        <argument value="direct:achterlichtuit2020"/>
     </bean>
     <bean id="DelaySetStableTrue" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
         <argument value="direct:set_stable_true"/>
