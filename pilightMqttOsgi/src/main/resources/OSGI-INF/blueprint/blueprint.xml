@@ -149,15 +149,15 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                     <setHeader name="Accept">
                         <constant>application/json</constant>
                     </setHeader>
-                    <log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
+                    <!-- log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/ -->
                     <recipientList>
                         <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
                     </recipientList>
-                    <log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/>
+                    <!-- log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/ -->
                     <unmarshal>
                         <custom ref="jsonJsonOHRestItem"/>
                     </unmarshal>
-                    <log message="headers.OHItem na rest en unmarshall=${headers.OHItem}"/>
+                    <!-- log message="headers.OHItem na rest en unmarshall=${headers.OHItem}"/ -->
                     <setBody>
                         <groovy>body.state</groovy>
                     </setBody>
@@ -188,42 +188,31 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Deze werkt 17 jan 2020.-->
         <route id="achterlichtAan2020" autoStartup="true">
             <from uri="direct:achterlichtaan2020"/>
-            <setHeader name="CamelHttpMethod">
-                <constant>POST</constant>
-            </setHeader>
-            <setHeader name="Content-Type">
-                <constant>text/plain</constant>
-            </setHeader>
-            <setHeader name="Accept">
-                <constant>application/json</constant>
+            <log message="achterlichtaan2020"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
             </setHeader>
             <setBody>
-                <simple>ON</simple>
+                <constant>ON</constant>
             </setBody>
-            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle"/>
+            <to uri="direct:setOHItem"/>
         </route>
 
 
         <route id="achterlichtUit2020" autoStartup="true">
             <from uri="direct:achterlichtuit2020"/>
-            <setHeader name="CamelHttpMethod">
-                <constant>POST</constant>
-            </setHeader>
-            <setHeader name="Content-Type">
-                <constant>text/plain</constant>
-            </setHeader>
-            <setHeader name="Accept">
-                <constant>application/json</constant>
+            <log message="achterlichtuit2020"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
             </setHeader>
             <setBody>
-                <!-- percentage 0..100 -->
-                <simple>OFF</simple>
+                <constant>OFF</constant>
             </setBody>
-            <to uri="http://127.0.0.1:8080/rest/items/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle"/>
+            <to uri="direct:setOHItem"/>
         </route>
 
-        <route id="requestLightsOnIntensityThreshold" autoStartup="true" streamCache="true">
-            <from uri="quartz://groep/timerRq001?cron=0/10+*+*+*+*+?"/>
+        <route id="requestLightsOnIntensity" autoStartup="true" streamCache="true">
+            <from uri="quartz://groep/timerRq001?cron=3+*+*+*+*+?"/>
             <setHeader name="OHItem">
                 <constant>LightsOnIntensityThreshold</constant>
             </setHeader>
