@@ -190,7 +190,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <from uri="direct:achterlichtaan2020"/>
             <log message="achterlichtaan2020"/>
             <setHeader name="OHItem">
-                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
+                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle</constant>
             </setHeader>
             <setBody>
                 <constant>ON</constant>
@@ -203,7 +203,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <from uri="direct:achterlichtuit2020"/>
             <log message="achterlichtuit2020"/>
             <setHeader name="OHItem">
-                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
+                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle</constant>
             </setHeader>
             <setBody>
                 <constant>OFF</constant>
@@ -411,7 +411,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             </setHeader>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_w_tv_w" method="setValue"/>
-            <log message="Values old: ${headers.bg_w_tv_w}, new: ${body}; Stable: ${headers.bg_w_tv_w_stable}"/>
+            <log message="Values old: ${headers.bg_w_tv_w}, new: ${body}"/>
             <!-- restore body contents after log message -->
             <bean ref="bg_w_tv_w" method="getValue"/>
             <!-- Changed? -->
@@ -419,7 +419,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <when>
                     <!-- normally this would not happen, as only changes are reported -->
                     <simple>${in.headers.bg_w_tv_w} == ${body}</simple>
-                    <log message="bg_w_tv_w same value old: ${headers.bg_w_tv_w}, new: ${body}"/>
+                    <!-- log message="bg_w_tv_w same value old: ${headers.bg_w_tv_w}, new: ${body}"/ -->
                 </when>
                 <otherwise>
                     <!-- set stable false will automatically set it to true after a specified time -->
