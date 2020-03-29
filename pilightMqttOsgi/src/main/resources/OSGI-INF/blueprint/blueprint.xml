@@ -440,6 +440,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <from uri="paho:oh/all/bg_x_imac3/state"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_x_imac3" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
         </route>
 
         <!-- not used 17 jan 2020 -->
