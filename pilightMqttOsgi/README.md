@@ -46,7 +46,7 @@ feature:install camel-netty
 feature:install camel-quartz
 
 feature:install camel-jsonpath
-feature:install jms
+feature:install camel-jms
 
 #
 # end of feature install commands

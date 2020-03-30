@@ -159,6 +159,7 @@ def main():
     LightSensorReaderBH1750(I2CBus bus) throws IOException {
         logger.log(Level.INFO,"Start LightSensorReaderBH1750 constructor");
         device = bus.getDevice(0x23);
+        logger.log(Level.INFO,"LightSensorReaderBH1750 device={0}",device);
     }
 
     void init() {
@@ -179,8 +180,11 @@ def main():
               Please refer "adjust measurement result for influence of optical window.
              */
             // Set measurement time at 240ms (normally 120ms) to get better low light measurement
+            logger.log(Level.INFO,"Start LightSensorReaderBH1750 init");
             device.write((byte) 0b01000_100);
+            logger.log(Level.INFO,"LightSensorReaderBH1750 init first byte written 0b01000_100");
             device.write((byte) 0b011_01010 );
+            logger.log(Level.INFO,"LightSensorReaderBH1750 init second byte written 0b011_01010");
             conversiontime=300; // time to wait for conversion
 
         } catch (IOException ignore) {
@@ -189,6 +193,7 @@ def main():
     }
 
     public Float read() {
+        logger.log(Level.INFO,"Start LightSensorReaderBH1750 read");
         byte[] p = new byte[2];
 
         int r;

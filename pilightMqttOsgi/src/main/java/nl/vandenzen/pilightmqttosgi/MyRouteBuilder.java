@@ -237,7 +237,8 @@ public class MyRouteBuilder {
                     ;
                     from("direct:toMqtt")
                             .routeId("toMqtt")
-                            .autoStartup(true)
+                            .autoStartup(false)
+                            //.autoStartup(true)
                             .unmarshal(formatPojo)
                             .log("Receiver response received: ${body}")
                             .bean(otaProtocolExtractor, "storeMqttTopic")
@@ -257,7 +258,8 @@ public class MyRouteBuilder {
                     //from("paho:{{mqtt.topic.kaku.cmd}}/+/+")
                     from("direct:fromPahoToPilight")
                             .routeId("fromPahoToPilight")
-                            .autoStartup(true)
+                            .autoStartup(false)
+                            //.autoStartup(true)
                             .log("Received mqtt message on topic ${header.CamelMqttTopic}, command ${body}")
                             .setHeader("messagetype",constant("mqtt"))
                             // extract id and unit
@@ -304,10 +306,12 @@ public class MyRouteBuilder {
                     // Send identification to Pilight (the connection that sends commands to Pilight)
                     //
                     from("direct:pilightIdentify")
+                            .autoStartup(false)
                             .marshal(formatPojoIdentification)
                             .to("direct:toPilight");
 
                     from("direct:toPilight")
+                            .autoStartup(false)
                             //.transform(body().append("\r")) // append the line ending
                             .log("Sending to pilight: ${body}")
                             // With disconnect=true, the reply is the same as the sent message
@@ -334,12 +338,14 @@ public class MyRouteBuilder {
                     // We also will receive "state" messages, but we will ignore them ???
                     from("paho:{{mqtt.topic.kaku.cmd}}/+/+")
                             .routeId("fromTopicKakuCmd")
+                            .autoStartup(false)
                             .startupOrder(300)
                             .recipientList(simple("direct:toMqttSetState,direct:fromPahoToPilight"),",");
                     from("paho:{{mqtt.topic.kaku.rc}}/+/+").to("direct:toMqttSetState");
                     from("direct:toMqttSetState")
                             .routeId("toMqttSetState")
-                            .autoStartup(true)
+                            .autoStartup(false)
+                            //.autoStartup(true)
                             // extract id and unit
                             .process(new Processor() {
                                 @Override
@@ -400,7 +406,7 @@ public class MyRouteBuilder {
             // PirSensor
             try {
                 pirSensor = new PirSensor();
-                pirSensor.init();
+                // TODO: Do not init! spurious changes on pin 4 20200330 pirSensor.init();
             }
             catch (Exception ex) {
                 logger.log(Level.SEVERE,"Error initialising PirSensor",ex);

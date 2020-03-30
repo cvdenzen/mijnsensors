@@ -28,6 +28,11 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimer?repeatCount=1"/>
             <to uri="direct:set_stable_false"/>
+            <!-- enable automatic turning off the lights -->
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <bean ref="AutoOffEnabled" method="setValue"/>
         </route>
 
         <route id="HelloWorldFromBlueprint" autoStartup="true" startupOrder="6">

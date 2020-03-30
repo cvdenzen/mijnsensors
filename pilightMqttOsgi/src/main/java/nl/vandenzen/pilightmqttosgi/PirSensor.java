@@ -35,6 +35,7 @@ public class PirSensor {
 
     }
 
+    volatile int eventnr=0;
     public void init() {
         logger.info("Start gpio.provisionDigitalInputPin GPIO_04 pir");
         gpioPir = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, "PIR"); // 02 and 03 conflicts with i2c?
@@ -50,18 +51,21 @@ public class PirSensor {
 
                 //Creates a Connection and a Session:
 
-                try {
-                    // Send payload
-                    MqttClient client = new MqttClient("tcp://localhost:1883", "pahomqttpublish1");
-                    client.connect();
-                    MqttMessage message = new MqttMessage();
-                    message.setPayload(event.getState().toString().getBytes());
-                    logger.info("Sending message: " + message.toString());
-                    client.publish("f0/nnw/pir", message);
-                    client.disconnect();
-                    client.close();
-                } catch (MqttException ex1) {
-                    logger.log(Level.SEVERE, "PIR send message to paho mqtt error", ex1);
+                // A lot of problems with spurious pin changes 20200330
+                if (++eventnr % 1500 == 0) {
+                    try {
+                        // Send payload
+                        MqttClient client = new MqttClient("tcp://127.0.0.1:1883", "pahomqttpublish1");
+                        client.connect();
+                        MqttMessage message = new MqttMessage();
+                        message.setPayload(event.getState().toString().getBytes());
+                        logger.info("Sending message: " + message.toString());
+                        client.publish("f0/nnw/pir", message);
+                        client.disconnect();
+                        client.close();
+                    } catch (MqttException ex1) {
+                        logger.log(Level.SEVERE, "PIR send message to paho mqtt error", ex1);
+                    }
                 }
             }
         });
