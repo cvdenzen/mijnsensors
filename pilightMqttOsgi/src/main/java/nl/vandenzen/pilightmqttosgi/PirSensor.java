@@ -52,7 +52,7 @@ public class PirSensor {
                 //Creates a Connection and a Session:
 
                 // A lot of problems with spurious pin changes 20200330
-                if (++eventnr % 1500 == 0) {
+                if (++eventnr % 1 == 0) {
                     try {
                         // Send payload
                         MqttClient client = new MqttClient("tcp://127.0.0.1:1883", "pahomqttpublish1");
