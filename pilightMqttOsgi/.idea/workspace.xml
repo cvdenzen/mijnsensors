@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="upgraded camel from 3.0.1 to 3.1.0. pir on raspberry pin 4 disabled">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Avoid &quot;race&quot; condition: pir activates hue bulb, but hue status is updated only after max. 10 seconds (polling).">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/PirSensor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -168,13 +166,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00059" summary="lights off better: if tv or imac is on, do not turn off lights at night">
-      <created>1540747187420</created>
-      <option name="number" value="00059" />
-      <option name="presentableId" value="LOCAL-00059" />
-      <option name="project" value="LOCAL" />
-      <updated>1540747187420</updated>
     </task>
     <task id="LOCAL-00060" summary="Delay in lights off. New strategy, cleaner delay timer. javaScript used to compose log message.">
       <created>1540934727228</created>
@@ -512,7 +503,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585603666161</updated>
     </task>
-    <option name="localTasksCounter" value="108" />
+    <task id="LOCAL-00108" summary="Avoid &quot;race&quot; condition: pir activates hue bulb, but hue status is updated only after max. 10 seconds (polling).">
+      <created>1585859180532</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1585859180532</updated>
+    </task>
+    <option name="localTasksCounter" value="109" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -555,7 +553,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="pilight/config.json added. Is config file for package pilight" />
     <MESSAGE value="http4 as feature (necessary). Some failed experiments in blueprint." />
     <MESSAGE value="Disabled auto light off at night" />
     <MESSAGE value="Small enhancements" />
@@ -580,25 +577,27 @@
     <MESSAGE value="Changed stable mechanisme" />
     <MESSAGE value="Cleanup" />
     <MESSAGE value="upgraded camel from 3.0.1 to 3.1.0. pir on raspberry pin 4 disabled" />
-    <option name="LAST_COMMIT_MESSAGE" value="upgraded camel from 3.0.1 to 3.1.0. pir on raspberry pin 4 disabled" />
+    <MESSAGE value="Avoid &quot;race&quot; condition: pir activates hue bulb, but hue status is updated only after max. 10 seconds (polling)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Avoid &quot;race&quot; condition: pir activates hue bulb, but hue status is updated only after max. 10 seconds (polling)." />
   </component>
   <component name="WindowStateProjectService">
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2" timestamp="1585603665886">
+    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2" timestamp="1585859180310">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175526824" />
     <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583705730152" />
-    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1585603665886" />
-    <state x="6" y="102" width="1256" height="829" key="DiffContextDialog" timestamp="1583599496256">
-      <screen x="0" y="27" width="1280" height="997" />
+    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1585859180310" />
+    <state x="9" y="106" width="1884" height="876" key="DiffContextDialog" timestamp="1586014697825">
+      <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog/0.0.1680.1046@0.0.1680.1046" timestamp="1579467473604" />
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog/0.23.1680.1023@0.23.1680.1023" timestamp="1579732911277" />
     <state x="6" y="102" width="1256" height="829" key="DiffContextDialog/0.27.1280.997@0.27.1280.997" timestamp="1583599496256" />
+    <state x="9" y="106" width="1884" height="876" key="DiffContextDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586014697825" />
     <state x="795" y="473" width="479" height="521" key="FileChooserDialogImpl" timestamp="1585599518978">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
@@ -638,12 +637,12 @@
     </state>
     <state x="123" y="103" width="1024" height="852" key="SettingsEditor/0.27.1280.997@0.27.1280.997" timestamp="1583361429244" />
     <state x="457" y="97" width="1022" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1585599564333" />
-    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1585603668244">
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1585859182711">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175532989" />
     <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583705733250" />
-    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1585603668244" />
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1585859182711" />
     <state x="100" y="127" width="1720" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1584392535645">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>

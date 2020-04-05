@@ -317,10 +317,12 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
             <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state"/>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <!-- to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <log message="LichtIntensiteit_Woonkamer_updated: body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Float"/>
             <bean ref="LichtIntensiteit_Woonkamer" method="setValue"/>
+            <log message="LichtIntensiteit_Woonkamer updated (oh/.../state): header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
 
@@ -696,8 +698,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>15000</constant>
             </setBody>
             <convertBodyTo type="java.lang.Long"/>
-            <bean ref="DelaySetStableTrue" method="setDelay"/>
-            <bean ref="DelaySetStableTrue" method="restartTimer"/>
+            <bean ref="DelaySetHueStableTrue" method="setDelay"/>
+            <bean ref="DelaySetHueStableTrue" method="restartTimer"/>
         </route>
 
         <route id="test1" autoStartup="false" startupOrder="9002" streamCache="true">
