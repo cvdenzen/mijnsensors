@@ -33,6 +33,10 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                 <constant>true</constant>
             </setBody>
             <bean ref="AutoOffEnabled" method="setValue"/>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <bean ref="AutoOnEnabled" method="setValue"/>
         </route>
 
         <route id="HelloWorldFromBlueprint" autoStartup="true" startupOrder="6">
