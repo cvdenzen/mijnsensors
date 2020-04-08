@@ -749,7 +749,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
     <bean id="AutoOffEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="pir_gf_achterdeur17" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
     <bean id="LightsOnIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableFloat">
-        <property name="value" value="4"/>
+        <property name="value" value="8"/>
     </bean>
     <bean id="LightsEnableIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">
         <property name="value" value="31"/>

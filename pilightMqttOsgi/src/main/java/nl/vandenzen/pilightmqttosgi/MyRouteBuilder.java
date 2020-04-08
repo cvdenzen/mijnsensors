@@ -247,7 +247,7 @@ public class MyRouteBuilder {
                             .bean(otaProtocolExtractor, "replaceInBodyWithCommand")
                             //.to("stream:out")
                             .log(LoggingLevel.INFO, log1, "??aa")
-                            .recipientList(simple("paho:${header.mqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"))
+                            .recipientList(simple("paho:${header.mqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}&connectionTimeout=180"))
                     //.to(ExchangePattern.InOnly, "stream:out")
                     // must be origin: sender config core response
                     ;
@@ -336,12 +336,12 @@ public class MyRouteBuilder {
                     // mqtt topic is f0/protocol/rc/${id}/${unit}
                     //               0  1        2  3     4
                     // We also will receive "state" messages, but we will ignore them ???
-                    from("paho:{{mqtt.topic.kaku.cmd}}/+/+")
+                    from("paho:{{mqtt.topic.kaku.cmd}}/+/+?connectionTimeout=180")
                             .routeId("fromTopicKakuCmd")
                             .autoStartup(false)
                             .startupOrder(300)
                             .recipientList(simple("direct:toMqttSetState,direct:fromPahoToPilight"),",");
-                    from("paho:{{mqtt.topic.kaku.rc}}/+/+").to("direct:toMqttSetState");
+                    from("paho:{{mqtt.topic.kaku.rc}}/+/+?connectionTimeout=180").to("direct:toMqttSetState");
                     from("direct:toMqttSetState")
                             .routeId("toMqttSetState")
                             .autoStartup(false)
@@ -368,7 +368,7 @@ public class MyRouteBuilder {
                                 }
                             })
                             .log("Broadcasting topic ${header.CamelMqttTopic}, command ${body}")
-                            .recipientList(simple("paho:${header.CamelMqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"))
+                            .recipientList(simple("paho:${header.CamelMqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}&connectionTimeout=180"))
                     ;
 
                     // Light measurement
@@ -388,7 +388,7 @@ public class MyRouteBuilder {
                                     //exchange.getIn().setHeader(PahoConstants.MQTT_TOPIC, simple("{{mqtt.topic.lightsensor.local.i2c.23}}"));
                                 }
                             })
-                            .recipientList(simple("paho:{{mqtt.topic.lightsensor.local.i2c.23}}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}"));
+                            .recipientList(simple("paho:{{mqtt.topic.lightsensor.local.i2c.23}}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}&connectionTimeout=180"));
 
 
                 }

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Init autoOnEnabled true">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="paho connectionTimeout=180">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -166,13 +167,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00062" summary="Stable count for tv activated.">
-      <created>1541336643272</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1541336643273</updated>
     </task>
     <task id="LOCAL-00063" summary="feature javascript added">
       <created>1543585834021</created>
@@ -510,7 +504,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586113922434</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="paho connectionTimeout=180">
+      <created>1586371606376</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1586371606376</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -553,7 +554,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Small enhancements" />
     <MESSAGE value="automatisch lichten aan en uit weer getracht te activeren. Openhab 2.5, geen pilight meer, veel hue." />
     <MESSAGE value="Syntax error" />
     <MESSAGE value="In deze versie zit een xml fout in route element (char data not allowed of zoiets)" />
@@ -578,19 +578,20 @@
     <MESSAGE value="Avoid &quot;race&quot; condition: pir activates hue bulb, but hue status is updated only after max. 10 seconds (polling)." />
     <MESSAGE value="bug in timer for Hue stable" />
     <MESSAGE value="Init autoOnEnabled true" />
-    <option name="LAST_COMMIT_MESSAGE" value="Init autoOnEnabled true" />
+    <MESSAGE value="paho connectionTimeout=180" />
+    <option name="LAST_COMMIT_MESSAGE" value="paho connectionTimeout=180" />
   </component>
   <component name="WindowStateProjectService">
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2" timestamp="1586113922139">
+    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2" timestamp="1586371606044">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175526824" />
     <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583705730152" />
-    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1586113922139" />
+    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1586371606044" />
     <state x="9" y="106" width="1884" height="876" key="DiffContextDialog" timestamp="1586014697825">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
@@ -637,12 +638,12 @@
     </state>
     <state x="123" y="103" width="1024" height="852" key="SettingsEditor/0.27.1280.997@0.27.1280.997" timestamp="1583361429244" />
     <state x="457" y="97" width="1022" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1585599564333" />
-    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1586113924362">
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1586371608654">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175532989" />
     <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583705733250" />
-    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1586113924362" />
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1586371608654" />
     <state x="100" y="127" width="1720" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1584392535645">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
@@ -653,12 +654,12 @@
     <state x="629" y="449" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1680.1046@0.0.1680.1046" timestamp="1580760303809" />
     <state x="479" y="455" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1280.997@0.27.1280.997" timestamp="1583079987848" />
     <state x="719" y="479" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.1053@0.27.1920.1053" timestamp="1583960811766" />
-    <state x="216" y="230" width="1250" height="739" key="find.popup" timestamp="1586113590050">
+    <state x="216" y="230" width="1250" height="739" key="find.popup" timestamp="1586372078978">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="361" y="313" width="1093" height="733" key="find.popup/0.0.1680.1046@0.0.1680.1046" timestamp="1580848657916" />
     <state x="144" y="219" width="833" height="699" key="find.popup/0.27.1280.997@0.27.1280.997" timestamp="1583362401190" />
-    <state x="216" y="230" width="1250" height="739" key="find.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586113590050" />
+    <state x="216" y="230" width="1250" height="739" key="find.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586372078978" />
     <state x="577" y="262" width="766" height="681" key="search.everywhere.popup" timestamp="1585771271027">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
