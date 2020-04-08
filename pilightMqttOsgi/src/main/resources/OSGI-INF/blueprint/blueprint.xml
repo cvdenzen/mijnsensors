@@ -313,14 +313,14 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <!-- als de schakelaar gebruikt wordt, moet de pir-automaat gecancelled worden -->
         <route id="dimmerSwitchBijTv" autoStartup="true" startupOrder="108">
-            <from uri="paho:oh/all/WoonkamerSchakelaarBijTv/state"/>
+            <from uri="paho:oh/all/WoonkamerSchakelaarBijTv/state?connectionTimeout=180"/>
             <log message="aho:oh/all/WoonkamerSchakelaarBijTv/state=${body}"/>
             <to uri="direct:set_HueStable_false"/>
             <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="cancel"/>
         </route>
 
         <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
-            <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state"/>
+            <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state?connectionTimeout=180"/>
             <!-- to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
             <log message="LichtIntensiteit_Woonkamer_updated: body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
@@ -383,7 +383,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <!-- This is not used, AutoOnEnabled is not handled by openhab (march 2020) -->
         <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="202">
-            <from uri="paho:oh/all/AutoOnEnabled/state"/>
+            <from uri="paho:oh/all/AutoOnEnabled/state?connectionTimeout=180"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="AutoOnEnabled" method="setValue"/>
             <!-- Turn on lights? -->
@@ -391,7 +391,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
         <route id="listenLightsOnIntensityThreshold" autoStartup="true" startupOrder="203">
-            <from uri="paho:oh/all/LightsOnIntensityThreshold/state"/>
+            <from uri="paho:oh/all/LightsOnIntensityThreshold/state?connectionTimeout=180"/>
             <log message="paho:oh/all/LightsOnIntensityThreshod changed to ${body}"/>
             <convertBodyTo type="java.lang.String"/>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
@@ -402,18 +402,18 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
         <route id="listenLight_GF_Huiskamer_Achterdeur_Schemerlamp" autoStartup="true" startupOrder="204">
-            <from uri="paho:oh/all/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm/state"/>
+            <from uri="paho:oh/all/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm/state?connectionTimeout=180"/>
             <to uri="direct:setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
             <to uri="direct:calcOneLightOn"/>
         </route>
         <route id="listenGF_Passenger_minutes" autoStartup="true" startupOrder="205">
-            <from uri="paho:oh/all/GF_Passenger_minutes/state"/>
+            <from uri="paho:oh/all/GF_Passenger_minutes/state?connectionTimeout=180"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Integer"/>
             <bean ref="GF_Passenger_minutes" method="setValue"/>
         </route>
         <route id="listen_bg_w_tv_w_mqtt" autoStartup="true" startupOrder="216">
-            <from uri="paho:oh/all/bg_w_tv_w/state"/>
+            <from uri="paho:oh/all/bg_w_tv_w/state?connectionTimeout=180"/>
             <to uri="direct:listen_bg_w_tv_w"/>
         </route>
 
@@ -455,7 +455,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
         <route id="listen_bg_x_imac2" autoStartup="true" startupOrder="207">
-            <from uri="paho:oh/all/bg_x_imac2/state"/>
+            <from uri="paho:oh/all/bg_x_imac2/state?connectionTimeout=180"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_x_imac2" method="setValue"/>
             <!-- check whether to turn lights off -->
@@ -463,7 +463,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         </route>
 
         <route id="listen_bg_x_imac3" autoStartup="true" startupOrder="208">
-            <from uri="paho:oh/all/bg_x_imac3/state"/>
+            <from uri="paho:oh/all/bg_x_imac3/state?connectionTimeout=180"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_x_imac3" method="setValue"/>
             <!-- check whether to turn lights off -->
@@ -472,7 +472,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 
         <!-- not used 17 jan 2020 -->
         <route id="listenPir_gf_achterdeur17" autoStartup="false" startupOrder="209">
-            <from uri="paho:oh/all/pir_gf_achterdeur17/state"/>
+            <from uri="paho:oh/all/pir_gf_achterdeur17/state?connectionTimeout=180"/>
             <log message="listenPir_gf_achterdeur17 body=${body}, deprecated"/>
             <convertBodyTo type="java.lang.String"/>
             <choice>
@@ -498,7 +498,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item.
              This could be faster (no openhab action in between) -->
         <route id="listenPir_gf_achterdeur17a" autoStartup="true" startupOrder="220">
-            <from uri="paho:mysensors/all/153/1/1/0/2"/>
+            <from uri="paho:mysensors/all/153/1/1/0/2?connectionTimeout=180"/>
             <convertBodyTo type="java.lang.String"/>
             <log message="listenPir_gf_achterdeur17a locA is ${body}"/>
             <to uri="direct:convert_body_to_boolean"/>
@@ -532,13 +532,13 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
             <from uri="quartz://groep/timer4?cron=4+*+*+*+*+?"/>
             <bean ref="Runtime" method="maxMemory"/>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:sensors/all/runtime/maxMemory"/>
+            <to uri="paho:sensors/all/runtime/maxMemory?connectionTimeout=180"/>
             <bean ref="Runtime" method="totalMemory"/>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:sensors/all/runtime/totalMemory"/>
+            <to uri="paho:sensors/all/runtime/totalMemory?connectionTimeout=180"/>
             <bean ref="Runtime" method="freeMemory"/>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:sensors/all/runtime/freeMemory"/>
+            <to uri="paho:sensors/all/runtime/freeMemory?connectionTimeout=180"/>
         </route>
 
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
