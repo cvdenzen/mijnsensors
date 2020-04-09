@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <camel.version>3.1.0</camel.version>
+        <camel.version>3.2.0</camel.version>
     </properties>
     <repositories>
         <repository>
@@ -98,53 +98,13 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-stream</artifactId>
             <version>${camel.version}</version>
-        </dependency><!-- https://mvnrepository.com/artifact/com.box/json-schema-core -->
-        <dependency>
-            <groupId>com.box</groupId>
-            <artifactId>json-schema-core</artifactId>
-            <version>1.2.8</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.fge/jackson-coreutils -->
-        <dependency>
-            <groupId>com.github.fge</groupId>
-            <artifactId>jackson-coreutils</artifactId>
-            <version>1.8</version>
-        </dependency>
-
-
 
         <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-jms -->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-jms</artifactId>
             <version>${camel.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.ops4j.pax.logging/pax-logging-api -->
-        <dependency>
-            <groupId>org.ops4j.pax.logging</groupId>
-            <artifactId>pax-logging-api</artifactId>
-            <version>1.10.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14 -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.25</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.sun.mail/all -->
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>all</artifactId>
-            <version>1.6.1</version>
-            <type>pom</type>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.iq80.leveldb/leveldb-project -->
-        <dependency>
-            <groupId>org.iq80.leveldb</groupId>
-            <artifactId>leveldb-project</artifactId>
-            <version>0.10</version>
-            <type>pom</type>
         </dependency>
 
         <dependency>
@@ -182,22 +142,6 @@
             <artifactId>camel-groovy</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <!-- Groovy doesn't work 7 feb 2020 classnotfound -->
-        <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.ant</artifactId>
-            <version>1.7.0_6</version>
-        </dependency>
-
-
-        <!-- ??? after error java.lang.NoClassDefFoundError: com/sun/istack/FinalArrayList -->
-        <!-- https://mvnrepository.com/artifact/com.sun.istack/istack-commons-runtime -->
-        <!--dependency>
-            <groupId>com.sun.istack</groupId>
-            <artifactId>istack-commons-runtime</artifactId>
-            <version>3.0.10</version>
-        </dependency -->
-
 
     </dependencies>
 
