@@ -4,9 +4,7 @@ Beware: there is another (old) README.md file at mijnsensors/
 This files describes the actions to take for the separate karaf instance, NOT for the openhab instance.
 Install karaf (instructions somewhere else in this README.md file).
 
-repo-add activemq (1.15.11 heb ik op 21 jan 2020)
-feature:install activemq-broker
-repo-add camel 3.0.1
+repo-add camel 3.2.0
 feature:install camel
 #feature:repo-add spring-legacy
 
