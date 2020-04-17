@@ -74,8 +74,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
              all OHItems will be set to the value of the body -->
         <route id="setOHItem" autoStartup="true">
             <from uri="direct:setOHItem"/>
-            <log message="setOHItem header.OHItem=${header.OHItem}"/>
-            <log message="setOHItem body=${body}"/>
+            <log message="setOHItem header.OHItem=${header.OHItem}, body=${body}"/>
             <choice>
                 <when>
                     <groovy>headers.OHItem.contains(",")</groovy>
@@ -95,8 +94,7 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
                         <setBody>
                             <simple>${header.savedBody}</simple>
                         </setBody>
-                        <log message="OHItem na split and restore is ${header.OHItem}"/>
-                        <log message="body na split and restore is ${body}"/>
+                        <log message="setOHItem after split and restore header.OHItem=${header.OHItem}, body=${body}"/>
                         <to uri="direct:setOHItem"/>
                     </split>
                 </when>
