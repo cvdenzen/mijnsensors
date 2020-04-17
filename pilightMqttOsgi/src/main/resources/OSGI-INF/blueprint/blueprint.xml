@@ -544,8 +544,8 @@ autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
         <route id="Enable_lights_on_by_daylight" autoStartup="true" startupOrder="401">
             <from uri="direct:Enable_lights_on_by_daylight"/>
-            <log message="Start Enable_lights_on_by_daylight, header.AutoOnEnabled=${header.AutoOnEnabled}"/>
             <to uri="direct:SetHeaders"/>
+            <log message="Start Enable_lights_on_by_daylight, header.AutoOnEnabled=${header.AutoOnEnabled}"/>
             <choice>
                 <when>
                     <simple>

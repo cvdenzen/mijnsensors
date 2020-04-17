@@ -407,7 +407,7 @@ public class MyRouteBuilder {
             try {
                 pirSensor = new PirSensor();
                 // TODO: Do not init! spurious changes on pin 4 20200330
-                //pirSensor.init();
+                pirSensor.init();
             }
             catch (Exception ex) {
                 logger.log(Level.SEVERE,"Error initialising PirSensor",ex);

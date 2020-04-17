@@ -35,10 +35,12 @@ public class PirSensor {
 
     }
 
-    volatile int eventnr=0;
+    volatile long lastCheck = new java.util.Date().getTime();
+    volatile int eventnr = 0;
+
     public void init() {
         logger.info("Start gpio.provisionDigitalInputPin GPIO_04 pir");
-        gpioPir = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, "PIR"); // 02 and 03 conflicts with i2c?
+        gpioPir = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, "PIR"); // 02 and 03 conflict with i2c?
         logger.info("End gpio.provisionDigitalInputPin GPIO_04 pir");
         gpioPir.addListener(new GpioPinListenerDigital() {
             @Override
@@ -52,7 +54,20 @@ public class PirSensor {
                 //Creates a Connection and a Session:
 
                 // A lot of problems with spurious pin changes 20200330
-                if (++eventnr % 1 == 0) {
+                // If more than x events per second, stop it
+                long thisCheck = new java.util.Date().getTime();
+                if (++eventnr > 5) {
+                    eventnr = 0; // reset counter
+                    // Stop all
+                    if (thisCheck - lastCheck < 1000) {
+                        logger.log(Level.SEVERE, "Because of too much traffic stopping all GPIO actions on " + event.getPin());
+                        gpioPir.removeListener(this);
+                        destroy();
+                    } else {
+                        lastCheck = thisCheck;
+                    }
+                }
+                if (eventnr % 1 == 0) {
                     try {
                         // Send payload
                         MqttClient client = new MqttClient("tcp://127.0.0.1:1883", "pahomqttpublish1");
@@ -73,7 +88,9 @@ public class PirSensor {
 
     public void destroy() {
         gpioPir.removeAllListeners();
+        logger.info("Start gpio.unprovisionDigitalInputPin GPIO_04 pir");
         gpio.unprovisionPin(gpioPir);
+        logger.info("End gpio.unprovisionDigitalInputPin GPIO_04 pir");
     }
 
     public GpioPinDigitalInput gpioPir;
