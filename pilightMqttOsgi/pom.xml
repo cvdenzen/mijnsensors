@@ -13,6 +13,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <pi4j.version>1.2</pi4j.version>
+        <camel.groupId>org.apache.camel</camel.groupId>
         <camel.version>3.3.0</camel.version>
     </properties>
     <repositories>
@@ -50,112 +52,73 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-            <version>4.3.0</version>
+            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
+            <artifactId>camel-base</artifactId>
             <version>${camel.version}</version>
-            <type>jar</type>
-        </dependency><dependency>
-        <groupId>org.apache.camel</groupId>
-        <artifactId>camel-base</artifactId>
-        <version>${camel.version}</version>
-    </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-paho</artifactId>
-            <version>${camel.version}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>${camel.groupId}</groupId>
+            <artifactId>camel-paho</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${camel.groupId}</groupId>
             <artifactId>camel-netty-http</artifactId>
             <version>${camel.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>${camel.groupId}</groupId>
             <artifactId>camel-netty</artifactId>
             <version>${camel.version}</version>
         </dependency>
 
         <!-- for activmq ? -->
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>${camel.groupId}</groupId>
             <artifactId>camel-gson</artifactId>
             <version>${camel.version}</version>
         </dependency>
         <!-- jackson supports unmarshal to List -->
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>${camel.groupId}</groupId>
             <artifactId>camel-jackson</artifactId>
             <version>${camel.version}</version>
         </dependency>
 
 
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>${camel.groupId}</groupId>
             <artifactId>camel-stream</artifactId>
             <version>${camel.version}</version>
-        </dependency><!-- https://mvnrepository.com/artifact/com.box/json-schema-core -->
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.box/json-schema-core -->
         <dependency>
             <groupId>com.box</groupId>
             <artifactId>json-schema-core</artifactId>
             <version>1.2.8</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.fge/jackson-coreutils -->
-        <dependency>
-            <groupId>com.github.fge</groupId>
-            <artifactId>jackson-coreutils</artifactId>
-            <version>1.8</version>
-        </dependency>
-
-
 
         <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-jms -->
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>${camel.groupId}</groupId>
             <artifactId>camel-jms</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.ops4j.pax.logging/pax-logging-api -->
-        <dependency>
-            <groupId>org.ops4j.pax.logging</groupId>
-            <artifactId>pax-logging-api</artifactId>
-            <version>1.10.1</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-jdk14 -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.25</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.sun.mail/all -->
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>all</artifactId>
-            <version>1.6.1</version>
-            <type>pom</type>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.iq80.leveldb/leveldb-project -->
-        <dependency>
-            <groupId>org.iq80.leveldb</groupId>
-            <artifactId>leveldb-project</artifactId>
-            <version>0.10</version>
-            <type>pom</type>
-        </dependency>
 
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>${camel.groupId}</groupId>
             <artifactId>camel-quartz</artifactId>
             <version>${camel.version}</version>
             <!-- use the same version as your Camel core version -->
         </dependency>
 
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>${camel.groupId}</groupId>
             <artifactId>camel-http</artifactId>
             <version>${camel.version}</version>
         </dependency>
@@ -163,18 +126,17 @@
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-core</artifactId>
-            <version>1.2</version>
+            <type>jar</type>
+            <!-- version>${pi4j.version}</version -->
+            <version>1.4-SNAPSHOT</version>
+            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.pi4j/pi4j-device -->
         <dependency>
             <groupId>com.pi4j</groupId>
             <artifactId>pi4j-device</artifactId>
-            <version>1.2</version>
-        </dependency><!-- https://mvnrepository.com/artifact/com.pi4j/pi4j-service -->
-        <dependency>
-            <groupId>com.pi4j</groupId>
-            <artifactId>pi4j-service</artifactId>
-            <version>1.1</version>
+            <version>${pi4j.version}</version>
+            <scope>provided</scope>
         </dependency>
         <!-- Groovy doesn't work 7 feb 2020 classnotfound -->
         <dependency>
@@ -182,22 +144,6 @@
             <artifactId>camel-groovy</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <!-- Groovy doesn't work 7 feb 2020 classnotfound -->
-        <dependency>
-            <groupId>org.apache.servicemix.bundles</groupId>
-            <artifactId>org.apache.servicemix.bundles.ant</artifactId>
-            <version>1.7.0_6</version>
-        </dependency>
-
-
-        <!-- ??? after error java.lang.NoClassDefFoundError: com/sun/istack/FinalArrayList -->
-        <!-- https://mvnrepository.com/artifact/com.sun.istack/istack-commons-runtime -->
-        <!--dependency>
-            <groupId>com.sun.istack</groupId>
-            <artifactId>istack-commons-runtime</artifactId>
-            <version>3.0.10</version>
-        </dependency -->
-
 
     </dependencies>
 
@@ -225,12 +171,13 @@
                             nl.vandenzen.pilightmqttosgi.util;version="1.0.0"
                         </Export-Package>
                         <Import-Package>*</Import-Package>
-                            <DynamicImport-Package>
-                                *
-                            </DynamicImport-Package>
+                        <DynamicImport-Package>
+                            *
+                        </DynamicImport-Package>
                         <Bundle-Activator>nl.vandenzen.pilightmqttosgi.Activator</Bundle-Activator>
                         <!-- 20181130 https://issues.apache.org/jira/browse/KARAF-4730 -->
                         <_removeheaders>Import-Service,Export-Service</_removeheaders>
+                        <_noee>true</_noee>
                     </instructions>
                 </configuration>
             </plugin>
@@ -253,7 +200,7 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.gogo.shell</artifactId>
-                    <version>0.10.0</version>
+                    <version>1.1.2</version>
                 </dependency>
                 <!-- -->
             </dependencies>
@@ -326,7 +273,7 @@
                 <dependency>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>org.apache.felix.main</artifactId>
-                    <version>5.6.10</version>
+                    <version>6.0.3</version>
                     <scope>provided</scope>
                 </dependency>
                 <!-- org.apache.felix:org.apache.felix.gogo.shell:0.6.1 useless from Maven since stdin is swallowed -->
@@ -336,7 +283,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-antrun-plugin</artifactId>
-                        <version>1.7</version>
+                        <version>1.8</version>
                         <configuration>
                             <target>
                                 <property name="vm.args" value=""/>

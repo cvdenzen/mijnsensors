@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="paho connectionTimeout=180">
+    <list default="true" id="eaee1729-20e4-4afc-ab7f-43b83b50cf53" name="Default" comment="Camel 3.2.0, pom opgeschoond (pax logging, servicemix (groovy?))">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/nl/vandenzen/pilightmqttosgi/MyRouteBuilder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/OSGI-INF/blueprint/blueprint.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FavoritesManager">
-    <favorites_list name="pilightMqttOsgi" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -40,20 +37,12 @@
       <facet id="pilightMqttOsgi/invalid/OSGi" />
     </ignored-facets>
   </component>
-  <component name="MavenImportPreferences">
-    <option name="importingSettings">
-      <MavenImportingSettings>
-        <option name="importAutomatically" value="true" />
-      </MavenImportingSettings>
-    </option>
-  </component>
   <component name="ProjectId" id="1WRiOG7d1LcqR2NUYHgdOlyxbyO" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -63,11 +52,12 @@
     <property name="Repository.Attach.Sources" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1550002435786" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="TEXT" />
     <property name="editorconfig.notification" value="null" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.09113608" />
-    <property name="project.structure.side.proportion" value="0.12564291" />
+    <property name="project.structure.side.proportion" value="0.21831638" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
@@ -145,18 +135,6 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
-  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -167,20 +145,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1522007574523</updated>
-    </task>
-    <task id="LOCAL-00063" summary="feature javascript added">
-      <created>1543585834021</created>
-      <option name="number" value="00063" />
-      <option name="presentableId" value="LOCAL-00063" />
-      <option name="project" value="LOCAL" />
-      <updated>1543585834022</updated>
-    </task>
-    <task id="LOCAL-00064" summary="use old namespace instead of 1.3.0, see https://issues.apache.org/jira/browse/KARAF-4730">
-      <created>1543588185295</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1543588185295</updated>
     </task>
     <task id="LOCAL-00065" summary="restored name space version, did not help, changed config for felix, see https://issues.apache.org/jira/browse/KARAF-4730">
       <created>1543588743970</created>
@@ -511,7 +475,21 @@
       <option name="project" value="LOCAL" />
       <updated>1586371606376</updated>
     </task>
-    <option name="localTasksCounter" value="112" />
+    <task id="LOCAL-00112" summary="paho connectionTimeout=180">
+      <created>1586372982029</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1586372982029</updated>
+    </task>
+    <task id="LOCAL-00113" summary="Camel 3.2.0, pom opgeschoond (pax logging, servicemix (groovy?))">
+      <created>1586462974524</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1586462974524</updated>
+    </task>
+    <option name="localTasksCounter" value="114" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -529,9 +507,7 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
@@ -550,11 +526,11 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="automatisch lichten aan en uit weer getracht te activeren. Openhab 2.5, geen pilight meer, veel hue." />
     <MESSAGE value="Syntax error" />
     <MESSAGE value="In deze versie zit een xml fout in route element (char data not allowed of zoiets)" />
     <MESSAGE value="niet werkende versie door jsonpath" />
@@ -579,32 +555,37 @@
     <MESSAGE value="bug in timer for Hue stable" />
     <MESSAGE value="Init autoOnEnabled true" />
     <MESSAGE value="paho connectionTimeout=180" />
-    <option name="LAST_COMMIT_MESSAGE" value="paho connectionTimeout=180" />
+    <MESSAGE value="Camel 3.2.0, pom opgeschoond (pax logging, servicemix (groovy?))" />
+    <option name="LAST_COMMIT_MESSAGE" value="Camel 3.2.0, pom opgeschoond (pax logging, servicemix (groovy?))" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="555" y="215" width="800" height="684" key="#Notifications" timestamp="1586461362724">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="555" y="215" width="800" height="684" key="#Notifications/0.27.1920.1053@0.27.1920.1053" timestamp="1586461362724" />
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser" timestamp="1579555167557">
       <screen x="0" y="0" width="1680" height="1046" />
     </state>
     <state x="653" y="220" key="#com.intellij.ide.util.MemberChooser/0.0.1680.1046@0.0.1680.1046" timestamp="1579555167557" />
-    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2" timestamp="1586371606044">
+    <state x="126" y="243" width="890" height="816" key="CommitChangelistDialog2" timestamp="1586462974304">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="467" y="130" key="CommitChangelistDialog2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175526824" />
     <state x="0" y="151" width="1270" height="816" key="CommitChangelistDialog2/0.27.1280.997@0.27.1280.997" timestamp="1583705730152" />
-    <state x="126" y="243" width="750" height="816" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1586371606044" />
-    <state x="9" y="106" width="1884" height="876" key="DiffContextDialog" timestamp="1586014697825">
+    <state x="126" y="243" width="890" height="816" key="CommitChangelistDialog2/0.27.1920.1053@0.27.1920.1053" timestamp="1586462974304" />
+    <state x="9" y="106" width="1884" height="876" key="DiffContextDialog" timestamp="1586464482702">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog/0.0.1680.1046@0.0.1680.1046" timestamp="1579467473604" />
     <state x="8" y="100" width="1648" height="850" key="DiffContextDialog/0.23.1680.1023@0.23.1680.1023" timestamp="1579732911277" />
     <state x="6" y="102" width="1256" height="829" key="DiffContextDialog/0.27.1280.997@0.27.1280.997" timestamp="1583599496256" />
-    <state x="9" y="106" width="1884" height="876" key="DiffContextDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586014697825" />
-    <state x="795" y="473" width="479" height="521" key="FileChooserDialogImpl" timestamp="1585599518978">
+    <state x="9" y="106" width="1884" height="876" key="DiffContextDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1586464482702" />
+    <state x="795" y="473" width="479" height="521" key="FileChooserDialogImpl" timestamp="1586461554112">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="695" y="443" key="FileChooserDialogImpl/0.0.1680.1046@0.0.1680.1046" timestamp="1579815844474" />
     <state x="530" y="449" width="479" height="521" key="FileChooserDialogImpl/0.27.1280.997@0.27.1280.997" timestamp="1583782245691" />
-    <state x="795" y="473" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1585599518978" />
+    <state x="795" y="473" width="479" height="521" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1586461554112" />
     <state width="1874" height="275" key="GridCell.Tab.0.bottom" timestamp="1585685417647">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
@@ -633,33 +614,33 @@
       <screen x="0" y="27" width="1280" height="997" />
     </state>
     <state x="345" y="241" width="580" height="576" key="MultipleFileMergeDialog/0.27.1280.997@0.27.1280.997" timestamp="1583080297235" />
-    <state x="457" y="97" width="1022" height="737" key="SettingsEditor" timestamp="1585599564333">
+    <state x="137" y="97" width="1342" height="737" key="SettingsEditor" timestamp="1586461573646">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="123" y="103" width="1024" height="852" key="SettingsEditor/0.27.1280.997@0.27.1280.997" timestamp="1583361429244" />
-    <state x="457" y="97" width="1022" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1585599564333" />
-    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1586371608654">
+    <state x="137" y="97" width="1342" height="737" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1586461573646" />
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1586462977060">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="440" y="266" key="Vcs.Push.Dialog.v2/0.0.1680.1046@0.0.1680.1046" timestamp="1581175532989" />
     <state x="335" y="281" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1280.997@0.27.1280.997" timestamp="1583705733250" />
-    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1586371608654" />
+    <state x="503" y="295" width="800" height="535" key="Vcs.Push.Dialog.v2/0.27.1920.1053@0.27.1920.1053" timestamp="1586462977060" />
     <state x="100" y="127" width="1720" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1584392535645">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="100" y="127" width="1720" height="853" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1584392535645" />
-    <state x="719" y="479" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1583960811766">
+    <state x="719" y="479" width="455" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1586461937016">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="629" y="449" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1680.1046@0.0.1680.1046" timestamp="1580760303809" />
     <state x="479" y="455" width="445" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1280.997@0.27.1280.997" timestamp="1583079987848" />
-    <state x="719" y="479" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.1053@0.27.1920.1053" timestamp="1583960811766" />
-    <state x="216" y="230" width="1250" height="739" key="find.popup" timestamp="1586372078978">
+    <state x="719" y="479" width="455" height="167" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.27.1920.1053@0.27.1920.1053" timestamp="1586461937016" />
+    <state x="216" y="230" width="1250" height="739" key="find.popup" timestamp="1586464737581">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="361" y="313" width="1093" height="733" key="find.popup/0.0.1680.1046@0.0.1680.1046" timestamp="1580848657916" />
     <state x="144" y="219" width="833" height="699" key="find.popup/0.27.1280.997@0.27.1280.997" timestamp="1583362401190" />
-    <state x="216" y="230" width="1250" height="739" key="find.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586372078978" />
+    <state x="216" y="230" width="1250" height="739" key="find.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1586464737581" />
     <state x="577" y="262" width="766" height="681" key="search.everywhere.popup" timestamp="1585771271027">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
