@@ -158,7 +158,7 @@ def main():
 
     LightSensorReaderBH1750(I2CBus bus) throws IOException {
         logger.log(Level.INFO,"Start LightSensorReaderBH1750 constructor");
-        device = bus.getDevice(0x23);
+        device = bus.getDevice(BH1750FVI_ADDR);
         logger.log(Level.INFO,"LightSensorReaderBH1750 device={0}",device);
     }
 

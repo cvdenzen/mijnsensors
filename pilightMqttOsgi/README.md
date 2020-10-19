@@ -4,7 +4,7 @@ Beware: there is another (old) README.md file at mijnsensors/
 This files describes the actions to take for the separate karaf instance, NOT for the openhab instance.
 Install karaf (instructions somewhere else in this README.md file).
 
-repo-add camel 3.2.0
+repo-add camel x.y.z
 feature:install camel
 # cellar distributed karaf support
 repo-add cellar
@@ -26,6 +26,10 @@ chmod g+w /usr/share/karaf/deploy
 # pilight, in a unix shell on iMac (jan 2020: deprecated, no more pilight, everything is Philips Hue)
 scp /home/carl/gitrepos/mijnsensors/pilightMqttOsgi/lib/*.jar pi@raspberrypi:/usr/share/karaf/deploy
 scp /home/carl/gitrepos/mijnsensors/pilightMqttOsgi/target/classes/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml pi@rpi3x:/usr/share/karaf/deploy
+:q
+
+
+
 copy activemq.xml from lastpass to /usr/share/apache-karaf/etc/activemq.xml
 # rpi2: chmod g+w /usr/share/apache-karaf/deploy
 # copy jar from imac to raspberry (rpi2=192.168.2.9 jan 2020)
@@ -142,6 +146,8 @@ backlight led: 5V 23mA (isolated from rest)
 RS=register select
 RW=H=read, L=write. USE WRITE ONLY, otherwise 5V will be supplied to raspberry pins!
 pwm, resistor, transistor.
-2019-03-11 BME280 added (i2c address 76, python bme280.py displays values TEMP HUM PRESSURE).
-Lightsensor??
+2019-03-11 BME280 added (i2c address 0x76, python bme280.py displays values TEMP HUM PRESSURE).
+See https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python/
+
+Lightsensor i2c address 0x23 BH1750
 
