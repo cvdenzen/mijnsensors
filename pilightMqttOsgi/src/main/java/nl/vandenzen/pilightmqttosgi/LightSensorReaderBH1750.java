@@ -10,8 +10,11 @@ import com.pi4j.platform.PlatformManager;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.pi4j.io.i2c.I2CBus.BUS_17;
 
 public class LightSensorReaderBH1750 {
     /*
@@ -157,7 +160,31 @@ def main():
     private long conversiontime=240; // time in milliseconds
 
     LightSensorReaderBH1750(I2CBus bus) throws IOException {
-        logger.log(Level.INFO,"Start LightSensorReaderBH1750 constructor");
+        logger.log(Level.INFO,"Start LightSensorReaderBH1750 constructor, bus="+bus);
+
+        // fetch all available busses
+        try {
+            int[] ids = I2CFactory.getBusIds();
+            logger.log(Level.INFO,"Found the following I2C busses: " + Arrays.toString(ids));
+        } catch (IOException exception) {
+            logger.log(Level.INFO,"I/O error during fetch of I2C busses occurred");
+        }
+
+        // find available busses
+        /*
+        for (int number = I2CBus.BUS_0; number <= BUS_17; ++number) {
+            try {
+                @SuppressWarnings("unused")
+                I2CBus bus1 = I2CFactory.getInstance(number);
+                logger.log(Level.INFO,"Supported I2C bus " + number + " found");
+            } catch (IOException exception) {
+                logger.log(Level.INFO,"I/O error on I2C bus " + number + " occurred");
+            } catch (I2CFactory.UnsupportedBusNumberException exception) {
+                logger.log(Level.INFO,"Unsupported I2C bus " + number + " required");
+            }
+        }
+        */
+         */
         device = bus.getDevice(BH1750FVI_ADDR);
         logger.log(Level.INFO,"LightSensorReaderBH1750 device={0}",device);
     }
