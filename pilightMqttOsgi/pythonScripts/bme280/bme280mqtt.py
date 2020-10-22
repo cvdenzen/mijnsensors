@@ -24,6 +24,8 @@ from ctypes import c_short
 from ctypes import c_byte
 from ctypes import c_ubyte
 
+# sudo ?
+# pip3 install paho-mqtt
 import paho.mqtt.client as mqtt #import the client1
 
 DEVICE = 0x76 # Default device I2C address
@@ -161,14 +163,14 @@ def readBME280All(addr=DEVICE):
 def main():
 
   (chip_id, chip_version) = readBME280ID()
-  print "Chip ID     :", chip_id
-  print "Version     :", chip_version
+  print ("Chip ID     :", chip_id)
+  print ("Version     :", chip_version)
 
   temperature,pressure,humidity = readBME280All()
 
-  print "Temperature : ", temperature, "C"
-  print "Pressure : ", pressure, "hPa"
-  print "Humidity : ", humidity, "%"
+  print ("Temperature : ", temperature, "C")
+  print ("Pressure : ", pressure, "hPa")
+  print ("Humidity : ", humidity, "%")
 
   #
   # Start mqtt paho
