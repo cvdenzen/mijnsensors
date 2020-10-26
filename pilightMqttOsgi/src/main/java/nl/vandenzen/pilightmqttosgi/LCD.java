@@ -61,5 +61,5 @@ public class LCD extends GpioLcdDisplay {
 
         gpio.shutdown();
     }
-    final static Logger logger = Logger.getLogger(PirSensor.class.toString());
+    final static Logger logger = Logger.getLogger(LCD.class.toString());
 }

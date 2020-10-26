@@ -401,20 +401,6 @@ public class MyRouteBuilder {
             //System.out.println(broker.toString());
             //Thread.sleep(2000);
 
-            msg = dateFormat.format(new Date()) + " start pir";
-            logger.info(msg);
-            // PirSensor
-            try {
-                pirSensor = new PirSensor();
-                // TODO: Do not init! spurious changes on pin 4 20200330
-                //pirSensor.init();
-            }
-            catch (Exception ex) {
-                logger.log(Level.SEVERE,"Error initialising PirSensor",ex);
-            }
-            msg = dateFormat.format(new Date()) + " started pir";
-            logger.info(msg);
-
             ProducerTemplate template = context.createProducerTemplate();
             context.start();
             msg = dateFormat.format(new Date()) + " main: context started";
@@ -550,5 +536,4 @@ public class MyRouteBuilder {
 
     //LightSensorReaderBH1750 bh1750;
     UPSPIco upsPico;
-    PirSensor pirSensor;
 }
