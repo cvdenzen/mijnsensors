@@ -784,8 +784,5 @@ camel v 3.5.0 oct 2020
     <bean id="Runtime" class="java.lang.Runtime"
           factory-method="getRuntime"/>
 
-    <!-- Experimental LCD -->
-    <!-- bean id="LCD" class="nl.vandenzen.pilightmqttosgi.LCD" factory-method="getLCD"/ -->
-
 
 </blueprint>
