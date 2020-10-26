@@ -2,11 +2,11 @@ Status 20180215: UNDER DEVELOPMENT
 Beware: there is another (old) README.md file at mijnsensors/
 
 This files describes the actions to take for the separate karaf instance, NOT for the openhab instance.
-Install karaf (instructions somewhere else in this README.md file).
 
+Install karaf (instructions somewhere else in this README.md file). (oct 2020 version camel 3.6.0)
 repo-add camel x.y.z
 feature:install camel
-# cellar distributed karaf support
+# cellar distributed karaf support, not useful (summer 2020)
 repo-add cellar
 feature:install cellar
 
@@ -14,7 +14,7 @@ feature:install cellar
 # end of feature install commands
 #
 
-# on raspberry, user root. (if chown -R openhab.openhab /usr/share/karaf
+# on raspberry, user root. (chown -R openhab.openhab /usr/share/karaf
 adduser pi openhab
 adduser openhab kmem
 adduser openhab i2c
@@ -24,17 +24,15 @@ chmod g+w /usr/share/karaf/etc
 chmod g+w /usr/share/karaf/deploy
 
 # pilight, in a unix shell on iMac (jan 2020: deprecated, no more pilight, everything is Philips Hue)
-scp /home/carl/gitrepos/mijnsensors/pilightMqttOsgi/lib/*.jar pi@raspberrypi:/usr/share/karaf/deploy
-scp /home/carl/gitrepos/mijnsensors/pilightMqttOsgi/target/classes/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml pi@rpi3x:/usr/share/karaf/deploy
+sscp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/lib/*.jar pi@rpi3:/usr/share/karaf/deploy
+scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml  pi@rpi3:/usr/share/karaf/deploy
 :q
 
-
-
-copy activemq.xml from lastpass to /usr/share/apache-karaf/etc/activemq.xml
+copy activemq.xml from lastpass to /usr/share/karaf/etc/activemq.xml
 # rpi2: chmod g+w /usr/share/apache-karaf/deploy
 # copy jar from imac to raspberry (rpi2=192.168.2.9 jan 2020)
-mvn clean install && scp /home/carl/gitrepos/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@raspberrypi:/usr/share/karaf/deploy
-scp ~/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@1rpi2:/usr/share/apache-karaf/etc/
+mvn clean install && scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@raspberrypi:/usr/share/karaf/deploy
+scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@rpi3:/usr/share/karaf/etc/
 # deprecated, needed if deploy is not writable by user pi: cp ~/gitrepos/mijnsensors/pilightMqttOsgi/ pi@rpi2:/usr/share/apache-karaf/deploy
 # On raspberry:
 #sudo -s -E -u openhab
@@ -44,7 +42,8 @@ Camel custom setting file (for pilight server ip address, pilight port and other
 # this property file should exist in a camel property file path, e.g. karaf/etc
 
 
-Additional feature: use ActiveMQ as MQTT broker. Add a connector to activemq.xml (that is: karaf home etc/activemq.xml)
+#Additional feature: use ActiveMQ as MQTT broker. Add a connector to activemq.xml (that is: karaf home etc/activemq.xml)
+# Has already been done in LastPass entry
  <transportConnectors>
    <transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
    <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
@@ -52,7 +51,7 @@ Additional feature: use ActiveMQ as MQTT broker. Add a connector to activemq.xml
 
 
 Connect to openhab system (raspberry):
-Terminal, ssh pi@192.168.2.9 (ssh pi@rpi2) (of pi@168.2.18 27 jan 2020 ethernetkabel)
+Terminal, ssh pi@192.168.2.3 (ssh pi@rpi3) (of pi@168.2.18 27 jan 2020 ethernetkabel)
 
 openhab@raspberrypi:/home/pi/gitrepos/etc_openhab2$ gpio readall
 
@@ -60,6 +59,7 @@ openhab@raspberrypi:/home/pi/gitrepos/etc_openhab2$ gpio readall
 MySensors:
 gateway on rpi:
 git clone https://github.com/mysensors/MySensors.git
+cd MySensors
 edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197
 
 ./configure --my-transport=rfm69 --my-rfm69-frequency=868 \
@@ -76,21 +76,27 @@ sudo make install
 */
 ============================================================================
 Openhab2:
-apt-get openhab2, openhab2-addons, openhab2-addons-legacy, see web site openhab.
+apt-get openhab2, openhab2-addons, see web site openhab.
 Config is in addons.cfg file, no more cvd-openhab-features.xml
 ============================================================================
-Karaf (for pilightMqttOsgi):
+Install Karaf (for pilightMqttOsgi):
+Download karaf jar. Untar in /usr/share/karaf (or make a symlink, might be better)
+sudo chown -R openhab.openhab /usr/share/karaf
 Install karaf as service in systemd in Linux: see web site karaf:
 karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
-Run in subdir contrib karaf-service.sh -k /usr/share/karaf
+Run in subdir bin/contrib ./karaf-service.sh -k /usr/share/karaf
 vi karaf.service, change user/group to openhab / openhab
-cp karaf.service /usr/share/apache-karaf/bin (er is een symlink vanuit /etc/systemd/system)
-# if already in use by e.g. openhab, change ssh port in etc/org.apache.karaf.shell.cfg from 8101 in e.g. 8102.
+# if already in use by e.g. openhab, change ssh port in systemctl edit (see next lines) from 8101 in e.g. 8102.
 # and etc/jetty.xml change secure.port to e.g. 8444.
+sudo systemctl edit karaf, add next lines:
+[Service]
+Environment="ORG_APACHE_KARAF_SSH_SSHPORT=8102"
+#==== end edit
+
 
 bin/client to connect to running karaf. User is karaf, password ?????
 
-sudo systemctl enable /usr/share/apache-karaf-4.2.2/bin/contrib/karaf.service
+sudo systemctl enable /usr/share/karaf/bin/contrib/karaf.service
 And then client, repo-add etc (see sowewhere else in this README.md).
 
 ============================================================================
@@ -151,3 +157,27 @@ See https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-press
 
 Lightsensor i2c address 0x23 BH1750
 
+====================================================================================================================
+Python scripts for sensors connected to rpi (pi4j doesn't work with java 9), crontab entries:
+bh1750 (light), bme280 (humidity, temperature, pressure), lcd display 2x16)
+# Light sensor to mqtt
+* * * * * /home/pi/bh1750/bh1750mqtt.py
+# temp/press/humidity bme280 sensor
+* * * * * /home/pi/bme280/bme280mqtt.py
+
+====================================================================================================================
+Install Java. sudo apt install default-jdk (oct 2020: java 11).
+====================================================================================================================
+install openhab:
+https://www.openhab.org/docs/installation/linux.html#package-repository-installation:
+backup/restore settings
+====================================================================================================================
+Install influxdb (oct 2020: v1.6.4-1)
+sudo apt install influxdb
+sudo apt install influxdb-client
+influx user list
+backup/restore ?
+Backup: set port 8088, see https://docs.influxdata.com/influxdb/v1.6/administration/backup_and_restore/a
+====================================================================================================================
+Install grafana, https://grafana.com/tutorials/install-grafana-on-raspberry-pi/#1
+backup/restore ?

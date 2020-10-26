@@ -415,27 +415,6 @@ public class MyRouteBuilder {
             msg = dateFormat.format(new Date()) + " started pir";
             logger.info(msg);
 
-
-
-            // Light sensor init
-            try {
-                msg = dateFormat.format(new Date()) + " start i2cbus lightsensor";
-                logger.info(msg);
-                // - I2CBus.BUS_1 are pins 3 and 5 (bij RP A en B rev. 1 this is BUS_0)
-                // - I2CBus.BUS_2 uses header pin CON6:3 as SDA and header pin CON6:5 as SCL
-                // - I2CBus.BUS_3 uses header pin CON6:27 as SDA and header pin CON6:28 as SCL
-                I2CBus bus = I2CFactory.getInstance(I2CBus.BUS_1);
-                bh1750 = new LightSensorReaderBH1750(bus);
-                bh1750.init();
-                Thread.sleep(300);
-                msg = dateFormat.format(new Date()) + " started route lightsensor";
-                logger.info(msg);
-            }
-            catch (Exception ex) {
-                logger.log(Level.SEVERE,"Error initialising light sensor bh1750",ex);
-            }
-
-
             ProducerTemplate template = context.createProducerTemplate();
             context.start();
             msg = dateFormat.format(new Date()) + " main: context started";
@@ -569,7 +548,7 @@ public class MyRouteBuilder {
             "\"media\":\"all\"" +
             "}";
 
-    LightSensorReaderBH1750 bh1750;
+    //LightSensorReaderBH1750 bh1750;
     UPSPIco upsPico;
     PirSensor pirSensor;
 }

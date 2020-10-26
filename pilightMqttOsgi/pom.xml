@@ -77,12 +77,6 @@
             <version>${camel.version}</version>
         </dependency>
 
-        <!-- for activmq ? -->
-        <dependency>
-            <groupId>${camel.groupId}</groupId>
-            <artifactId>camel-gson</artifactId>
-            <version>${camel.version}</version>
-        </dependency>
         <!-- jackson supports unmarshal to List -->
         <dependency>
             <groupId>${camel.groupId}</groupId>
@@ -122,28 +116,6 @@
             <artifactId>camel-http</artifactId>
             <version>${camel.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.pi4j</groupId>
-            <artifactId>pi4j-core</artifactId>
-            <type>jar</type>
-            <!-- version>${pi4j.version}</version -->
-            <version>${pi4j.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.pi4j/pi4j-device -->
-        <dependency>
-            <groupId>com.pi4j</groupId>
-            <artifactId>pi4j-device</artifactId>
-            <version>${pi4j.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.bidib.com.pi4j/pi4j-device -->
-        <!--dependency>
-            <groupId>org.bidib.com.pi4j</groupId>
-            <artifactId>pi4j-device</artifactId>
-            <version>1.2.M1</version>
-        </dependency -->
 
         <!-- Groovy doesn't work 7 feb 2020 classnotfound -->
         <dependency>
