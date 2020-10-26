@@ -530,6 +530,4 @@ public class MyRouteBuilder {
             "\"media\":\"all\"" +
             "}";
 
-    //LightSensorReaderBH1750 bh1750;
-    UPSPIco upsPico;
 }
