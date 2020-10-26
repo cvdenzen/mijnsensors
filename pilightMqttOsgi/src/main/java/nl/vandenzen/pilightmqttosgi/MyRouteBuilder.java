@@ -84,10 +84,6 @@ public class MyRouteBuilder {
     Registry registry;
     public void start() {
 
-        logger.info("MyRouteBuilder start wiringPiSetupGpio");
-        Gpio.wiringPiSetupGpio();
-        logger.info("MyRouteBuilder end wiringPiSetupGpio");
-
         //JsonDataFormat jsonDataFormat = new JacksonDataFormat(JsonReceiverResponse.class);
         XStreamDataFormat xStreamDataFormat = new XStreamDataFormat(); // (JsonReceiverResponse.class);
         //GsonDataFormat gsonDataFormat = new GsonDataFormat(); // (JsonReceiverResponse.class);
@@ -367,25 +363,6 @@ public class MyRouteBuilder {
                             .recipientList(simple("paho:${header.CamelMqttTopic}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}&connectionTimeout=180"))
                     ;
 
-                    // Light measurement
-                    from("quartz://lightreadertimer?cron=0/10+*+*+*+*+?")
-
-                            .routeId("lightsensor")
-                            .autoStartup(true)
-                            .startupOrder(100)
-                            .setHeader("bh1750",constant(bh1750))
-                            .process(new Processor() {
-                                @Override
-                                public void process(Exchange exchange) throws Exception {
-                                    Float light=bh1750.read();
-                                    logger.info("bh1750.read result " + light);
-                                    exchange.getIn().setBody(light.toString());
-                                    // next line is useless
-                                    //exchange.getIn().setHeader(PahoConstants.MQTT_TOPIC, simple("{{mqtt.topic.lightsensor.local.i2c.23}}"));
-                                }
-                            })
-                            .recipientList(simple("paho:{{mqtt.topic.lightsensor.local.i2c.23}}?brokerUrl=tcp://{{mqttserver}}:{{mqttport}}&connectionTimeout=180"));
-
 
                 }
             });
@@ -445,8 +422,6 @@ public class MyRouteBuilder {
     public void stop() {
         try {
             context.stop();
-            if (upsPico!=null) upsPico.destroy();
-            if (pirSensor!=null) pirSensor.destroy();
         } catch (Exception e) {
             e.printStackTrace();
         }
