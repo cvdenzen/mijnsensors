@@ -3,6 +3,7 @@ package nl.vandenzen.pilightmqttosgi;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.apache.camel.component.gson.GsonDataFormat;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,8 +11,6 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.pi4j.io.i2c.I2CFactory;
-import com.pi4j.wiringpi.Gpio;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 //import javafx.scene.effect.Light;
@@ -22,7 +21,6 @@ import org.apache.camel.component.paho.PahoConstants;
 import org.apache.camel.spi.PropertiesComponent;
 import org.apache.camel.model.dataformat.*;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.gson.GsonDataFormat;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultRegistry;
 import org.apache.camel.support.SimpleRegistry;
@@ -45,8 +43,6 @@ import java.util.Properties;
 
 import org.apache.camel.component.netty.NettyServerBootstrapConfiguration;
 
-
-import com.pi4j.io.i2c.I2CBus;
 import org.apache.camel.support.ExpressionAdapter;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
