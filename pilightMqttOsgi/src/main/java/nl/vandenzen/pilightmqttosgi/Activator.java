@@ -1,15 +1,14 @@
 package nl.vandenzen.pilightmqttosgi;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.apache.camel.ProducerTemplate;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Activator implements BundleActivator {
 
-    final boolean useBlueprint = false; // blueprint.xml is used anyway.
+    final boolean useBlueprint = true; // blueprint.xml is used anyway.
     MyRouteBuilder myRouteBuilder;
     public void start(BundleContext context) throws Exception {
         String msg = "Hallo, dit is Activator voor pilight-mqtt";
@@ -24,7 +23,7 @@ public class Activator implements BundleActivator {
                     String msg = "Hallo, dit is thread.run() pilight-mqtt";
                     System.out.println(msg);
                     if (!useBlueprint) {
-                        myRouteBuilder = new MyRouteBuilder();
+                        myRouteBuilder = new MyRouteBuilder(context);
                         myRouteBuilder.start();
                         msg = "Hallo, dit is thread.run() na pilight-mqtt";
                         System.out.println(msg);
@@ -45,7 +44,9 @@ public class Activator implements BundleActivator {
 
     public void stop(BundleContext context) throws Exception {
         // TODO add deactivation code here
-        myRouteBuilder.stop();
+        if (!useBlueprint) {
+            myRouteBuilder.stop();
+        }
         String msg = "Hallo, dit is Activator.stop() pilight-mqtt";
         System.out.println(msg);
 

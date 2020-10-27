@@ -10,6 +10,26 @@ feature:install camel
 repo-add cellar
 feature:install cellar
 
+- karaf, install camel and camel-blueprint, activemq 5.16.0 (july 2020)
+- In karaf:
+repo-add activemq <version>
+feature:install camel-jms
+feature:install camel-paho
+feature:install activemq
+feature:install activemq-camel
+#or
+feature:install camel-activemq
+feature:install activemq-broker
+#feature:install activemq-cf (connection factory)
+#feature:install activemq-blueprint (no idea why)
+
+feature:install camel-gson
+feature:install camel-stream
+feature:install camel-netty
+feature:install camel-quartz
+feature:install camel-http
+feature:install camel-jackson
+feature:install camel-groovy
 #
 # end of feature install commands
 #
@@ -73,6 +93,9 @@ edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197
 # shell/make can be confused.
 make
 sudo make install
+# Maybe do this: systemctl edit mysgw:
+[Service]
+  ExecStartPre=sleep 240
 */
 ============================================================================
 Openhab2:
@@ -164,7 +187,9 @@ bh1750 (light), bme280 (humidity, temperature, pressure), lcd display 2x16)
 * * * * * /home/pi/bh1750/bh1750mqtt.py
 # temp/press/humidity bme280 sensor
 * * * * * /home/pi/bme280/bme280mqtt.py
-
+====================================================================================================================
+view /etc/dphys-swapfile 
+2000 Mb maken
 ====================================================================================================================
 Install Java. sudo apt install default-jdk (oct 2020: java 11).
 ====================================================================================================================

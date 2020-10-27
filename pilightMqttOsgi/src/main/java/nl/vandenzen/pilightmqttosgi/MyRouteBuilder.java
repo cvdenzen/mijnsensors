@@ -1,62 +1,43 @@
 package nl.vandenzen.pilightmqttosgi;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.apache.camel.component.gson.GsonDataFormat;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.util.List;
-
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-//import javafx.scene.effect.Light;
 import nl.vandenzen.pilightmqttosgi.json.*;
 import org.apache.camel.*;
-import org.apache.camel.component.jackson.JacksonDataFormat;
-import org.apache.camel.component.paho.PahoConstants;
-import org.apache.camel.spi.PropertiesComponent;
-import org.apache.camel.model.dataformat.*;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.support.DefaultRegistry;
-import org.apache.camel.support.SimpleRegistry;
-import org.apache.camel.processor.ExchangePatternProcessor;
+import org.apache.camel.component.gson.GsonDataFormat;
+import org.apache.camel.component.jackson.JacksonDataFormat;
+import org.apache.camel.component.netty.ClientInitializerFactory;
+import org.apache.camel.component.netty.ServerInitializerFactory;
+import org.apache.camel.component.paho.PahoConstants;
+import org.apache.camel.core.osgi.OsgiDefaultCamelContext;
+import org.apache.camel.model.dataformat.XStreamDataFormat;
+import org.apache.camel.spi.PropertiesComponent;
 import org.apache.camel.spi.Registry;
-import org.apache.camel.component.netty.*;
-import org.apache.camel.component.stream.*;
-import org.apache.camel.model.dataformat.JsonLibrary;
-import org.apache.camel.model.DataFormatDefinition;
+import org.apache.camel.support.DefaultRegistry;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.osgi.framework.BundleContext;
 
-import javax.jms.ConnectionFactory;
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 import java.util.logging.Level;
-import java.util.Properties;
+import java.util.logging.Logger;
 
-import org.apache.camel.component.netty.NettyServerBootstrapConfiguration;
-
-import org.apache.camel.support.ExpressionAdapter;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+//import javafx.scene.effect.Light;
 
 /**
  * A Camel Java DSL Router
  */
 public class MyRouteBuilder {
 
-    public static void main(String[] args) throws Exception {
+    private final BundleContext bundleContext;
 
-        MyRouteBuilder myRouteBuilder = new MyRouteBuilder();
-        myRouteBuilder.start();
-    }
-    public MyRouteBuilder() {
+    public MyRouteBuilder(BundleContext bundleContext) {
+        this.bundleContext=bundleContext;
     }
     MqttConnectOptions connectOptions() {
         MqttConnectOptions connectOptions = new MqttConnectOptions();
@@ -92,7 +73,7 @@ public class MyRouteBuilder {
         String msg = dateFormat.format(new Date()) + " Start MyRouteBuilder.main()";
         System.out.println(msg);
         logger.info(msg);
-        context = new DefaultCamelContext(new DefaultRegistry());
+        context = new OsgiDefaultCamelContext(bundleContext);
 
         registry = (DefaultRegistry)context.getRegistry();
         if (registry instanceof DefaultRegistry) {

@@ -1,5 +1,5 @@
 Status 20180215: UNDER DEVELOPMENT: DEPRECATED
-Beware: there is another README.md at /Users/carl/gitrepos/mijnsensors/pilightMqttOsgi/README.md
+Beware: there is another README.md at /Users/carl/gitdirectory/pilightMqttOsgi/README.md
 The pilightMqttOsgi project:
 - karaf, install camel and camel-blueprint, activemq 5.16.0 (july 2020)
 - In karaf:
@@ -8,8 +8,8 @@ feature:install camel-jms
 feature:install camel-paho
 feature:install activemq
 feature:install activemq-camel
-feature:install activemq-cf (connection factory)
-feature:install activemq-blueprint (no idea why)
+#feature:install activemq-cf (connection factory)
+#feature:install activemq-blueprint (no idea why)
 
 feature:install camel-gson
 feature:install camel-stream
@@ -17,6 +17,7 @@ feature:install camel-netty
 feature:install camel-quartz
 feature:install camel-http
 feature:install camel-jackson
+feature:install camel-groovy
 
 On Raspberry pi, run:
 /usr/local/bin/pilight-receive --port=5017 --server=127.0.0.1 | nc -l 5018
