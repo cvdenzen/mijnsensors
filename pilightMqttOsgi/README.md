@@ -19,15 +19,6 @@ scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vand
 Camel custom setting file (for pilight server ip address, pilight port and other settings): karaf home etc/pilightmqttosgi.properties:
 # this property file should exist in a camel property file path, e.g. karaf/etc
 
-
-#Additional feature: use ActiveMQ as MQTT broker. Add a connector to activemq.xml (that is: karaf home etc/activemq.xml)
-# Has already been done in LastPass entry
- <transportConnectors>
-   <transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
-   <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
- </transportConnectors>
-
-
 Connect to openhab system (raspberry):
 Terminal, ssh pi@192.168.2.3 (ssh pi@rpi3) (of pi@168.2.18 27 jan 2020 ethernetkabel)
 
@@ -99,12 +90,25 @@ See https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-press
 Lightsensor i2c address 0x23 BH1750
 
 ====================================================================================================================
-Python scripts for sensors connected to rpi (pi4j doesn't work with java 9), crontab entries:
+Python scripts for sensors connected to rpi (pi4j doesn't work with java 9)
+sudo apt-get install python3
+# https://linuxconfig.org/how-to-change-default-python-version-on-debian-9-stretch-linux
+update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1
+update-alternatives --install /usr/bin/python python /usr/bin/python3.7 2
+user pi, /home/pi, mkdir tmp/pj, cd !$, jar -xf /usr/share/karaf/deploy/pilightMqttOsgi-1.0-SNAPSHOT.jar
+cp -a pythonScripts ~
+cd ~
+find . -name "*.py" -exec chmod ugo+x {} \;
+sudo apt install python3-venv python3-pip i2c-tools
+# raspi-config enable i2c
+pip3 install smbus
+pip3 install paho-mqtt
+crontab entries:
 bh1750 (light), bme280 (humidity, temperature, pressure), lcd display 2x16)
 # Light sensor to mqtt
-* * * * * /home/pi/bh1750/bh1750mqtt.py
+* * * * * /home/pi/pythonScripts/bh1750/bh1750mqtt.py
 # temp/press/humidity bme280 sensor
-* * * * * /home/pi/bme280/bme280mqtt.py
+* * * * * /home/pi/pythonScripts/bme280/bme280mqtt.py
 ====================================================================================================================
 vi /etc/dphys-swapfile rasp OS swap size default is 100Mb, too small
 2000 Mb maken
@@ -167,7 +171,7 @@ sudo make install
 [Service]
   TimeoutSec=infinity
   ExecStartPre=sleep 240
-
+# edit /etc/mysensors.conf, set logging to syslog
 ====================================================================================================================
 Install grafana, https://grafana.com/tutorials/install-grafana-on-raspberry-pi/#1
 backup/restore ?
