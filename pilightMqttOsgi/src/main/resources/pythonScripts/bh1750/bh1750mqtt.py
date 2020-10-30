@@ -72,7 +72,7 @@ def main():
   #broker_address="iot.eclipse.org" #use external broker
   client = mqtt.Client("bh1750_rpi3_carl") #create new instance
   client.connect(broker_address) #connect to broker
-  client.publish("f1_nw/all/light"+format(lightLevel,'.2f'),"OFF")#publish
+  client.publish("f1_nw/all/light",format(lightLevel,'.2f')) #publish
 
 
 if __name__=="__main__":
