@@ -11,10 +11,11 @@
         <feature>camel-http</feature>
         <feature>camel-netty</feature>
         <feature>camel-quartz</feature>
-        <feature>camel-jsonpath</feature>
+        <feaAAAture>camel-jsonpath</feaAAAture>
         <feature>camel-jackson</feature>
         <feature>camel-jms</feature>
         <feature>camel-activemq</feature>
+        <feature>activemq-broker</feature>
         <feature>service-wrapper</feature>
         <feature>camel-groovy</feature>
     </feature>

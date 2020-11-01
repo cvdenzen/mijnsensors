@@ -44,21 +44,37 @@ sudo vi rootfs/etc/hostname, set e.g. to rpi2
 sudo vi rootfs/etc/dphys-swapfile rasp OS swap size default is 100Mb, too small
 2000 Mb maken
 sudo umount the 2 partitions (boot and rootfs)
+
+rpi:
+sudo apt-get update
+sudo apt-get upgrade
 ====================================================================================================================
 Install Java. sudo apt install default-jdk (oct 2020: java 11).
 ====================================================================================================================
 Install influxdb (oct 2020: v1.6.4-1)
 sudo apt install influxdb
 sudo apt install influxdb-client
-influx user list (add users, finally set login auth to yes)
+influxd backup -portable -database openhab -host ip6-localhost:8088 /tmp/mysnapshot
+rsync -avz pi@xxx:/tmp/ldfk tmp dit naar de target
 backup/restore ?
-Backup: set port 8088, see https://docs.influxdata.com/influxdb/v1.6/administration/backup_and_restore/a
-
+Backup: set port 8088, see https://docs.influxdata.com/influxdb/v1.6/administration/backup_and_restore
+sudo vi /etc/influxdb/influxdb.conf, set backup to ip6-localhost:8088
+influxd restore -portable tmp/mysnapshot
+influx
+CREATE USER admin WITH PASSWORD '<password>' WITH ALL PRIVILEGES (password from Lastpass)
+create database "openhab"
+CREATE USER grafana WITH PASSWORD '<password>' (password from Lastpass)
+CREATE USER openhab WITH PASSWORD '<password>' (password from Lastpass)
+GRANT READ ON "openhab" TO "grafana"
+GRANT ALL ON "openhab" TO "openhab"
+user list (add users, finally set login auth-enabled to yes, see lastpass for accounts)
 ====================================================================================================================
 install openhab:
-sudo apt-get openhab2, openhab2-addons, see web site openhab.
+sudo apt install openhab2, openhab2-addons, see web site openhab.
 https://www.openhab.org/docs/installation/linux.html#package-repository-installation:
 backup/restore settings
+sudo systemctl daemon-reload
+sudo systemctl enable openhab2
 delay, influxd must be up to retrieve the latest values for e.g. lightOnIntensity (if persisted)
 systemctl edit openhab2,
 [Service]
@@ -67,11 +83,31 @@ systemctl edit openhab2,
 ============================================================================
 Install Karaf (for pilightMqttOsgi):
 Download karaf jar. Untar in /usr/share/karaf (or make a symlink, might be better)
-sudo chown -R openhab.openhab /usr/share/karaf
+
+sudo adduser karaf
+sudo adduser pi openhab
+sudo adduser pi karaf
+sudo adduser openhab kmem
+sudo adduser openhab i2c
+sudo adduser openhab gpio
+sudo adduser openhab spi
+sudo adduser karaf openhab
+sudo adduser karaf kmem
+sudo adduser karaf i2c
+sudo adduser karaf gpio
+sudo adduser karaf spi
+
+
+chmod g+w /usr/share/karaf/etc
+chmod g+w /usr/share/karaf/deploy
+
+sudo chown -R karaf.karaf /usr/share/karaf apache-karaf-4.3.0
 Install karaf as service in systemd in Linux: see web site karaf:
 karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
-Run in subdir bin/contrib ./karaf-service.sh -k /usr/share/karaf
-vi karaf.service, change user/group to openhab / openhab
+Run in subdir bin/contrib sudo ./karaf-service.sh -k /usr/share/karaf
+sudo vi karaf.service, change user/group to karaf / karaf
+sudo cp karaf.service /lib/systemd/system
+sudo systemctl enable karaf.service
 # if already in use by e.g. openhab, change ssh port in systemctl edit (see next lines) from 8101 in e.g. 8102.
 # and etc/jetty.xml change secure.port to e.g. 8444.
 sudo systemctl edit karaf, add next lines:
@@ -105,9 +141,10 @@ MySensors:
 gateway on rpi:
 git clone https://github.com/mysensors/MySensors.git
 cd MySensors
-edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197
+edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197 (or in commandline, see next line)
 
 ./configure --my-transport=rfm69 --my-rfm69-frequency=868 \
+--my-rfm69-networkid=197 \
 --my-gateway=mqtt --my-controller-ip-address=127.0.0.1 \
 --my-mqtt-publish-topic-prefix=mysensors/all \
 --my-mqtt-subscribe-topic-prefix=+/mysensors \
@@ -125,31 +162,13 @@ sudo make install
 # edit /etc/mysensors.conf, set logging to syslog
 ====================================================================================================================
 Install grafana, https://grafana.com/tutorials/install-grafana-on-raspberry-pi/#1
-backup/restore ?
+backup/restore ? /var/lib/grafana/grafana.db
 /etc/grafana/grafana.ini set auth.anonymous enabled=yes
 systemctl edit grafana-server
 [Service]
   TimeoutSec=infinity
   ExecStartPre=sleep 300
 =====================================================================================================================
-sudo adduser karaf
-# on raspberry, user root.
-chown -R karaf.karaf /usr/share/karaf
-adduser pi openhab
-adduser openhab kmem
-adduser openhab i2c
-adduser openhab gpio
-adduser openhab spi
-adduser karaf openhab
-adduser karaf kmem
-adduser karaf i2c
-adduser karaf gpio
-adduser karaf spi
-
-
-chmod g+w /usr/share/karaf/etc
-chmod g+w /usr/share/karaf/deploy
-
 Install karaf
 repo-add camel x.y.z (oct 2020 version camel 3.6.0)
 feature:install camel
@@ -160,23 +179,8 @@ feature:install cellar
 - karaf, install camel and camel-blueprint, activemq 5.16.0 (july 2020)
 - In karaf:
 repo-add activemq <version>
-feature:install camel-jms
-feature:install camel-paho
-feature:install activemq
-feature:install activemq-camel
-#or
-feature:install camel-activemq
-feature:install activemq-broker
-#feature:install activemq-cf (connection factory)
-#feature:install activemq-blueprint (no idea why)
 
-feature:install camel-gson
-feature:install camel-stream
-feature:install camel-netty
-feature:install camel-quartz
-feature:install camel-http
-feature:install camel-jackson
-feature:install camel-groovy
+Install the features wieht pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy)
 #
 # end of feature install commands
 #
