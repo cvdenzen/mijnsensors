@@ -8,7 +8,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static nl.vandenzen.pilightmqttosgi.MyRouteBuilder.pilightIdentify;
+import static nl.vandenzen.pilightmqttosgi.MyCamelController.pilightIdentify;
 
 public class SubscribeHandler extends ChannelInboundHandlerAdapter {
 

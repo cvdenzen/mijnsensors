@@ -1,5 +1,7 @@
 package nl.vandenzen.pilightmqttosgi;
 
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -8,8 +10,9 @@ import java.util.logging.Logger;
 
 public class Activator implements BundleActivator {
 
-    final boolean useBlueprint = true; // blueprint.xml is used anyway.
-    MyRouteBuilder myRouteBuilder;
+    final boolean useBlueprint = false; // blueprint.xml is used anyway.
+    RouteBuilder myRouteBuilder;
+    MyCamelController myCamelController;
     public void start(BundleContext context) throws Exception {
         String msg = "Hallo, dit is Activator voor pilight-mqtt";
         System.out.println(msg);
@@ -23,9 +26,11 @@ public class Activator implements BundleActivator {
                     String msg = "Hallo, dit is thread.run() pilight-mqtt";
                     System.out.println(msg);
                     if (!useBlueprint) {
-                        myRouteBuilder = new MyRouteBuilder(context);
-                        myRouteBuilder.start();
-                        msg = "Hallo, dit is thread.run() na pilight-mqtt";
+                        myCamelController = new MyCamelController(context);
+                        myCamelController.setContext(new DefaultCamelContext());
+                        myCamelController.start();
+                        msg = "Hallo, dit is thread.run() na myRouteBuilder.start()";
+                        logger.info(msg);
                         System.out.println(msg);
                     }
                 } catch (Exception ex) {
@@ -45,7 +50,7 @@ public class Activator implements BundleActivator {
     public void stop(BundleContext context) throws Exception {
         // TODO add deactivation code here
         if (!useBlueprint) {
-            myRouteBuilder.stop();
+            myCamelController.stop();
         }
         String msg = "Hallo, dit is Activator.stop() pilight-mqtt";
         System.out.println(msg);
