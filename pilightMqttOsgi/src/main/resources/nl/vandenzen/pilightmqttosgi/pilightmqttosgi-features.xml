@@ -18,6 +18,7 @@
         <feature>activemq-broker</feature>
         <feature>service-wrapper</feature>
         <feature>camel-groovy</feature>
+        <feature>camel-exec</feature>
     </feature>
     <feature name="pilightmqttosgi" version="1.0.0-SNAPSHOT">
         <!--bundle>pilightMqttOsgi OSGi Bundle</bundle -->

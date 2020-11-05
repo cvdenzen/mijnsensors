@@ -21,7 +21,8 @@ camel v 3.5.0 oct 2020
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
         <route id="testExecAanroep" autoStartup="true" startupOrder="100">
-            <from uri="quartz"
+            <from uri="quartz://groep/timerRq001?cron=3/10+*+*+*+*+?"/>
+            <to uri="exec:///home/pi/pythonScripts/bh1750/bh1750mqtt.py"/>
         </route>
 
     </camelContext>

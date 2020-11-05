@@ -128,8 +128,8 @@ cd ~
 find . -name "*.py" -exec chmod ugo+x {} \;
 sudo apt install python3-venv python3-pip i2c-tools
 # raspi-config enable i2c
-pip3 install smbus
-pip3 install paho-mqtt
+sudo pip3 install smbus
+sudo pip3 install paho-mqtt
 crontab entries:
 bh1750 (light), bme280 (humidity, temperature, pressure), lcd display 2x16)
 # Light sensor to mqtt
