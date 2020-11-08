@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-TEST (IN git branch rpi2-test-20201101
-
 autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
 camel v 3.5.0 oct 2020
 
@@ -13,16 +11,748 @@ camel v 3.5.0 oct 2020
              http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
+        <dataFormats>
+            <json id="jsonJsonOHRestItem" library="Gson"
+                  unmarshalTypeName="nl.vandenzen.pilightmqttosgi.json.JsonOHRestItem"/>
+            <!-- unmarshal to List<Map> is supported by Jackson json -->
+            <json id="jsonjackson" library="Jackson" useList="true"/>
+        </dataFormats>
+
+        <!-- hopeloos, te weinig documentatie om dit goed te krijgen -->
+        <!-- route id="DefineCache" autoStartup="true" startupOrder="5">
+		<from uri="ehcache://oh?configurationUri=file:${karaf.home}/etc/ehcache.xml"/>
+		<from uri="ehcache://oh?configurationUri=classpath:etc/ehcache.xml"/>
+		    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+        </route -->
+
+        <!-- When started, not stable (we don't know whether tv is on or off etc.) -->
+        <route id="Init" autoStartup="true" startupOrder="1">
+            <from uri="timer:inittimer?repeatCount=1"/>
+            <to uri="direct:set_stable_false"/>
+            <!-- enable automatic turning off the lights -->
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <bean ref="AutoOffEnabled" method="setValue"/>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <bean ref="AutoOnEnabled" method="setValue"/>
+        </route>
+
         <route id="HelloWorldFromBlueprint" autoStartup="true" startupOrder="6">
             <from uri="timer:simple?period=5000&amp;repeatCount=3"/>
             <setBody>
-                <constant>Hello World from blueprint (THIS IS A TEST CAMELCONTEXT, ALL ROUTES HAVE BEEN REMOVED!)</constant>
+                <simple>Hello World from blueprint (Camel UPSPIco)</simple>
             </setBody>
             <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route>
-        <route id="testExecAanroep" autoStartup="true" startupOrder="100">
-            <from uri="quartz://groep/timerRq001?cron=3/10+*+*+*+*+?"/>
-            <to uri="exec:///home/pi/pythonScripts/bh1750/bh1750mqtt.py"/>
+
+        <route id="convert_body_to_boolean" autoStartup="true" startupOrder="7">
+            <from uri="direct:convert_body_to_boolean"/>
+            <choice>
+                <when>
+                    <simple>${body} == "1"
+                        || ${body} == "ON"
+                    </simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Boolean"/>
+        </route>
+
+        <!-- Set OpenHab Item to value: use a rest POST call to OpenHab. This will probably
+             send a command to the item.
+             Input: header.OHItem, body.
+             If header.OHItem contains a comma (,), it will be split and
+             all OHItems will be set to the value of the body -->
+        <route id="setOHItem" autoStartup="true">
+            <from uri="direct:setOHItem"/>
+            <log message="setOHItem header.OHItem=${header.OHItem}, body=${body}"/>
+            <choice>
+                <when>
+                    <groovy>headers.OHItem.contains(",")</groovy>
+                    <log message="header contains ,"/>
+                    <!-- save body contents -->
+                    <setHeader name="savedBody">
+                        <simple>${body}</simple>
+                    </setHeader>
+                    <split>
+                        <simple>${header.OHItem}</simple>
+                        <!-- restore header -->
+                        <!-- Header has been split into the body -->
+                        <setHeader name="OHItem">
+                            <simple>${body}</simple>
+                        </setHeader>
+                        <!-- restore body -->
+                        <setBody>
+                            <simple>${header.savedBody}</simple>
+                        </setBody>
+                        <log message="setOHItem after split and restore header.OHItem=${header.OHItem}, body=${body}"/>
+                        <to uri="direct:setOHItem"/>
+                    </split>
+                </when>
+                <otherwise>
+                    <setHeader name="CamelHttpMethod">
+                        <constant>POST</constant>
+                    </setHeader>
+                    <setHeader name="Content-Type">
+                        <constant>text/plain</constant>
+                    </setHeader>
+                    <setHeader name="Accept">
+                        <constant>application/json</constant>
+                    </setHeader>
+                    <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
+                    <recipientList>
+                        <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+                    </recipientList>
+                    <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/>
+                </otherwise>
+            </choice>
+        </route>
+
+        <!-- Do a REST call to OpenHab to get the value of one item who's name is in headers.OHItem, into body -->
+        <route id="getOHItem" autoStartup="true" streamCache="true">
+            <from uri="direct:getOHItem"/>
+            <log message="getOHItem header.OHItem=${header.OHItem}"/>
+            <choice>
+                <when>
+                    <groovy>headers.OHItem.contains(",")</groovy>
+                    <log message="header contains ,"/>
+                    <!-- save body contents -->
+                    <setHeader name="savedBody">
+                        <simple>${body}</simple>
+                    </setHeader>
+                    <split>
+                        <simple>${header.OHItem}</simple>
+                        <!-- restore header -->
+                        <!-- Header has been split into the body -->
+                        <setHeader name="OHItem">
+                            <simple>${body}</simple>
+                        </setHeader>
+                        <!-- restore body -->
+                        <setBody>
+                            <simple>${header.savedBody}</simple>
+                        </setBody>
+                        <log message="OHItem na split and restore is ${header.OHItem}"/>
+                        <log message="body na split and restore is ${body}"/>
+                        <log message="ERROR: multiple items is NOT SUPPORTED"/>
+                        <!-- to uri="direct:getOHItem"/ -->
+                    </split>
+                </when>
+                <otherwise>
+                    <setHeader name="CamelHttpMethod">
+                        <constant>GET</constant>
+                    </setHeader>
+                    <setHeader name="Content-Type">
+                        <constant>text/plain</constant>
+                    </setHeader>
+                    <setHeader name="Accept">
+                        <constant>application/json</constant>
+                    </setHeader>
+                    <!-- log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/ -->
+                    <recipientList>
+                        <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+                    </recipientList>
+                    <!-- log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/ -->
+                    <unmarshal>
+                        <custom ref="jsonJsonOHRestItem"/>
+                    </unmarshal>
+                    <!-- log message="headers.OHItem na rest en unmarshall=${headers.OHItem}"/ -->
+                    <setBody>
+                        <groovy>body.state</groovy>
+                    </setBody>
+                    <log message="na groovy: headers.OHItem=${headers.OHItem}, body=${body}"/>
+                </otherwise>
+            </choice>
+        </route>
+        <!-- Test setOHItem-->
+        <route id="testGetOHItem" autoStartup="false">
+            <from uri="quartz://groep/timerTestGetOHItem?cron=0/10+*+*+*+*+?"/>
+            <setHeader name="OHItem">
+                <groovy>"Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"
+                </groovy>
+            </setHeader>
+            <log message="log from testSetOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/>
+            <setBody>
+                <!-- percentage 0..100 -->
+                <simple>ON</simple>
+            </setBody>
+            <to uri="direct:getOHItem"/>
+            <log message="body=${body}, headers.OHItem=${headers.OHItem}"/>
+            <log message="headers.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm=${headers.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm}"/>
+            <log message="headers.Light_GF_Huiskamer_LampGroteKast_Dimm=${headers.Light_GF_Huiskamer_LampGroteKast_Dimm}"/>
+            <log message="Light_GF_Huiskamer_LampLadenkastje_Dimm=${headers.Light_GF_Huiskamer_LampLadenkastje_Dimm}"/>
+            <log message="bg_w_tv_w=${headers.bg_w_tv_w}"/>
+        </route>
+
+        <!-- Deze werkt 17 jan 2020.-->
+        <route id="achterlichtAan2020" autoStartup="true">
+            <from uri="direct:achterlichtaan2020"/>
+            <log message="achterlichtaan2020"/>
+            <to uri="direct:set_HueStable_false"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle</constant>
+            </setHeader>
+            <setBody>
+                <constant>ON</constant>
+            </setBody>
+            <to uri="direct:setOHItem"/>
+        </route>
+
+
+        <route id="achterlichtUit2020" autoStartup="true">
+            <from uri="direct:achterlichtuit2020"/>
+            <log message="achterlichtuit2020"/>
+            <to uri="direct:set_HueStable_false"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle</constant>
+            </setHeader>
+            <setBody>
+                <constant>OFF</constant>
+            </setBody>
+            <to uri="direct:setOHItem"/>
+        </route>
+
+        <route id="requestLightsOnIntensity" autoStartup="true" streamCache="true">
+            <from uri="quartz://groep/timerRq001?cron=3+*+*+*+*+?"/>
+            <setHeader name="OHItem">
+                <constant>LightsOnIntensityThreshold</constant>
+            </setHeader>
+            <to uri="direct:getOHItem"/>
+            <log message="LightOnInt..Threshold, body=${body}"/>
+            <convertBodyTo type="java.lang.String"/>
+            <choice>
+                <when>
+                    <groovy>body</groovy>
+                    <setBody>
+                        <groovy>"8.0"</groovy>
+                    </setBody>
+                    <log message="LightOnInt..Threshold was null, using default 8.0, body=${body}"/>
+                </when>
+                <otherwise>
+                    <log message="LightOnInt..Threshold was not null, body=${body}"/>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Float"/>
+            <bean ref="LightsOnIntensityThreshold" method="setValue"/>
+            <setHeader name="LightsOnIntensityThreshold">
+                <method ref="LightsOnIntensityThreshold" method="getValue"/>
+            </setHeader>
+        </route>
+
+        <!-- set header and bean -->
+        <route id="requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" autoStartup="true" streamCache="true">
+            <from uri="direct:requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm</constant>
+            </setHeader>
+            <to uri="direct:getOHItem"/>
+            <!-- send String that can be converted to Integer -->
+            <to uri="direct:setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
+        </route>
+
+        <route id="setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" autoStartup="true">
+            <from uri="direct:setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" method="setValue"/>
+            <setHeader name="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm">
+                <method ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" method="getValue"/>
+            </setHeader>
+        </route>
+
+
+        <!-- Zet lichten aan -->
+        <route id="ZetLichtenAan" autoStartup="true" startupOrder="101">
+            <from uri="direct:ZetLichtenAan"/>
+            <log message="Lichten gaan aan!"/>
+            <to uri="direct:set_HueStable_false"/>
+            <setHeader name="OHItem">
+                <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle,"
+                    .concat("Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle")
+                </groovy>
+            </setHeader>
+            <setBody>
+                <constant>ON</constant>
+            </setBody>
+            <to uri="direct:setOHItem"/>
+            <!-- special case (but not anymore) because previous three bulbs were Dimm (but now also Toggle) -->
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
+            </setHeader>
+            <setBody>
+                <constant>ON</constant>
+            </setBody>
+            <to uri="direct:setOHItem"/>
+        </route>
+
+        <!-- Zet lichten uit, behalve Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm, die gaat na een tijdje uit -->
+        <route id="ZetLichtenUit" autoStartup="true" startupOrder="102">
+            <from uri="direct:ZetLichtenUit"/>
+            <log message="Lichten gaan uit!"/>
+            <to uri="direct:set_HueStable_false"/>
+            <setHeader name="OHItem">
+                <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle"
+                </groovy>
+            </setHeader>
+            <setBody>
+                <constant>OFF</constant>
+            </setBody>
+            <to uri="direct:setOHItem"/>
+            <setHeader name="OHItem">
+                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
+            </setHeader>
+            <setBody>
+                <constant>OFF</constant>
+            </setBody>
+            <to uri="direct:setOHItem"/>
+            <!-- delayed switch off for AchterdeurSchemerlamp -->
+            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Long"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
+        </route>
+
+
+        <!-- als de schakelaar gebruikt wordt, moet de pir-automaat gecancelled worden -->
+        <route id="dimmerSwitchBijTv" autoStartup="true" startupOrder="108">
+            <from uri="paho:oh/all/WoonkamerSchakelaarBijTv/state?connectionTimeout=180"/>
+            <log message="aho:oh/all/WoonkamerSchakelaarBijTv/state=${body}"/>
+            <to uri="direct:set_HueStable_false"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="cancel"/>
+        </route>
+
+        <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
+            <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state?connectionTimeout=180"/>
+            <!-- to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <log message="LichtIntensiteit_Woonkamer_updated: body=${body}"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Float"/>
+            <bean ref="LichtIntensiteit_Woonkamer" method="setValue"/>
+            <log message="LichtIntensiteit_Woonkamer updated (oh/.../state): header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
+            <to uri="direct:Enable_lights_on_by_daylight"/>
+        </route>
+
+        <route id="calcOneLightOn" autoStartup="true" startupOrder="201">
+            <from uri="direct:calcOneLightOn"/>
+            <log message="Start calcOneLightOn, body=${body}"/>
+            <!-- set states of light etc. in header of the message -->
+            <to uri="direct:SetHeaders"/>
+            <log message="header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
+            <log message="header.LightsOnIntensityThreshold=${header.LightsOnIntensityThreshold}"/>
+            <log message="header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm=${header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm}"/>
+            <log message="header.pir_gf_achterdeur17=${header.pir_gf_achterdeur17}"/>
+
+            <setHeader name="HueStable">
+                <method ref="HueStable" method="getValue"/>
+            </setHeader>
+            <choice>
+                <when>
+                    <simple>
+                        ${header.HueStable}
+                    </simple>
+                    <log message="calcOneLightOn, HueStable is true, continuing"/>
+                    <when>
+                        <simple>${header.pir_gf_achterdeur17}</simple>
+                        <log message="pir is true"/>
+                        <when>
+                            <simple>${header.LichtIntensiteit_Woonkamer} &lt; ${header.LightsOnIntensityThreshold}
+                            </simple>
+                            <log message="lichtinsiteit woonkamer&lt;threshold"/>
+                            <when>
+                                <simple>${header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm} &lt; 1</simple>
+                                <setBody>
+                                    <simple>het licht is uit</simple>
+                                </setBody>
+                                <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                                <to uri="direct:achterlichtaan2020"/>
+                                <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                                <convertBodyTo type="java.lang.String"/>
+                                <convertBodyTo type="java.lang.Long"/>
+                                <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+                                <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="schedule"/>
+                            </when>
+                        </when>
+                    </when>
+                </when>
+            </choice>
+            <!-- delay, extend with each action on pir -->
+            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Long"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="extend"/>
+        </route>
+
+        <!-- This is not used, AutoOnEnabled is not handled by openhab (march 2020) -->
+        <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="202">
+            <from uri="paho:oh/all/AutoOnEnabled/state?connectionTimeout=180"/>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="AutoOnEnabled" method="setValue"/>
+            <!-- Turn on lights? -->
+            <log message="listenAutoOnEnabled: AutoOnEnabled set to ${body}"/>
+            <to uri="direct:Enable_lights_on_by_daylight"/>
+        </route>
+        <route id="listenLightsOnIntensityThreshold" autoStartup="true" startupOrder="203">
+            <from uri="paho:oh/all/LightsOnIntensityThreshold/state?connectionTimeout=180"/>
+            <log message="paho:oh/all/LightsOnIntensityThreshod changed to ${body}"/>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <bean ref="LightsOnIntensityThreshold" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:Enable_lights_on_by_daylight"/>
+        </route>
+        <route id="listenLight_GF_Huiskamer_Achterdeur_Schemerlamp" autoStartup="true" startupOrder="204">
+            <from uri="paho:oh/all/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm/state?connectionTimeout=180"/>
+            <to uri="direct:setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
+            <to uri="direct:calcOneLightOn"/>
+        </route>
+        <route id="listenGF_Passenger_minutes" autoStartup="true" startupOrder="205">
+            <from uri="paho:oh/all/GF_Passenger_minutes/state?connectionTimeout=180"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <bean ref="GF_Passenger_minutes" method="setValue"/>
+        </route>
+        <route id="listen_bg_w_tv_w_mqtt" autoStartup="true" startupOrder="216">
+            <from uri="paho:oh/all/bg_w_tv_w/state?connectionTimeout=180"/>
+            <to uri="direct:listen_bg_w_tv_w"/>
+        </route>
+
+        <route id="listen_bg_w_tv_w_timer" autoStartup="true" startupOrder="217">
+            <from uri="quartz://groep/timer_bg_w_tv_w_?cron=3/15+*+*+*+*+?"/>
+            <setHeader name="OHItem">
+                <constant>bg_w_tv_w</constant>
+            </setHeader>
+            <!-- Get state of OpenHab item -->
+            <to uri="direct:getOHItem"/>
+            <to uri="direct:listen_bg_w_tv_w"/>
+        </route>
+
+        <!-- Input is body with value ON of OFF for tv -->
+        <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
+            <from uri="direct:listen_bg_w_tv_w"/>
+            <log message="bg_w_tv_w/state: new: ${body}"/>
+            <!-- get old value of bg_w_tv_w -->
+            <setHeader name="bg_w_tv_w">
+                <method ref="bg_w_tv_w" method="getValue"/>
+            </setHeader>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_w_tv_w" method="setValue"/>
+            <log message="Values old: ${headers.bg_w_tv_w}, new: ${body}"/>
+            <!-- restore body contents after log message -->
+            <bean ref="bg_w_tv_w" method="getValue"/>
+            <!-- Changed? -->
+            <choice>
+                <when>
+                    <!-- normally this would not happen, as only changes are reported -->
+                    <simple>${in.headers.bg_w_tv_w} == ${body}</simple>
+                    <!-- log message="bg_w_tv_w same value old: ${headers.bg_w_tv_w}, new: ${body}"/ -->
+                </when>
+                <otherwise>
+                    <!-- set stable false will automatically set it to true after a specified time -->
+                    <to uri="direct:set_stable_false"/>
+                </otherwise>
+            </choice>
+        </route>
+
+        <route id="listen_bg_x_imac2" autoStartup="true" startupOrder="207">
+            <from uri="paho:oh/all/bg_x_imac2/state?connectionTimeout=180"/>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_x_imac2" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
+
+        <route id="listen_bg_x_imac3" autoStartup="true" startupOrder="208">
+            <from uri="paho:oh/all/bg_x_imac3/state?connectionTimeout=180"/>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_x_imac3" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
+
+        <!-- not used 17 jan 2020 -->
+        <route id="listenPir_gf_achterdeur17" autoStartup="false" startupOrder="209">
+            <from uri="paho:oh/all/pir_gf_achterdeur17/state?connectionTimeout=180"/>
+            <log message="listenPir_gf_achterdeur17 body=${body}, deprecated"/>
+            <convertBodyTo type="java.lang.String"/>
+            <choice>
+                <when>
+                    <simple>${in.body} == "CLOSED" || ${body} == "1"</simple>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="pir_gf_achterdeur17" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:calcOneLightOn"/>
+        </route>
+
+
+        <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item.
+             This could be faster (no openhab action in between) -->
+        <route id="listenPir_gf_achterdeur17a" autoStartup="true" startupOrder="220">
+            <from uri="paho:mysensors/all/153/1/1/0/2?connectionTimeout=180"/>
+            <convertBodyTo type="java.lang.String"/>
+            <log message="listenPir_gf_achterdeur17a locA is ${body}"/>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="pir_gf_achterdeur17" method="setValue"/>
+            <!-- Turn on lights? -->
+            <to uri="direct:calcOneLightOn"/>
+        </route>
+
+        <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="301">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz://groep/timer1?cron=0+0+12+*+*+?"/>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <bean ref="AutoOnEnabled" method="setValue"/>
+            <log message="bean AutoOnEnabled set to ${body}"/>
+        </route>
+        <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz://groep/timer2?cron=47+50+22+*+*+?"/>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <bean ref="AutoOffEnabled" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
+
+        <route id="ReportMemoryUsage" autoStartup="true" startupOrder="304">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz://groep/timer4?cron=4+*+*+*+*+?"/>
+            <bean ref="Runtime" method="maxMemory"/>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="paho:sensors/all/runtime/maxMemory?connectionTimeout=180"/>
+            <bean ref="Runtime" method="totalMemory"/>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="paho:sensors/all/runtime/totalMemory?connectionTimeout=180"/>
+            <bean ref="Runtime" method="freeMemory"/>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="paho:sensors/all/runtime/freeMemory?connectionTimeout=180"/>
+        </route>
+
+        <!-- Generic entry point for turning on the lights automatically based on light settings -->
+        <route id="Enable_lights_on_by_daylight" autoStartup="true" startupOrder="401">
+            <from uri="direct:Enable_lights_on_by_daylight"/>
+            <to uri="direct:SetHeaders"/>
+            <log message="Start Enable_lights_on_by_daylight, header.AutoOnEnabled=${header.AutoOnEnabled}"/>
+            <choice>
+                <when>
+                    <simple>
+                        ${header.AutoOnEnabled} == 1
+                        || ${header.AutoOnEnabled} == true
+                    </simple>
+                    <log message="header.AutoOnEnabled==true=${header.AutoOnEnabled}"/>
+                    <when>
+                        <!-- it is dark -->
+                        <simple>
+                            ${header.LichtIntensiteit_Woonkamer} &lt; ${header.LightsOnIntensityThreshold}
+                        </simple>
+                        <log message="Licht gaat aan!"/>
+                        <to uri="direct:ZetLichtenAan"/>
+                        <!-- disable automatic turning on the lights -->
+                        <setBody>
+                            <constant>false</constant>
+                        </setBody>
+                        <bean ref="AutoOnEnabled" method="setValue"/>
+                    </when>
+                </when>
+            </choice>
+        </route>
+        <!-- Generic entry point for turning off the lights automatically based on light settings -->
+        <route id="LightsOff" autoStartup="true" startupOrder="402">
+            <from uri="direct:LightsOffCalc"/>
+            <to uri="direct:SetHeaders"/>
+            <choice>
+                <when>
+                    <simple>
+                        ${header.AutoOffEnabled} == true
+                        &amp;&amp; ${header.bg_w_tv_w} == false
+                        &amp;&amp; ${header.Stable} == true
+                        &amp;&amp; ${header.bg_x_imac2} == false
+                        &amp;&amp; ${header.bg_x_imac3} == false <!-- // and imac is off -->
+                    </simple>
+                    <setBody>
+                        <simple>Licht gaat uit.</simple>
+                    </setBody>
+                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                    <!-- disable automatic turning off the lights -->
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                    <bean ref="AutoOffEnabled" method="setValue"/>
+                    <!-- alle lampen direct uitzetten, achterdeurlamp pas na een delay -->
+                    <to uri="direct:ZetLichtenUit"/>
+                    <!-- delay for only one light (achterdeur)-->
+                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                    <convertBodyTo type="java.lang.String"/>
+                    <convertBodyTo type="java.lang.Long"/>
+                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
+                </when>
+            </choice>
+        </route>
+
+        <!-- SetHeaders. Body contents not altered -->
+        <route id="SetHeaders" autoStartup="true" startupOrder="501">
+            <from uri="direct:SetHeaders"/>
+            <!-- Save body contents in header BodyContents -->
+            <setHeader name="BodyContents">
+                <simple>${body}</simple>
+            </setHeader>
+            <log message="Start SetHeaders"/>
+
+            <setHeader name="LichtIntensiteit_Woonkamer">
+                <method ref="LichtIntensiteit_Woonkamer" method="getValue"/>
+            </setHeader>
+            <log message="SetHeader: header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
+            <setHeader name="LightsOnIntensityThreshold">
+                <method ref="LightsOnIntensityThreshold" method="getValue"/>
+            </setHeader>
+            <setHeader name="AutoOnEnabled">
+                <method ref="AutoOnEnabled" method="getValue"/>
+            </setHeader>
+            <setHeader name="AutoOffEnabled">
+                <method ref="AutoOffEnabled" method="getValue"/>
+            </setHeader>
+            <setHeader name="pir_gf_achterdeur17">
+                <method ref="pir_gf_achterdeur17" method="getValue"/>
+            </setHeader>
+            <log message="SetHeader: header.pir_gf_achterdeur17=${header.pir_gf_achterdeur17}"/>
+            <setHeader name="bg_w_tv_w">
+                <method ref="bg_w_tv_w" method="getValue"/>
+            </setHeader>
+            <setHeader name="bg_x_imac2">
+                <method ref="bg_x_imac2" method="getValue"/>
+            </setHeader>
+            <setHeader name="bg_x_imac3">
+                <method ref="bg_x_imac3" method="getValue"/>
+            </setHeader>
+            <setHeader name="Stable">
+                <method ref="Stable" method="getValue"/>
+            </setHeader>
+            <!-- set header and bean -->
+            <to uri="direct:requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
+        </route>
+
+        <!-- this route is called by bean DelaySetStableTrue -->
+        <route id="set_stable_true" autoStartup="true" startupOrder="511">
+            <from uri="direct:set_stable_true"/>
+            <log message="Start set_stable_true"/>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="Stable" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
+
+        <route id="set_stable_false" autoStartup="true" startupOrder="512">
+            <from uri="direct:set_stable_false"/>
+            <log message="Start set_stable_false"/>
+            <setBody>
+                <constant>false</constant>
+            </setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="Stable" method="setValue"/>
+            <!-- set timer (milliseconds) to set stable to true -->
+            <setBody>
+                <constant>45000</constant>
+            </setBody>
+            <convertBodyTo type="java.lang.Long"/>
+            <bean ref="DelaySetStableTrue" method="setDelay"/>
+            <bean ref="DelaySetStableTrue" method="restartTimer"/>
+        </route>
+
+
+        <!-- this route is called by bean DelaySetHueStableTrue -->
+        <route id="set_HueStable_true" autoStartup="true" startupOrder="513">
+            <from uri="direct:set_HueStable_true"/>
+            <log message="Start set_HueStable_true"/>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="HueStable" method="setValue"/>
+            <!-- check whether to turn lights on -->
+            <to uri="direct:calcOneLightOn"/>
+        </route>
+
+        <route id="set_HueStable_false" autoStartup="true" startupOrder="514">
+            <from uri="direct:set_HueStable_false"/>
+            <log message="Start set_HueStable_false"/>
+            <setBody>
+                <constant>false</constant>
+            </setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="HueStable" method="setValue"/>
+            <!-- set timer (milliseconds) to set stable to true -->
+            <setBody>
+                <constant>15000</constant>
+            </setBody>
+            <convertBodyTo type="java.lang.Long"/>
+            <bean ref="DelaySetHueStableTrue" method="setDelay"/>
+            <bean ref="DelaySetHueStableTrue" method="restartTimer"/>
+        </route>
+
+        <route id="test1" autoStartup="false" startupOrder="9002" streamCache="true">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz://groep/timer9002?cron=0/10+*+*+*+*+?"/>
+            <log message="Start test1"/>
+            <!-- Save body contents -->
+            <setHeader name="BodyContents">
+                <simple>${body}</simple>
+            </setHeader>
+            <setHeader name="OHItem">
+                <constant>a,b,c</constant>
+            </setHeader>
+            <to uri="direct:testsplit"/>
+            <setBody>
+                <constant>d</constant>
+            </setBody>
+            <to uri="direct:testsplit"/>
+            <!-- restore body -->
+            <setBody>
+                <simple>${header.BodyContents}</simple>
+            </setBody>
+        </route>
+
+        <route id="testsplit">
+            <from uri="direct:testsplit"/>
+            <!-- als body een komma bevat, dan splitsen, anders niet. Test met groovy -->
+            <log message="Start testsplit, body=${body}, header OHItem=${header.OHItem}"/>
+            <when>
+                <groovy>headers.OHItem.contains(",")</groovy>
+                <log message="header contains ,"/>
+                <split>
+                    <simple>${header.OHItem}</simple>
+                    <log message="OHItem na split is ${header.OHItem}"/>
+                    <log message="body na split is ${body}"/>
+                </split>
+            </when>
         </route>
 
     </camelContext>
