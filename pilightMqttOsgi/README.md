@@ -114,7 +114,7 @@ sudo systemctl edit karaf, add next lines:
 [Service]
   Environment="ORG_APACHE_KARAF_SSH_SSHPORT=8102"
   TimeoutSec=infinity
-  ExecStartPre=sleep 180
+  ExecStartPre=sleep 10
 #==== end edit
 ====================================================================================================================
 Python scripts for sensors connected to rpi (pi4j doesn't work with java 9)
@@ -177,10 +177,13 @@ repo-add cellar
 feature:install cellar
 
 - karaf, install camel and camel-blueprint, activemq 5.16.0 (july 2020)
-- In karaf:
+- In karaf (for broker install):
 repo-add activemq <version>
+feature:install activemq-camel
+feature:install activemq-broker
 
-Install the features wieht pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy)
+Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy)
+feature:install pilightmqttosgi
 #
 # end of feature install commands
 #

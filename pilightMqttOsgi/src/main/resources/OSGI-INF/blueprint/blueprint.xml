@@ -755,6 +755,27 @@ camel v 3.5.0 oct 2020
             </when>
         </route>
 
+        <!-- Display temp hum pressure on lcd display -->
+        <route id="displayMeasurements">
+            <from uri="paho:oh/all/f1_nw_temperatuur/state?connectionTimeout=180"/>
+            <!-- to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <log message="f1_nw_temperatuur: body=${body}"/>
+            <convertBodyTo type="java.lang.String"/>
+            <!-- save body -->
+            <setHeader name="temperatuur">
+                <simple>${body}</simple>
+            </setHeader>
+            <!-- Display in column 0, row -->
+            <setBody><constant>1,1</constant></setBody>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="paho:camel/f1_nw/display/set/cursor"/>
+            <!-- restore body -->
+            <setBody>
+                <simple>${header.temperatuur}</simple>
+            </setBody>
+            <to uri="paho:camel/f1_nw/display/message"/>
+        </route>
+
     </camelContext>
     <!-- bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/ -->
     <bean id="AutoOnEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
