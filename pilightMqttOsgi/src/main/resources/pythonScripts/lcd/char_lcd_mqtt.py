@@ -106,11 +106,11 @@ class Adafruit_CharLCD(object):
     """Class to represent and interact with an HD44780 character LCD display."""
 
     def __init__(self, rs, en, d4, d5, d6, d7, cols, lines, backlight=None,
-                    invert_polarity=True,
-                    enable_pwm=False,
-                    gpio=GPIO.get_platform_gpio(),
-                    pwm=PWM.get_platform_pwm(),
-                    initial_backlight=1.0):
+                 invert_polarity=True,
+                 enable_pwm=False,
+                 gpio=GPIO.get_platform_gpio(),
+                 pwm=PWM.get_platform_pwm(),
+                 initial_backlight=1.0):
         """Initialize the LCD.  RS, EN, and D4...D7 parameters should be the pins
         connected to the LCD RS, clock enable, and data line 4 through 7 connections.
         The LCD will be used in its 4-bit mode so these 6 lines are the only ones
@@ -334,7 +334,7 @@ class Adafruit_RGBCharLCD(Adafruit_CharLCD):
     an RGB backlight."""
 
     def __init__(self, rs, en, d4, d5, d6, d7, cols, lines, red, green, blue,
-                 gpio=GPIO.get_platform_gpio(), 
+                 gpio=GPIO.get_platform_gpio(),
                  invert_polarity=True,
                  enable_pwm=False,
                  pwm=PWM.get_platform_pwm(),
@@ -360,11 +360,11 @@ class Adafruit_RGBCharLCD(Adafruit_CharLCD):
         """
         super(Adafruit_RGBCharLCD, self).__init__(rs, en, d4, d5, d6, d7,
                                                   cols,
-                                                  lines, 
+                                                  lines,
                                                   enable_pwm=enable_pwm,
                                                   backlight=None,
                                                   invert_polarity=invert_polarity,
-                                                  gpio=gpio, 
+                                                  gpio=gpio,
                                                   pwm=pwm)
         self._red = red
         self._green = green
@@ -389,7 +389,7 @@ class Adafruit_RGBCharLCD(Adafruit_CharLCD):
         red = max(0.0, min(1.0, red))
         green = max(0.0, min(1.0, green))
         blue = max(0.0, min(1.0, blue))
-        return (self._pwm_duty_cycle(red), 
+        return (self._pwm_duty_cycle(red),
                 self._pwm_duty_cycle(green),
                 self._pwm_duty_cycle(blue))
 
@@ -449,21 +449,21 @@ class Adafruit_CharLCDPlate(Adafruit_RGBCharLCD):
             self._mcp.pullup(button, True)
         # Initialize LCD (with no PWM support).
         super(Adafruit_CharLCDPlate, self).__init__(LCD_PLATE_RS, LCD_PLATE_EN,
-            LCD_PLATE_D4, LCD_PLATE_D5, LCD_PLATE_D6, LCD_PLATE_D7, cols, lines,
-            LCD_PLATE_RED, LCD_PLATE_GREEN, LCD_PLATE_BLUE, enable_pwm=False, 
-            gpio=self._mcp)
+                                                    LCD_PLATE_D4, LCD_PLATE_D5, LCD_PLATE_D6, LCD_PLATE_D7, cols, lines,
+                                                    LCD_PLATE_RED, LCD_PLATE_GREEN, LCD_PLATE_BLUE, enable_pwm=False,
+                                                    gpio=self._mcp)
 
     def is_pressed(self, button):
         """Return True if the provided button is pressed, False otherwise."""
         if button not in set((SELECT, RIGHT, DOWN, UP, LEFT)):
             raise ValueError('Unknown button, must be SELECT, RIGHT, DOWN, UP, or LEFT.')
         return self._mcp.input(button) == GPIO.LOW
-    
+
 
 class Adafruit_CharLCDBackpack(Adafruit_CharLCD):
     """Class to represent and interact with an Adafruit I2C / SPI
     LCD backpack using I2C."""
-    
+
     def __init__(self, address=0x20, busnum=I2C.get_default_bus(), cols=16, lines=2):
         """Initialize the character LCD plate.  Can optionally specify a separate
         I2C address or bus number, but the defaults should suffice for most needs.
@@ -474,8 +474,8 @@ class Adafruit_CharLCDBackpack(Adafruit_CharLCD):
         self._mcp = MCP.MCP23008(address=address, busnum=busnum)
         # Initialize LCD (with no PWM support).
         super(Adafruit_CharLCDBackpack, self).__init__(LCD_BACKPACK_RS, LCD_BACKPACK_EN,
-            LCD_BACKPACK_D4, LCD_BACKPACK_D5, LCD_BACKPACK_D6, LCD_BACKPACK_D7,
-            cols, lines, LCD_BACKPACK_LITE, enable_pwm=False, gpio=self._mcp)
+                                                       LCD_BACKPACK_D4, LCD_BACKPACK_D5, LCD_BACKPACK_D6, LCD_BACKPACK_D7,
+                                                       cols, lines, LCD_BACKPACK_LITE, enable_pwm=False, gpio=self._mcp)
 
 #######################################################################################
 #######################################################################################
@@ -517,11 +517,11 @@ lcd_rows    = 2
 
 # Initialize the LCD using the pins above.
 #lcd = LCD.Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7,
-                           #lcd_columns, lcd_rows, lcd_backlight,False)
+#lcd_columns, lcd_rows, lcd_backlight,False)
 
 # Backlight pwm separately, is not supported by Adafruit
 lcd = Adafruit_CharLCD(lcd_rs, lcd_en, lcd_d4, lcd_d5, lcd_d6, lcd_d7,
-                           lcd_columns, lcd_rows)
+                       lcd_columns, lcd_rows)
 
 
 # Print a two line message
@@ -548,74 +548,93 @@ def on_message(client, userdata, message):
     print("message retain flag=",message.retain)
 
 def on_message_command_clear(client, userdata, message):
-  lcd.clear()
+    lcd.clear()
 
 def on_message_command_cursor(client, userdata, message):
-  lcd.cursor(str(message.payload.decode("utf-8")))
+    lcd.cursor(str(message.payload.decode("utf-8")))
 
 def on_message_command_blink(client, userdata, message):
-  lcd.blink(str(message.payload.decode("utf-8")))
+    lcd.blink(str(message.payload.decode("utf-8")))
 
 def on_message_command_move_left(client, userdata, message):
-  lcd.move_left()
+    lcd.move_left()
 
 def on_message_command_move_right(client, userdata, message):
-  lcd.move_right()
-
-def on_message_set_row(client, userdata, message):
-  lcd.row=int(message.payload.decode("utf-8"))
-  print("set row received " ,int(str(message.payload.decode("utf-8"))))
-
-def on_message_set_column(client, userdata, message):
-  lcd.column=int(message.payload.decode("utf-8"))
-  print("set column received " ,int(str(message.payload.decode("utf-8"))))
+    lcd.move_right()
 
 def on_message_set_cursor(client, userdata, message):
-  x=str(message.payload.decode("utf-8")).split(",")
-  column=x[0]
-  row=x[1]
-  lcd.set_cursor(int(x[0]),int(x[1]))
-  print("set cursor_position received " ,str(message.payload.decode("utf-8")))
-  print("set cursor_position received column=" ,int(x[0]))
-  print("set cursor_position received row=" ,int(x[1]))
+    x=str(message.payload.decode("utf-8")).split(",")
+    column=x[0]
+    row=x[1]
+    lcd.set_cursor(int(x[0]),int(x[1]))
+    #print("set cursor received " ,str(message.payload.decode("utf-8")))
+    #print("set cursor received column=" ,int(x[0]))
+    #print("set cursor received row=" ,int(x[1]))
+
+def on_message_display_char(client, userdata, message):
+    i1=int(message.payload.decode("ascii"))
+    #print("char=",i1)
+    lcd.write8(i1,True)
 
 def on_message_display_message(client, userdata, message):
-  lcd.message(str(message.payload.decode("utf-8")))
+    #lcd.message(str(message.payload.decode("utf-8")))
+    m1=message.payload.decode("ascii")
+    b2a=bytes(m1,"ascii")
+    m3=b2a.decode("ascii")
+    b2=bytes(m3,"utf-8")
+    #print("message received (plain)   =",message.payload)
+    #print("message received (conv1) m1=",m1)
+    #print("message received (conv1) m3=",m3)
+    #print("message received (conv1) b2=",b2)
+    #lcd.message(b2)
+    """Write text to display.  Note that text can include newlines."""
+    line = 0
+    # Iterate through each character.
+    for b in b2:
+        # Advance to next line if character is a new line.
+        print(int(b)," ")
+        if b == '\n':
+            line += 1
+            # Move to left or right side depending on text direction.
+            col = 0 if self.displaymode & LCD_ENTRYLEFT > 0 else self._cols-1
+            self.set_cursor(col, line)
+        # Write the character to the display.
+        else:
+            lcd.write8(b, True)
 
 def on_message_display_backlight(client, userdata, message):
-  try:
-    #lcd.set_backlight(int(message.payload.decode("utf-8")))
-    p.ChangeDutyCycle(int(message.payload.decode("utf-8")))
-    print("backlight message received " ,str(message.payload.decode("utf-8")))
-    print("backlight message topic=",message.topic)
-    print("backlight message qos=",message.qos)
-    print("backlight message retain flag=",message.retain)
-  except:
-    p.ChangeDutyCycle(100)
+    try:
+        #lcd.set_backlight(int(message.payload.decode("utf-8")))
+        p.ChangeDutyCycle(int(message.payload.decode("utf-8")))
+        print("backlight message received " ,str(message.payload.decode("utf-8")))
+        print("backlight message topic=",message.topic)
+        print("backlight message qos=",message.qos)
+        print("backlight message retain flag=",message.retain)
+    except:
+        p.ChangeDutyCycle(100)
 
 
 def main():
-  broker_address="ip6-localhost"
-  #broker_address="iot.eclipse.org" #use external broker
-  client = mqtt.Client("f1_nw_rpi3_display_carl") #create new instance
-  client.connect(broker_address) #connect to broker
-  client.subscribe([("+/f1_nw/display/message",0), ("+/f1_nw/display/backlight",0),("+/f1_nw/display/command/#",0),("+/f1_nw/display/set/#",0)])
-  client.message_callback_add("+/f1_nw/display/message",on_message_display_message)
-  client.message_callback_add("+/f1_nw/display/backlight",on_message_display_backlight)
-  client.message_callback_add("+/f1_nw/display/command/clear",on_message_command_clear)
-  client.message_callback_add("+/f1_nw/display/command/cursor",on_message_command_cursor)
-  client.message_callback_add("+/f1_nw/display/command/blink",on_message_command_blink)
-  client.message_callback_add("+/f1_nw/display/command/move_left",on_message_command_move_left)
-  client.message_callback_add("+/f1_nw/display/command/move_right",on_message_command_move_right)
-  client.message_callback_add("+/f1_nw/display/set/row",on_message_set_row) # 0 or 1
-  client.message_callback_add("+/f1_nw/display/set/column",on_message_set_column) # 0 to 15
-  client.message_callback_add("+/f1_nw/display/set/cursor",on_message_set_cursor) # 0 to 15
+    broker_address="ip6-localhost"
+    #broker_address="iot.eclipse.org" #use external broker
+    client = mqtt.Client("f1_nw_rpi3_display_carl") #create new instance
+    client.connect(broker_address) #connect to broker
+    client.subscribe([("+/f1_nw/display/message/#",0), ("+/f1_nw/display/backlight",0),("+/f1_nw/display/command/#",0),("+/f1_nw/display/set/#",0)])
+    client.message_callback_add("+/f1_nw/display/message/message",on_message_display_message)
+    client.message_callback_add("+/f1_nw/display/message/char",on_message_display_char) # char as decimal (!) string "92"
+    client.message_callback_add("+/f1_nw/display/backlight",on_message_display_backlight)
+    client.message_callback_add("+/f1_nw/display/command/clear",on_message_command_clear)
+    client.message_callback_add("+/f1_nw/display/command/cursor",on_message_command_cursor)
+    client.message_callback_add("+/f1_nw/display/command/blink",on_message_command_blink)
+    client.message_callback_add("+/f1_nw/display/command/move_left",on_message_command_move_left)
+    client.message_callback_add("+/f1_nw/display/command/move_right",on_message_command_move_right)
+    client.message_callback_add("+/f1_nw/display/set/cursor",on_message_set_cursor) # column,row 0 to 15, 0 to 1
 
-  client.loop_start()
+    client.loop_start()
 
 
-  while True:
-    time.sleep(10.0)
+    while True:
+        time.sleep(10.0)
 
 if __name__=="__main__":
-   main()
+    main()
