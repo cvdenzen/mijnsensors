@@ -1,4 +1,4 @@
-package nl.vandenzen.pilightmqttosgi.util;
+package nl.vandenzen.iot.util;
 
 public class MutableBoolean {
     volatile boolean value;

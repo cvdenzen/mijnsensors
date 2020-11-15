@@ -7,5 +7,5 @@ fi
 cd /home/pi/gitrepos/mijnsensors/pilightMqttOsgi/src/main/resources
 
 git pull
-cp -a --update nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml /usr/share/apache-karaf/deploy
+cp -a --update nl/vandenzen.iot/pilightmqttosgi-features.xml /usr/share/apache-karaf/deploy
 # not needed: cp -a --update OSGI-INF/blueprint/blueprint.xml /usr/share/apache-karaf/deploy

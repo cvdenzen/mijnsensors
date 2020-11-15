@@ -1,4 +1,4 @@
-package nl.vandenzen.pilightmqttosgi.util;
+package nl.vandenzen.iot.util;
 
 public class MutableFloat {
     volatile float value;

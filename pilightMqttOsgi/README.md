@@ -3,14 +3,14 @@ This files describes the actions to take for the separate karaf instance, NOT fo
 
 # pilight, in a unix shell on iMac (jan 2020: deprecated, no more pilight, everything is Philips Hue)
 scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/lib/*.jar pi@rpi3:/usr/share/karaf/deploy
-scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml  pi@rpi3:/usr/share/karaf/deploy
+scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen.iot/pilightmqttosgi-features.xml  pi@rpi3:/usr/share/karaf/deploy
 :q
 
 # 20201113 deprecated, use standalone artemis server copy activemq.xml from lastpass to /usr/share/karaf/etc/activemq.xml
 # rpi2: chmod g+w /usr/share/apache-karaf/deploy
 # copy jar from imac to raspberry (rpi2=192.168.2.9 jan 2020)
 mvn clean install && scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@raspberrypi:/usr/share/karaf/deploy
-scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vandenzen/pilightmqttosgi/pilightmqttosgi.properties pi@rpi3:/usr/share/karaf/etc/
+scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vandenzen.iot/pilightmqttosgi.properties pi@rpi3:/usr/share/karaf/etc/
 # deprecated, needed if deploy is not writable by user pi: cp ~/gitrepos/mijnsensors/pilightMqttOsgi/ pi@rpi2:/usr/share/apache-karaf/deploy
 # On raspberry:
 #sudo -s -E -u openhab

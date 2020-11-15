@@ -1,4 +1,4 @@
-package nl.vandenzen.pilightmqttosgi;
+package nl.vandenzen.iot;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

@@ -1,4 +1,4 @@
-package nl.vandenzen.pilightmqttosgi.beans;
+package nl.vandenzen.iot.beans;
 
 
 import org.apache.camel.EndpointInject;

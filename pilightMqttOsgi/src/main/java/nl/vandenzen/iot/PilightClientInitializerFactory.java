@@ -1,4 +1,4 @@
-package nl.vandenzen.pilightmqttosgi;
+package nl.vandenzen.iot;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

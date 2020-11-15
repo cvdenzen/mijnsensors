@@ -13,7 +13,7 @@ camel v 3.5.0 oct 2020
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
         <dataFormats>
             <json id="jsonJsonOHRestItem" library="Gson"
-                  unmarshalTypeName="nl.vandenzen.pilightmqttosgi.json.JsonOHRestItem"/>
+                  unmarshalTypeName="nl.vandenzen.iot.json.JsonOHRestItem"/>
             <!-- unmarshal to List<Map> is supported by Jackson json -->
             <json id="jsonjackson" library="Jackson" useList="true"/>
         </dataFormats>
@@ -46,7 +46,7 @@ camel v 3.5.0 oct 2020
             <setBody>
                 <simple>Hello World from blueprint (Camel UPSPIco)</simple>
             </setBody>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <to uri="log:nl.vandenzen.iot?level=INFO"/>
         </route>
 
         <route id="convert_body_to_boolean" autoStartup="true" startupOrder="7">
@@ -374,7 +374,7 @@ camel v 3.5.0 oct 2020
                                 <setBody>
                                     <simple>het licht is uit</simple>
                                 </setBody>
-                                <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                                <to uri="log:nl.vandenzen.iot?level=INFO"/>
                                 <to uri="direct:achterlichtaan2020"/>
                                 <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
                                 <convertBodyTo type="java.lang.String"/>
@@ -407,9 +407,9 @@ camel v 3.5.0 oct 2020
             <from uri="paho:oh/all/LightsOnIntensityThreshold/state?connectionTimeout=180"/>
             <log message="paho:oh/all/LightsOnIntensityThreshod changed to ${body}"/>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <to uri="log:nl.vandenzen.iot?level=INFO"/>
             <convertBodyTo type="java.lang.Integer"/>
-            <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+            <to uri="log:nl.vandenzen.iot?level=INFO"/>
             <bean ref="LightsOnIntensityThreshold" method="setValue"/>
             <!-- Turn on lights? -->
             <to uri="direct:Enable_lights_on_by_daylight"/>
@@ -598,7 +598,7 @@ camel v 3.5.0 oct 2020
                     <setBody>
                         <simple>Licht gaat uit.</simple>
                     </setBody>
-                    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+                    <to uri="log:nl.vandenzen.iot?level=INFO"/>
                     <!-- disable automatic turning off the lights -->
                     <setBody>
                         <constant>false</constant>
@@ -866,40 +866,40 @@ camel v 3.5.0 oct 2020
 
     </camelContext>
     <!-- bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/ -->
-    <bean id="AutoOnEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
-    <bean id="AutoOffEnabled" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
-    <bean id="pir_gf_achterdeur17" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
-    <bean id="LightsOnIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableFloat">
+    <bean id="AutoOnEnabled" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="AutoOffEnabled" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="pir_gf_achterdeur17" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="LightsOnIntensityThreshold" class="nl.vandenzen.iot.util.MutableFloat">
         <property name="value" value="8"/>
     </bean>
-    <bean id="LightsEnableIntensityThreshold" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger">
+    <bean id="LightsEnableIntensityThreshold" class="nl.vandenzen.iot.util.MutableInteger">
         <property name="value" value="31"/>
     </bean>
-    <bean id="LichtIntensiteit_Woonkamer" class="nl.vandenzen.pilightmqttosgi.util.MutableFloat">
+    <bean id="LichtIntensiteit_Woonkamer" class="nl.vandenzen.iot.util.MutableFloat">
         <property name="value" value="50"/>
     </bean>
-    <bean id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" class="nl.vandenzen.pilightmqttosgi.util.MutableInteger"/>
-    <bean id="Light_GF_Huiskamer_Achter_Staandelamp" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
-    <bean id="GF_Passenger_minutes" class="nl.vandenzen.pilightmqttosgi.util.MutableLong">
+    <bean id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" class="nl.vandenzen.iot.util.MutableInteger"/>
+    <bean id="Light_GF_Huiskamer_Achter_Staandelamp" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="GF_Passenger_minutes" class="nl.vandenzen.iot.util.MutableLong">
         <property name="value" value="1"/>
     </bean>
 
 
-    <bean id="bg_w_tv_w" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
-    <bean id="bg_x_imac2" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
-    <bean id="bg_x_imac3" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="bg_w_tv_w" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="bg_x_imac2" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="bg_x_imac3" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of tv and imac is stable -->
-    <bean id="Stable" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
+    <bean id="Stable" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of hue is stable, polling time is 10 seconds! -->
-    <bean id="HueStable" class="nl.vandenzen.pilightmqttosgi.util.MutableBoolean"/>
-    <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
+    <bean id="HueStable" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.iot.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->
         <argument value="direct:achterlichtuit2020"/>
     </bean>
-    <bean id="DelaySetStableTrue" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
+    <bean id="DelaySetStableTrue" class="nl.vandenzen.iot.beans.ExtendableDelay">
         <argument value="direct:set_stable_true"/>
     </bean>
-    <bean id="DelaySetHueStableTrue" class="nl.vandenzen.pilightmqttosgi.beans.ExtendableDelay">
+    <bean id="DelaySetHueStableTrue" class="nl.vandenzen.iot.beans.ExtendableDelay">
         <argument value="direct:set_HueStable_true"/>
     </bean>
     <!-- For memory size reporting -->

@@ -1,4 +1,4 @@
-package nl.vandenzen.pilightmqttosgi.json;
+package nl.vandenzen.iot.json;
 
 public class JsonOptionResponse {
     // general option response

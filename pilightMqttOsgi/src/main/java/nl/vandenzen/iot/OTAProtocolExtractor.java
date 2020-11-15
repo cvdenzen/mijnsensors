@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package nl.vandenzen.pilightmqttosgi;
+package nl.vandenzen.iot;
 
-import nl.vandenzen.pilightmqttosgi.json.JsonReceiverResponse;
+import nl.vandenzen.iot.json.JsonReceiverResponse;
 import org.apache.camel.Exchange;
 
 /**
