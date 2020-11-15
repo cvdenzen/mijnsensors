@@ -25,6 +25,7 @@ camel v 3.5.0 oct 2020
 		    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
         </route -->
 
+
         <!-- When started, not stable (we don't know whether tv is on or off etc.) -->
         <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimer?repeatCount=1"/>
@@ -904,6 +905,11 @@ camel v 3.5.0 oct 2020
     <!-- For memory size reporting -->
     <bean id="Runtime" class="java.lang.Runtime"
           factory-method="getRuntime"/>
+
+
+    <bean id="quartz" class="org.apache.camel.component.quartz.QuartzComponent">
+        <property name="startDelayedSeconds" value="20"/>
+    </bean>
 
 
 </blueprint>

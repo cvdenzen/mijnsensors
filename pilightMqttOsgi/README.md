@@ -6,7 +6,7 @@ scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/lib/*.jar pi@rpi3
 scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen/pilightmqttosgi/pilightmqttosgi-features.xml  pi@rpi3:/usr/share/karaf/deploy
 :q
 
-copy activemq.xml from lastpass to /usr/share/karaf/etc/activemq.xml
+# 20201113 deprecated, use standalone artemis server copy activemq.xml from lastpass to /usr/share/karaf/etc/activemq.xml
 # rpi2: chmod g+w /usr/share/apache-karaf/deploy
 # copy jar from imac to raspberry (rpi2=192.168.2.9 jan 2020)
 mvn clean install && scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@raspberrypi:/usr/share/karaf/deploy
@@ -97,6 +97,9 @@ sudo adduser karaf i2c
 sudo adduser karaf gpio
 sudo adduser karaf spi
 
+sudo adduser artemis
+sudo adduser pi artemis
+
 
 chmod g+w /usr/share/karaf/etc
 chmod g+w /usr/share/karaf/deploy
@@ -176,12 +179,7 @@ feature:install camel
 repo-add cellar
 feature:install cellar
 
-- karaf, install camel and camel-blueprint, activemq 5.16.0 (july 2020)
-- In karaf (for broker install):
-repo-add activemq <version>
-feature:install activemq-camel
-feature:install activemq-broker
-
+- karaf, install camel and camel-blueprint
 Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy)
 feature:install pilightmqttosgi
 #

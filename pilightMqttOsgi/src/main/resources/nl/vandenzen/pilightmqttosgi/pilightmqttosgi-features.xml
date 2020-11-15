@@ -14,15 +14,9 @@
         <feaAAAture>camel-jsonpath</feaAAAture>
         <feature>camel-jackson</feature>
         <feature>camel-jms</feature>
-        <feature>camel-activemq</feature>
-        <feature>activemq-broker</feature>
         <feature>service-wrapper</feature>
         <feature>camel-groovy</feature>
         <feature>camel-exec</feature>
-
-        <!-- from repo-add activemq -->
-        <feature>activemq-camel</feature>
-        <feature>activemq-broker</feature>
     </feature>
     <feature name="pilightmqttosgi" version="1.0.0-SNAPSHOT">
         <!--bundle>pilightMqttOsgi OSGi Bundle</bundle -->

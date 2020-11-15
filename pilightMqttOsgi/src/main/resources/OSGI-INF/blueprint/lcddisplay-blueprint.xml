@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
+camel v 3.5.0 oct 2020
+
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="lcddisplay">
+
+
+        <route id="Init" autoStartup="true" startupOrder="1">
+            <from uri="timer:inittimer?repeatCount=1"/>
+            <bean ref="pigpio" method="connect(ip6-localhost)"/>
+        </route>
+
+        <route id="TestBacklight" autoStartup="true" startupOrder="100">
+
+            <from uri="quartz://groep/timerlcddisplay1?cron=0/10+*+*+*+*+?"/>
+            <setBody>
+                <constant>false</constant>
+            </setBody>
+            <!-- pigpio.MODE_PI_OUTPUT = 1 -->
+            <bean ref="pigpio" method="setMode(12,1)"/>
+            <bean ref="pigpio" method="write(12,false)"/>
+        </route>
+
+    </camelContext>
+
+    <bean id="pigpio" class="uk.pigpioj.PigpioSocket">
+    </bean>
+    <bean id="quartz" class="org.apache.camel.component.quartz.QuartzComponent">
+        <property name="startDelayedSeconds" value="10"/>
+    </bean>
+
+
+</blueprint>
