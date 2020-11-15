@@ -22,7 +22,7 @@ camel v 3.5.0 oct 2020
         <!-- route id="DefineCache" autoStartup="true" startupOrder="5">
 		<from uri="ehcache://oh?configurationUri=file:${karaf.home}/etc/ehcache.xml"/>
 		<from uri="ehcache://oh?configurationUri=classpath:etc/ehcache.xml"/>
-		    <to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/>
+		    <to uri="log:nl.vandenzen.iot?level=INFO"/>
         </route -->
 
 
@@ -334,7 +334,7 @@ camel v 3.5.0 oct 2020
 
         <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
             <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state?connectionTimeout=180"/>
-            <!-- to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <log message="LichtIntensiteit_Woonkamer_updated: body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Float"/>
@@ -760,7 +760,7 @@ camel v 3.5.0 oct 2020
         <!-- Display temp hum pressure on lcd display -->
         <route id="displayF1_nw_time">
             <from uri="quartz://groep/timerDisplayF1_nw_time?cron=15+*+*+*+*+?"/>
-            <!-- to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <setHeader name="dateTimeString">
                 <groovy>new java.text.SimpleDateFormat('dd-MM-yyyy HH:mm:ss').format(request.headers.fireTime)</groovy>
             </setHeader>
@@ -786,7 +786,7 @@ camel v 3.5.0 oct 2020
         <!-- Display temp hum pressure on lcd display -->
         <route id="displayF1_nw_temperatuur">
             <from uri="paho:oh/all/f1_nw_temperatuur/state?connectionTimeout=180"/>
-            <!-- to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <delay>
                 <constant>1000</constant>
             </delay>
@@ -829,7 +829,7 @@ camel v 3.5.0 oct 2020
         <!-- Display temp hum pressure on lcd display -->
         <route id="displayF1_nw_pressure">
             <from uri="paho:oh/all/f1_nw_pressure/state?connectionTimeout=180"/>
-            <!-- to uri="log:nl.vandenzen.pilightmqttosgi?level=INFO"/ -->
+            <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <delay>
                 <constant>5500</constant>
             </delay>
