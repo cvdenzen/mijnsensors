@@ -7,12 +7,12 @@
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="bme280">
 
 
-        <route id="Init" autoStartup="false" startupOrder="1">
+        <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimer?repeatCount=1"/>
             <bean ref="pigpioBme280" method="open()"/>
         </route>
 
-        <route id="Bme280" autoStartup="false" startupOrder="100">
+        <route id="Bme280" autoStartup="true" startupOrder="100">
 
             <from uri="quartzBme280://groep/timerBme280?cron=0/10+*+*+*+*+?"/>
             <setBody>
@@ -50,8 +50,13 @@
                 <groovy>headers.p2.toString()</groovy>
             </setBody>
             <log message="pressure is ${body}"/>
-            <to uri="paho:sensors/f1_nw/all/pressure?connectionTimeout=180"/>
+            <to uri="paho:f1_nw/all/pressure?connectionTimeout=180"/>
 
+        </route>
+
+        <route id="debug1" startupOrder="1000" autoStartup="false">
+            <from uri="paho:+/f1_nw/temperature?connectionTimeout=180"/>
+            <log message="f1_nw/temperature=${body}"/>
         </route>
 
     </camelContext>

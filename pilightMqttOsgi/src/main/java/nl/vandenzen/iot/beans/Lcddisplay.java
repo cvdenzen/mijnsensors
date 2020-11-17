@@ -2,6 +2,9 @@ package nl.vandenzen.iot.beans;
 
 import uk.pigpioj.PigpioSocket;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Lcddisplay {
     /*
 #!/usr/bin/python
@@ -119,8 +122,9 @@ import Adafruit_GPIO.PWM as PWM
     //   """Class to represent and interact with an HD44780 character LCD display."""
 
 
-    Lcddisplay(String rs, short en, short d4, short d5, short d6, short d7, short cols, short lines, short backlight) {
-        Lcddisplay(Short.decode(rs))
+    public Lcddisplay(String rs, String en, String d4, String d5, String d6, String d7, String cols, String lines, String backlight) {
+        this(Short.decode(rs),Short.decode(en),Short.decode(d4),Short.decode(d5),
+                Short.decode(d6),Short.decode(d7),Short.decode(cols),Short.decode(lines),Short.decode(backlight));
     }
     Lcddisplay(short rs, short en, short d4, short d5, short d6, short d7, short cols, short lines, short backlight) {
 
@@ -202,26 +206,39 @@ import Adafruit_GPIO.PWM as PWM
         this.clear();
     }
 
-    void home() {
+    public void home() {
 //        """Move the cursor back to its home (first line and first column)."""
         this.write8(LCD_RETURNHOME); //#set cursor position to zero
         this.delay_microseconds(3000);  //#this command takes a long time !
     }
 
-    void clear() {
+    public void clear() {
 //        """Clear the LCD."""
         this.write8(LCD_CLEARDISPLAY);  //#command to clear display
         this.delay_microseconds(3000); //#3000 microsecond sleep, clearing the display takes a long time
     }
 
-    void set_cursor(short col, short row) {
+    private void set_cursor(short col, short row) {
 //        """Move the cursor to an explicit column and row position."""
 //            #Clamp row to the last row of the display.
+        log.log(Level.INFO,"set_cursor, col={}, line={}",new Short[]{col,row});
         if (row > this.lines) {
             row = (short) (this.lines - 1);
 //            #Set location.
             this.write8((short)(LCD_SETDDRAMADDR | (col + LCD_ROW_OFFSETS[row])));
         }
+    }
+
+    /**
+     * Set cursor position. Warning: not guarantee for sync with other
+     * threads that may print messages on the screen and leave you
+     * at another position on the screen than set by your call to set_cursor.
+     * @param pos col,line
+     */
+    public synchronized void set_cursor(String pos) {
+        log.log(Level.INFO,"set_cursor, pos={}"+pos);
+        String[] s1=pos.split(",",2);
+        set_cursor(Short.decode(s1[0]),Short.decode(s1[1]));
     }
 
     void enable_display(boolean enable) {
@@ -292,7 +309,7 @@ import Adafruit_GPIO.PWM as PWM
         write8((short)(LCD_ENTRYMODESET | this.displaymode));
     }
 
-    void message(String text) {
+    public synchronized void message(String text) {
 //            """Write text to display.  Note that text can include newlines."""
         short line = 0;
 //            #
@@ -327,13 +344,27 @@ import Adafruit_GPIO.PWM as PWM
             }
         }
     }
+    public synchronized void messageAt(String message, short col, short line) {
+        set_cursor(col,line);
+        message(message);
+    }
 
     /**
-     * Set backlight. Values might be from 0..255 ?
+     *
+     * @param csvMessage: col,line,message
      */
-    void set_backlight(short pin) {
+    public synchronized void messageAt(String csvMessage) {
+        String[] s1=csvMessage.split(",",3);
+        messageAt(s1[2],Short.decode(s1[0]),Short.decode(s1[1]));
+    }
+
+    /**
+     * @param dutyCycle 0..255 (default, can be changed by setRange)
+     * Set backlight. dutyCycle might be from 0..255 ?
+     */
+    void set_backlight(short dutyCycle) {
 //        """
-        gpio.setPWMDutyCycle(pin, backlight);
+        gpio.setPWMDutyCycle(backlight,dutyCycle);
     }
 
     void write8(short value, boolean charMode) {
@@ -421,6 +452,8 @@ import Adafruit_GPIO.PWM as PWM
 //            very
 //
 //    short(few microseconds).
+        long millis=microseconds/1_000;
+        microseconds=microseconds%1_000; // nanos is max 999999
         try {
             Thread.sleep(0L, 1000 * microseconds);
         } catch (InterruptedException ex) {
@@ -446,4 +479,5 @@ import Adafruit_GPIO.PWM as PWM
         this.delay_microseconds(1);
         //commands need>37 us to settle
     }
+    private static Logger log= Logger.getLogger(Lcddisplay.class.getSimpleName());
 }
