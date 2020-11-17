@@ -1,15 +1,25 @@
 package nl.vandenzen.iot.beans;
 
-package io.github.s5uishida.iot.device.bme280.driver;
+/*
+Carl van Denzen, november 2020.
+Some adjustions made for:
+- pigpio
+- Apache Camel
+*/
+// Thanks to:
+//package io.github.s5uishida.iot.device.bme280.driver;
+
+//import org.slf4j.Logger;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+
+import uk.pigpioj.PigpioSocket;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import uk.pigpioj.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * Refer to http://static.cactus.io/docs/sensors/barometric/bme280/BST-BME280_DS001-10.pdf
@@ -18,12 +28,9 @@ import uk.pigpioj.*;
  *
  */
 public class BME280Driver {
-    private static final Logger LOG = LoggerFactory.getLogger(BME280Driver.class);
+    private static final Logger LOG = Logger.getLogger(BME280Driver.class.getName());
 
-    public static final byte I2C_ADDRESS_76 = 0x76;
-    public static final byte I2C_ADDRESS_77 = 0x77;
-
-    private static final byte DIG_T1_REG = (byte) 0x88;
+        private static final byte DIG_T1_REG = (byte) 0x88;
     private static final byte DIG_T2_REG = (byte) 0x8a;
     private static final byte DIG_T3_REG = (byte) 0x8c;
     private static final byte DIG_P1_REG = (byte) 0x8e;
@@ -102,16 +109,16 @@ public class BME280Driver {
     private static final int MEASUREMENT_TIME_MILLIS = 10;
 
     private final byte i2cAddress;
-    private final I2CBus i2cBus;
-    private final I2CDevice i2cDevice;
     private final String i2cName;
     private final String logPrefix;
 
     private final AtomicInteger useCount = new AtomicInteger(0);
 
     private static final ConcurrentHashMap<String, BME280Driver> map = new ConcurrentHashMap<String, BME280Driver>();
+    private final int i2cBusNumber;
+    private PigpioSocket i2cDevice;
+    private int i2cHandle;
 
-    @
     synchronized public static BME280Driver getInstance(int i2cBusNumber, byte i2cAddress) {
         String key = i2cBusNumber + ":" + String.format("%x", i2cAddress);
         BME280Driver bme280 = map.get(key);
@@ -122,57 +129,73 @@ public class BME280Driver {
         return bme280;
     }
 
+    /**
+     * Overload method because Blueprint attribute type for factory-method doesn't work
+     * @param i2cBusNumber
+     * @param i2cAddress
+     * @return
+     */
+    synchronized public static BME280Driver getInstance(String i2cBusNumber, String i2cAddress) {
+        return getInstance(Integer.parseInt(i2cBusNumber),Byte.decode(i2cAddress));
+    }
+
     private BME280Driver(int i2cBusNumber, byte i2cAddress) {
-        if (i2cBusNumber != I2CBus.BUS_0 && i2cBusNumber != I2CBus.BUS_1) {
+        if (i2cBusNumber == 0 || i2cBusNumber == 1) {
+            this.i2cBusNumber = i2cBusNumber;
+        } else {
             throw new IllegalArgumentException("The set " + i2cBusNumber + " is not " +
-                    I2CBus.BUS_0 + " or " + I2CBus.BUS_1 + ".");
+                    0 + " or " + 1 + ".");
         }
-        if (i2cAddress == I2C_ADDRESS_76 || i2cAddress == I2C_ADDRESS_77) {
+        if (i2cAddress == 0x76 || i2cAddress == 0x77) {
             this.i2cAddress = i2cAddress;
         } else {
             throw new IllegalArgumentException("The set " + String.format("%x", i2cAddress) + " is not " +
-                    String.format("%x", I2C_ADDRESS_76) + " or " + String.format("%x", I2C_ADDRESS_77) + ".");
+                    String.format("%x", 0x76) + " or " + String.format("%x", 0x77) + ".");
         }
-
         i2cName = "I2C_" + i2cBusNumber + "_" + String.format("%x", i2cAddress);
         logPrefix = "[" + i2cName + "] ";
-
         try {
-            this.i2cBus = I2CFactory.getInstance(i2cBusNumber);
-            this.i2cDevice = i2cBus.getDevice(i2cAddress);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
+            i2cDevice = new PigpioSocket();
+            i2cDevice.connect("ip6-localhost");
+        } catch (InterruptedException ex) {
+            LOG.log(Level.SEVERE,logPrefix + ex);
         }
+        LOG.setLevel(Level.FINEST);
+        LOG.log(Level.SEVERE,logPrefix + "LOG level set to "+LOG.getLevel().toString());
+
+        LOG.log(Level.FINE,logPrefix + "Exiting constructor");
+
     }
 
     synchronized public void open() throws IOException {
         try {
-            LOG.debug(logPrefix + "before - useCount:{}", useCount.get());
+            LOG.log(Level.FINE,logPrefix + "before - useCount:{}", useCount.get());
             if (useCount.compareAndSet(0, 1)) {
+                i2cHandle = i2cDevice.i2cOpen(i2cBusNumber, i2cAddress, 0);
                 readChipId();
                 readSensorCoefficients();
                 printParameters();
                 LOG.info(logPrefix + "opened");
             }
         } finally {
-            LOG.debug(logPrefix + "after - useCount:{}", useCount.get());
+            LOG.log(Level.FINE,logPrefix + "after - useCount:{}", useCount.get());
         }
     }
 
     synchronized public void close() throws IOException {
         try {
-            LOG.debug(logPrefix + "before - useCount:{}", useCount.get());
+            LOG.log(Level.FINE,logPrefix + "before - useCount:{}", useCount.get());
             if (useCount.compareAndSet(1, 0)) {
-                i2cBus.close();
-                LOG.info(logPrefix + "closed");
+                i2cDevice.close();
+                LOG.log(Level.FINE,logPrefix + "closed");
             }
         } finally {
-            LOG.debug(logPrefix + "after - useCount:{}", useCount.get());
+            LOG.log(Level.FINE,logPrefix + "after - useCount:{}", useCount.get());
         }
     }
 
     public int getI2cBusNumber() {
-        return i2cBus.getBusNumber();
+        return i2cBusNumber;
     }
 
     public byte getI2cAddress() {
@@ -188,44 +211,50 @@ public class BME280Driver {
     }
 
     private void dump(byte register, byte data, String tag) {
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isLoggable(Level.FINEST)) {
             StringBuffer sb = new StringBuffer();
             sb.append(String.format("%02x ", register));
             sb.append(String.format("%02x", data));
-            LOG.trace(logPrefix + "{}{}", tag, sb.toString());
+            LOG.log(Level.FINEST,
+                    logPrefix + "{}{}",
+                    new String[]{tag, sb.toString()});
         }
     }
 
     private void dump(byte register, byte[] data, String tag) {
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isLoggable(Level.FINEST)) {
             StringBuffer sb = new StringBuffer();
             sb.append(String.format("%02x ", register));
             for (byte data1 : data) {
                 sb.append(String.format("%02x ", data1));
             }
-            LOG.trace(logPrefix + "{}{}", tag, sb.toString().trim());
+            LOG.log(Level.FINEST,
+                    logPrefix + "{}{}",
+                    new String[]{tag, sb.toString().trim()});
         }
     }
 
     private void write(byte register, byte out) throws IOException {
         try {
             dump(register, out, "BME280 sensor command: write: ");
-            i2cDevice.write(register, out);
-        } catch (IOException e) {
+            //i2cDevice.write(register, out);
+            i2cDevice.i2cWriteByteData(i2cHandle,(int)register & 0xff, out);
+        } catch (Exception e) {
             String message = logPrefix + "failed to write.";
-            LOG.warn(message);
+            LOG.log(Level.WARNING,message);
             throw new IOException(message, e);
         }
     }
 
     private byte read(byte register) throws IOException {
         try {
-            byte in = (byte) i2cDevice.read(register);
+//            byte in = (byte) i2cDevice.read(register);
+            byte in = (byte) i2cDevice.i2cReadByteData(i2cHandle,(int)register&0xff);
             dump(register, in, "BME280 sensor command: read:  ");
             return in;
-        } catch (IOException e) {
+        } catch (Exception e) {
             String message = logPrefix + "failed to read.";
-            LOG.warn(message);
+            LOG.log(Level.WARNING,message);
             throw new IOException(message, e);
         }
     }
@@ -233,12 +262,14 @@ public class BME280Driver {
     private byte[] read(byte register, int length) throws IOException {
         try {
             byte[] in = new byte[length];
-            i2cDevice.read(register, in, 0, length);
+            //i2cDevice.read(register, in, 0, length);
+            //i2cDevice.i2cReadBlockData(i2cHandle,(int)register&0xff, in);
+            int r1=i2cDevice.i2cReadI2CBlockData(i2cHandle, (int)register&0xff, in, length);
             dump(register, in, "BME280 sensor command: read:  ");
             return in;
-        } catch (IOException e) {
+        } catch (Exception e) {
             String message = logPrefix + "failed to read.";
-            LOG.warn(message);
+            LOG.log(Level.WARNING,message);
             throw new IOException(message, e);
         }
     }
@@ -247,7 +278,7 @@ public class BME280Driver {
         byte chipId = read(CHIP_ID_REG);
         if (chipId != (byte) 0x60) {
             String message = logPrefix + "Chip ID[" + String.format("%x", chipId) + "] is not 0x60.";
-            LOG.warn(message);
+            LOG.log(Level.WARNING,message);
             throw new IllegalStateException(message);
         }
     }
@@ -314,40 +345,49 @@ public class BME280Driver {
     }
 
     private void printParameters() {
-        LOG.debug(logPrefix + "dig_T1:{} u16", dig_T1);
-        LOG.debug(logPrefix + "dig_T2:{} s16", dig_T2);
-        LOG.debug(logPrefix + "dig_T3:{} s16", dig_T3);
+        LOG.log(Level.FINE,logPrefix + "dig_T1:{} u16", dig_T1);
+        LOG.log(Level.FINE,logPrefix + "dig_T2:{} s16", dig_T2);
+        LOG.log(Level.FINE,logPrefix + "dig_T3:{} s16", dig_T3);
 
-        LOG.debug(logPrefix + "dig_P1:{} u16", dig_P1);
-        LOG.debug(logPrefix + "dig_P2:{} s16", dig_P2);
-        LOG.debug(logPrefix + "dig_P3:{} s16", dig_P3);
-        LOG.debug(logPrefix + "dig_P4:{} s16", dig_P4);
-        LOG.debug(logPrefix + "dig_P5:{} s16", dig_P5);
-        LOG.debug(logPrefix + "dig_P6:{} s16", dig_P6);
-        LOG.debug(logPrefix + "dig_P7:{} s16", dig_P7);
-        LOG.debug(logPrefix + "dig_P8:{} s16", dig_P8);
-        LOG.debug(logPrefix + "dig_P9:{} s16", dig_P9);
+        LOG.log(Level.FINE,logPrefix + "dig_P1:{} u16", dig_P1);
+        LOG.log(Level.FINE,logPrefix + "dig_P2:{} s16", dig_P2);
+        LOG.log(Level.FINE,logPrefix + "dig_P3:{} s16", dig_P3);
+        LOG.log(Level.FINE,logPrefix + "dig_P4:{} s16", dig_P4);
+        LOG.log(Level.FINE,logPrefix + "dig_P5:{} s16", dig_P5);
+        LOG.log(Level.FINE,logPrefix + "dig_P6:{} s16", dig_P6);
+        LOG.log(Level.FINE,logPrefix + "dig_P7:{} s16", dig_P7);
+        LOG.log(Level.FINE,logPrefix + "dig_P8:{} s16", dig_P8);
+        LOG.log(Level.FINE,logPrefix + "dig_P9:{} s16", dig_P9);
 
-        LOG.debug(logPrefix + "dig_H1:{} u8", dig_H1);
-        LOG.debug(logPrefix + "dig_H2:{} s16", dig_H2);
-        LOG.debug(logPrefix + "dig_H3:{} u8", dig_H3);
-        LOG.debug(logPrefix + "dig_H4:{} s16", dig_H4);
-        LOG.debug(logPrefix + "dig_H5:{} s16", dig_H5);
-        LOG.debug(logPrefix + "dig_H6:{} s8", dig_H6);
+        LOG.log(Level.FINE,logPrefix + "dig_H1:{} u8", dig_H1);
+        LOG.log(Level.FINE,logPrefix + "dig_H2:{} s16", dig_H2);
+        LOG.log(Level.FINE,logPrefix + "dig_H3:{} u8", dig_H3);
+        LOG.log(Level.FINE,logPrefix + "dig_H4:{} s16", dig_H4);
+        LOG.log(Level.FINE,logPrefix + "dig_H5:{} s16", dig_H5);
+        LOG.log(Level.FINE,logPrefix + "dig_H6:{} s8", dig_H6);
     }
 
     public float[] getSensorValues() throws IOException {
+        LOG.log(Level.FINE,logPrefix + "getSensorValues, p002");
         write(CONTROL_HUMIDITY_REG, CONTROL_HUMIDITY_OSRS_H_1);
+        LOG.log(Level.FINE,logPrefix + "getSensorValues, p004");
         write(CONTROL_MEASUREMENT_REG,
                 (byte) (CONTROL_MEASUREMENT_OSRS_T_1 | CONTROL_MEASUREMENT_OSRS_P_1 | CONTROL_MEASUREMENT_FORCED_MODE));
+        LOG.log(Level.FINE,logPrefix + "getSensorValues, p006");
         write(CONFIG_REG, CONFIG_T_SB_0_5);
 
+        LOG.log(Level.FINE,logPrefix + "getSensorValues, p008");
         try {
             Thread.sleep(MEASUREMENT_TIME_MILLIS);
         } catch (InterruptedException e) {
         }
 
         byte[] data = read(PRESSURE_DATA_REG, SENSOR_DATA_LENGTH);
+        LOG.log(Level.FINE,logPrefix + "getSensorValues, p010");
+        for (int i=0;i<data.length;i++) {
+            LOG.log(Level.FINE,logPrefix + "getSensorValues, data["+i+"]="+data[i]);
+        }
+        LOG.log(Level.FINE,logPrefix + "getSensorValues, p010");
 
         int adc_P = (((int) (data[0] & 0xff) << 16) + ((int) (data[1] & 0xff) << 8) + ((int) (data[2] & 0xff))) >> 4;
         int adc_T = (((int) (data[3] & 0xff) << 16) + ((int) (data[4] & 0xff) << 8) + ((int) (data[5] & 0xff))) >> 4;
@@ -366,6 +406,7 @@ public class BME280Driver {
         varP2 += (((long) dig_P4) << 35);
         varP1 = ((varP1 * varP1 * (long) dig_P3) >> 8) + ((varP1 * (long) dig_P2) << 12);
         varP1 = (((((long) 1) << 47) + varP1)) * ((long) dig_P1) >> 33;
+        LOG.log(Level.FINE,logPrefix + "getSensorValues, p020");
 
         float pressure;
         if (varP1 == 0) {
@@ -377,6 +418,7 @@ public class BME280Driver {
             varP2 = (((long) dig_P8) * p) >> 19;
             pressure = (((p + varP1 + varP2) >> 8) + (((long) dig_P7) << 4)) / 256F / 100F;
         }
+        LOG.log(Level.FINE,logPrefix + "getSensorValues, p030");
 
         // Humidity
         int v_x1_u32r = t_fine - 76800;
@@ -402,7 +444,7 @@ public class BME280Driver {
     public static void main(String[] args) throws IOException {
         BME280Driver bme280 = null;
         try {
-            bme280 = BME280Driver.getInstance(I2CBus.BUS_1, BME280Driver.I2C_ADDRESS_76);
+            bme280 = BME280Driver.getInstance(/*bus*/1, /*BME280Driver.I2C_ADDRESS_*/(byte)0x76);
             bme280.open();
 
             while (true) {
@@ -414,9 +456,9 @@ public class BME280Driver {
                 Thread.sleep(10000);
             }
         } catch (InterruptedException e) {
-            LOG.warn("caught - {}", e.toString());
+            LOG.log(Level.WARNING,"caught - {}", e.toString());
         } catch (IOException e) {
-            LOG.warn("caught - {}", e.toString());
+            LOG.log(Level.WARNING,"caught - {}", e.toString());
         } finally {
             if (bme280 != null) {
                 bme280.close();

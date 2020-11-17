@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="bme280">
+
+
+        <route id="Init" autoStartup="false" startupOrder="1">
+            <from uri="timer:inittimer?repeatCount=1"/>
+            <bean ref="pigpioBme280" method="open()"/>
+        </route>
+
+        <route id="Bme280" autoStartup="false" startupOrder="100">
+
+            <from uri="quartzBme280://groep/timerBme280?cron=0/10+*+*+*+*+?"/>
+            <setBody>
+                <constant>false</constant>
+            </setBody>
+            <!-- pigpioBme280.MODE_PI_OUTPUT = 1 -->
+            <bean ref="pigpioBme280" method="getSensorValues()"/>
+            <!-- Now we have a float[3] array -->
+            <!-- temp -->
+            <setHeader name="p0">
+                <groovy>request.body[0]</groovy>
+            </setHeader>
+            <!-- hum -->
+            <setHeader name="p1">
+                <groovy>request.body[1]</groovy>
+            </setHeader>
+            <!-- pressure -->
+            <setHeader name="p2">
+                <groovy>request.body[2]</groovy>
+            </setHeader>
+
+            <!-- bean ref="pigpioBme280" method="write(12,true)"/ -->
+
+            <setBody>
+                <groovy>headers.p0.toString()</groovy>
+            </setBody>
+            <log message="temp is ${body}"/>
+            <to uri="paho:f1_nw/all/temperature?connectionTimeout=180"/>
+            <setBody>
+                <groovy>headers.p1.toString()</groovy>
+            </setBody>
+            <log message="hum is ${body}"/>
+            <to uri="paho:f1_nw/all/humidity?connectionTimeout=180"/>
+            <setBody>
+                <groovy>headers.p2.toString()</groovy>
+            </setBody>
+            <log message="pressure is ${body}"/>
+            <to uri="paho:sensors/f1_nw/all/pressure?connectionTimeout=180"/>
+
+        </route>
+
+    </camelContext>
+
+    <!-- <bean id="pigpioBme280" class="uk.pigpioj.PigpioSocket"> </bean> -->
+    <bean id="pigpioBme280" class="nl.vandenzen.iot.beans.BME280Driver"
+          factory-method="getInstance">
+        <argument value="1"/>
+        <argument value="0x76"/>
+    </bean>
+    <bean id="quartzBme280" class="org.apache.camel.component.quartz.QuartzComponent">
+        <property name="startDelayedSeconds" value="5"/>
+    </bean>
+
+
+</blueprint>

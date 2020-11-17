@@ -16,24 +16,79 @@ camel v 3.5.0 oct 2020
         <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimer?repeatCount=1"/>
             <bean ref="pigpio" method="connect(ip6-localhost)"/>
+            <bean ref="pigpio" method="setPWMFrequency(12,400)"/>
         </route>
 
         <route id="TestBacklight" autoStartup="true" startupOrder="100">
 
-            <from uri="quartz://groep/timerlcddisplay1?cron=0/10+*+*+*+*+?"/>
+            <from uri="quartzlcd://groep/timerlcddisplay1?cron=0/10+*+*+*+*+?"/>
             <setBody>
                 <constant>false</constant>
             </setBody>
             <!-- pigpio.MODE_PI_OUTPUT = 1 -->
             <bean ref="pigpio" method="setMode(12,1)"/>
-            <bean ref="pigpio" method="write(12,false)"/>
+            <!-- bean ref="pigpio" method="write(12,false)"/ -->
+
+            <bean ref="pigpio" method="setPWMFrequency(12,400)"/>
+            <bean ref="pigpio" method="getPWMRealRange(12)"/>
+            <log message="${body}"/>
+            <bean ref="pigpio" method="setPWMDutyCycle(12,10)"/>
+        </route>
+
+        <route id="setBacklight" autoStartup="true" startupOrder="200">
+            <from uri="paho:+/f1_nw/display/backlight"/>
+            <!-- values from 0 to 255, BCM pin 12 -->
+            <bean ref="pigpio" method="setPWMDutyCycle(12,${body})"/>
+        </route>
+
+        <route id="displayMessage" autoStartup="true" startupOrder="300">
+            <from uri="paho:+/f1_nw/display/message/message"/>
+            <to uri="bean:lcdDisplay?method=message"/>
         </route>
 
     </camelContext>
 
+    <!-- for testing purpose? -->
     <bean id="pigpio" class="uk.pigpioj.PigpioSocket">
     </bean>
-    <bean id="quartz" class="org.apache.camel.component.quartz.QuartzComponent">
+    <!--
+
+lcd_rs        = 20  # Note this might need to be changed to 21 for older revision Pi's.
+lcd_en        = 16
+lcd_d4        = 6
+lcd_d5        = 13
+lcd_d6        = 19
+lcd_d7        = 26
+lcd_backlight = 12
+
+# Define LCD column and row size for 16x2 LCD.
+lcd_columns = 16
+lcd_rows    = 2
+    -->
+    <bean id="lcdDisplay" class="nl.vandenzen.iot.beans.Lcddisplay">
+        <!-- Lcddisplay(short rs, short en, short d4, short d5, short d6, short d7, short cols, short lines, short backlight)  -->
+        <!--
+        <property name="rs" value="20"/>
+        <property name="en" value="16"/>
+        <property name="d4" value="6"/>
+        <property name="d5" value="13"/>
+        <property name="d6" value="19"/>
+        <property name="d7" value="26"/>
+        <property name="cols" value="16"/>
+        <property name="lines" value="2"/>
+        <property name="backlight" value="12"/>
+       -->
+        <argument value="20" type="java.lang.Short"/>
+        <argument value="16"/>
+        <argument value="6"/>
+        <argument value="13"/>
+        <argument value="19"/>
+        <argument value="26"/>
+        <argument value="16"/>
+        <argument value="2"/>
+        <argument value="12"/>
+    </bean>
+    <bean id="quartzlcd" class="org.apache.camel.component.quartz.QuartzComponent">
         <property name="startDelayedSeconds" value="10"/>
     </bean>
 
