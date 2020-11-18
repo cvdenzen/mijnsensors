@@ -807,6 +807,9 @@ camel v 3.5.0 oct 2020
                 <simple>${header.temperatuur}</simple>
             </setBody>
             <to uri="paho:camel/f1_nw/display/message/message"/>
+            <delay>
+                <constant>563</constant>
+            </delay>
             <!-- 4 chars for temp (21.3), in column 4 a degree char, dec 223, col 5 letter C -->
             <setBody>
                 <constant>4,1</constant>
@@ -818,6 +821,9 @@ camel v 3.5.0 oct 2020
             </setBody>
             <convertBodyTo type="java.lang.String"/>
             <to uri="paho:camel/f1_nw/display/message/char"/>
+            <delay>
+                <constant>453</constant>
+            </delay>
             <setBody>
                 <constant>C </constant>
             </setBody>

@@ -130,7 +130,8 @@ public class BME280Driver {
     }
 
     /**
-     * Overload method because Blueprint attribute type for factory-method doesn't work
+     * Overload method because Blueprint attribute type for factory-method doesn't work, but maybe because this
+     * constructor was not public
      * @param i2cBusNumber
      * @param i2cAddress
      * @return

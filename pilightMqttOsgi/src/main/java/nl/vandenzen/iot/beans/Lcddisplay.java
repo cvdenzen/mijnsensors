@@ -221,12 +221,13 @@ import Adafruit_GPIO.PWM as PWM
     private void set_cursor(short col, short row) {
 //        """Move the cursor to an explicit column and row position."""
 //            #Clamp row to the last row of the display.
-        log.log(Level.INFO,"set_cursor, col={}, line={}",new Short[]{col,row});
+        log.log(Level.INFO,"set_cursor, col="+col+", line="+row);
         if (row > this.lines) {
             row = (short) (this.lines - 1);
-//            #Set location.
-            this.write8((short)(LCD_SETDDRAMADDR | (col + LCD_ROW_OFFSETS[row])));
         }
+//            #Set location.
+        short b=(short)(LCD_SETDDRAMADDR | (col + LCD_ROW_OFFSETS[row]));
+        this.write8(b);
     }
 
     /**
@@ -236,7 +237,7 @@ import Adafruit_GPIO.PWM as PWM
      * @param pos col,line
      */
     public synchronized void set_cursor(String pos) {
-        log.log(Level.INFO,"set_cursor, pos={}"+pos);
+        log.log(Level.INFO,"set_cursor, pos="+pos);
         String[] s1=pos.split(",",2);
         set_cursor(Short.decode(s1[0]),Short.decode(s1[1]));
     }
@@ -311,34 +312,21 @@ import Adafruit_GPIO.PWM as PWM
 
     public synchronized void message(String text) {
 //            """Write text to display.  Note that text can include newlines."""
+        log.info("message, message=" +text);
         short line = 0;
-//            #
-//    Iterate through
-//    each character.
+//            #  Iterate through each character.
         int a = 5;
         for (byte b1 : text.getBytes()) {
-//            #
-//        Advance to
-//        next line if
-//        character is
-//        a new line.
+//            # Advance to next line if character is a new line.
             if (b1 == '\n') {
                 line += 1;
-//            #
-//        Move to
-//        left or
-//        right side
-//        depending on
-//        text direction.
+//            # Move to left or right side depending on text direction.
                 short col = 0;
                 if ((this.displaymode & LCD_ENTRYLEFT) > 0) col = 0;
                 else col = (short) (this.cols - 1);
                 set_cursor(col, line);
             }
-//        #
-//        Write the
-//        character to
-//        the display.
+//        # Write the character to the display.
             else {
                 this.write8((short)(b1), true);
             }
@@ -359,6 +347,15 @@ import Adafruit_GPIO.PWM as PWM
     }
 
     /**
+     *
+     * @param c A String like "223" will print a degree sign
+     */
+    public synchronized void messageChar(String c) {
+        short b=Short.decode(c);
+        write8(b,true);
+    }
+
+    /**
      * @param dutyCycle 0..255 (default, can be changed by setRange)
      * Set backlight. dutyCycle might be from 0..255 ?
      */
@@ -372,18 +369,12 @@ import Adafruit_GPIO.PWM as PWM
 //        value from 0-255, and char_mode is True if character data or False if
 //        non-character data (default).
 //        """
-//            #
-//        One millisecond
-//        delay to
-//        prevent writing
-//        too quickly.
+//            #One millisecond delay to prevent writing too quickly.
         try {
-            Thread.sleep(1);
+            Thread.sleep(3);
         } catch (InterruptedException ex) {
         }
-//        #
-//        Set character/
-//        data bit.
+//        # Set character/data bit.
         gpio.write(this.rs, charMode);
         //            #
         //    Write upper 4bits .

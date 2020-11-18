@@ -43,19 +43,28 @@ camel v 3.5.0 oct 2020
 
         <route id="displayMessage" autoStartup="true" startupOrder="300">
             <from uri="paho:+/f1_nw/display/message/message"/>
+            <log message="displayMessage body=${body}"/>
             <to uri="bean:lcdDisplay?method=message"/>
         </route>
 
         <!-- Atomic position and write. Input is csv: "col,line,message" -->
         <route id="displayMessageAt" autoStartup="true" startupOrder="400">
             <from uri="paho:+/f1_nw/display/message/messageAt"/>
+            <log message="displayMessageAt body=${body}"/>
             <to uri="bean:lcdDisplay?method=messageAt"/>
         </route>
 
+
+        <!-- Display the string encoded as a char. Input "223" will print a degree sign -->
+        <route id="displayMessageChar" autoStartup="true" startupOrder="500">
+            <from uri="paho:+/f1_nw/display/message/char"/>
+            <log message="displayMessageChar body=${body}"/>
+            <to uri="bean:lcdDisplay?method=messageChar"/>
+        </route>
         <!-- Temporary solution, not synchronized with message.
              input is "col,line"
              -->
-        <route id="setCursor" autoStartup="true" startupOrder="500">
+        <route id="setCursor" autoStartup="true" startupOrder="600">
             <from uri="paho:+/f1_nw/display/set/cursor"/>
             <log message="setCursor input=${body}"/>
             <to uri="bean:lcdDisplay?method=set_cursor"/>
