@@ -8,8 +8,11 @@ pipeline {
             }
         }
         stage('Deploy') {
+            environment {
+                BITBUCKET_COMMON_CREDS = credentials('pi_rpi3')
+            }
             steps {
-                sh 'cd pilightMqttOsgi;sshpass -p $(cat ~/keys/rpi3) rsync target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3:/usr/share/karaf/deploy'
+                sh 'cd pilightMqttOsgi;sshpass -p ${pi_rpi3_PSW} rsync target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3:/usr/share/karaf/deploy'
             }
         }
     }
