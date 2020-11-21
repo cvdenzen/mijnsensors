@@ -123,9 +123,10 @@ import Adafruit_GPIO.PWM as PWM
 
 
     public Lcddisplay(String rs, String en, String d4, String d5, String d6, String d7, String cols, String lines, String backlight) {
-        this(Short.decode(rs),Short.decode(en),Short.decode(d4),Short.decode(d5),
-                Short.decode(d6),Short.decode(d7),Short.decode(cols),Short.decode(lines),Short.decode(backlight));
+        this(Short.decode(rs), Short.decode(en), Short.decode(d4), Short.decode(d5),
+                Short.decode(d6), Short.decode(d7), Short.decode(cols), Short.decode(lines), Short.decode(backlight));
     }
+
     Lcddisplay(short rs, short en, short d4, short d5, short d6, short d7, short cols, short lines, short backlight) {
 
         /*
@@ -182,7 +183,7 @@ import Adafruit_GPIO.PWM as PWM
         /*
     Setup all pins as outputs.
     */
-        for (short pin : new short[]{rs, en, d4, d5, d6, d7}) {
+        for (short pin : new short[]{rs, en, d4, d5, d6, d7, backlight}) {
             gpio.setMode(pin, 1);
         }
         //Initialize the display.
@@ -204,6 +205,7 @@ import Adafruit_GPIO.PWM as PWM
 //            set the
 //            entry mode
         this.clear();
+        setBacklight("128"); // half light
     }
 
     public void home() {
@@ -221,12 +223,12 @@ import Adafruit_GPIO.PWM as PWM
     private void set_cursor(short col, short row) {
 //        """Move the cursor to an explicit column and row position."""
 //            #Clamp row to the last row of the display.
-        log.log(Level.INFO,"set_cursor, col="+col+", line="+row);
+        log.log(Level.INFO, "set_cursor, col=" + col + ", line=" + row);
         if (row > this.lines) {
             row = (short) (this.lines - 1);
         }
 //            #Set location.
-        short b=(short)(LCD_SETDDRAMADDR | (col + LCD_ROW_OFFSETS[row]));
+        short b = (short) (LCD_SETDDRAMADDR | (col + LCD_ROW_OFFSETS[row]));
         this.write8(b);
     }
 
@@ -234,12 +236,13 @@ import Adafruit_GPIO.PWM as PWM
      * Set cursor position. Warning: not guarantee for sync with other
      * threads that may print messages on the screen and leave you
      * at another position on the screen than set by your call to set_cursor.
+     *
      * @param pos col,line
      */
     public synchronized void set_cursor(String pos) {
-        log.log(Level.INFO,"set_cursor, pos="+pos);
-        String[] s1=pos.split(",",2);
-        set_cursor(Short.decode(s1[0]),Short.decode(s1[1]));
+        log.log(Level.INFO, "set_cursor, pos=" + pos);
+        String[] s1 = pos.split(",", 2);
+        set_cursor(Short.decode(s1[0]), Short.decode(s1[1]));
     }
 
     void enable_display(boolean enable) {
@@ -248,7 +251,7 @@ import Adafruit_GPIO.PWM as PWM
             this.displaycontrol |= LCD_DISPLAYON;
         } else {
             this.displaycontrol &= ~LCD_DISPLAYON;
-            this.write8((short)(LCD_DISPLAYCONTROL | this.displaycontrol));
+            this.write8((short) (LCD_DISPLAYCONTROL | this.displaycontrol));
         }
     }
 
@@ -258,7 +261,7 @@ import Adafruit_GPIO.PWM as PWM
             this.displaycontrol |= LCD_CURSORON;
         } else {
             this.displaycontrol &= ~LCD_CURSORON;
-            this.write8((short)(LCD_DISPLAYCONTROL | this.displaycontrol));
+            this.write8((short) (LCD_DISPLAYCONTROL | this.displaycontrol));
         }
     }
 
@@ -270,7 +273,7 @@ import Adafruit_GPIO.PWM as PWM
             this.displaycontrol |= LCD_BLINKON;
         } else {
             this.displaycontrol &= ~LCD_BLINKON;
-            this.write8((short)(LCD_DISPLAYCONTROL | this.displaycontrol));
+            this.write8((short) (LCD_DISPLAYCONTROL | this.displaycontrol));
         }
     }
 
@@ -278,24 +281,24 @@ import Adafruit_GPIO.PWM as PWM
 
     void move_left() {
 //        """Move display left one position."""
-        this.write8((short)(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT));
+        this.write8((short) (LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVELEFT));
     }
 
     void move_right() {
 //                           """Move display right one position."""
-        write8((short)(LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT));
+        write8((short) (LCD_CURSORSHIFT | LCD_DISPLAYMOVE | LCD_MOVERIGHT));
     }
 
     void set_left_to_right() {
 //                                  """Set text direction left to right."""
         this.displaymode |= LCD_ENTRYLEFT;
-        this.write8((short)(LCD_ENTRYMODESET | this.displaymode));
+        this.write8((short) (LCD_ENTRYMODESET | this.displaymode));
     }
 
     void set_right_to_left() {
 //                                  """Set text direction right to left."""
         this.displaymode &= ~LCD_ENTRYLEFT;
-        this.write8((short)(LCD_ENTRYMODESET | this.displaymode));
+        this.write8((short) (LCD_ENTRYMODESET | this.displaymode));
     }
 
     void autoscroll(boolean autoscroll) {
@@ -307,12 +310,12 @@ import Adafruit_GPIO.PWM as PWM
         } else {
             this.displaymode &= ~LCD_ENTRYSHIFTINCREMENT;
         }
-        write8((short)(LCD_ENTRYMODESET | this.displaymode));
+        write8((short) (LCD_ENTRYMODESET | this.displaymode));
     }
 
     public synchronized void message(String text) {
 //            """Write text to display.  Note that text can include newlines."""
-        log.info("message, message=" +text);
+        log.info("message, message=" + text);
         short line = 0;
 //            #  Iterate through each character.
         int a = 5;
@@ -328,40 +331,49 @@ import Adafruit_GPIO.PWM as PWM
             }
 //        # Write the character to the display.
             else {
-                this.write8((short)(b1), true);
+                this.write8((short) (b1), true);
             }
         }
     }
-    public synchronized void messageAt(String message, short col, short line) {
-        set_cursor(col,line);
+
+    private synchronized void messageAt(String message, short col, short line) {
+        set_cursor(col, line);
         message(message);
     }
 
     /**
-     *
      * @param csvMessage: col,line,message
      */
     public synchronized void messageAt(String csvMessage) {
-        String[] s1=csvMessage.split(",",3);
-        messageAt(s1[2],Short.decode(s1[0]),Short.decode(s1[1]));
+        String[] s1 = csvMessage.split(",", 3);
+        messageAt(s1[2], Short.decode(s1[0]), Short.decode(s1[1]));
     }
 
     /**
-     *
      * @param c A String like "223" will print a degree sign
      */
     public synchronized void messageChar(String c) {
-        short b=Short.decode(c);
-        write8(b,true);
+        short b = Short.decode(c);
+        write8(b, true);
+    }
+
+    /**
+     * @param csvMessageChar A String like "8,1,223" will print a degree sign
+     *                       at col 8 in line 1
+     */
+    public synchronized void messageCharAt(String csvMessageChar) {
+        String[] s1 = csvMessageChar.split(",", 3);
+        set_cursor(Short.decode(s1[0]), Short.decode(s1[1]));
+        write8(Short.decode(s1[2]), true);
     }
 
     /**
      * @param dutyCycle 0..255 (default, can be changed by setRange)
-     * Set backlight. dutyCycle might be from 0..255 ?
+     *                  Set backlight. dutyCycle might be from 0..255 ?
      */
-    void set_backlight(short dutyCycle) {
+    void setBacklight(String dutyCycle) {
 //        """
-        gpio.setPWMDutyCycle(backlight,dutyCycle);
+        gpio.setPWMDutyCycle(backlight, Integer.parseInt(dutyCycle));
     }
 
     void write8(short value, boolean charMode) {
@@ -443,8 +455,8 @@ import Adafruit_GPIO.PWM as PWM
 //            very
 //
 //    short(few microseconds).
-        long millis=microseconds/1_000;
-        microseconds=microseconds%1_000; // nanos is max 999999
+        long millis = microseconds / 1_000;
+        microseconds = microseconds % 1_000; // nanos is max 999999
         try {
             Thread.sleep(0L, 1000 * microseconds);
         } catch (InterruptedException ex) {
@@ -470,5 +482,6 @@ import Adafruit_GPIO.PWM as PWM
         this.delay_microseconds(1);
         //commands need>37 us to settle
     }
-    private static Logger log= Logger.getLogger(Lcddisplay.class.getSimpleName());
+
+    private static Logger log = Logger.getLogger(Lcddisplay.class.getSimpleName());
 }

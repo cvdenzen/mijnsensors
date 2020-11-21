@@ -4,12 +4,32 @@
              http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
              http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
-    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="bme280">
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="BH1750FVI">
 
 
         <route id="Init" autoStartup="true" startupOrder="1">
-            <from uri="timer:inittimer?repeatCount=1"/>
-            <bean ref="pigpioBme280" method="open()"/>
+            <from uri="timer:inittimerBH1750?repeatCount=1"/>
+            <bean ref="pigpioBH1750" method="open()"/>
+        </route>
+        <route id="BH1750" autoStartup="true" startupOrder="100">
+
+            <from uri="quartzBH1750://groep/timerBH1750?cron=0/10+*+*+*+*+?"/>
+            <setBody>
+                <constant>false</constant>
+            </setBody>
+            <bean ref="pigpioBH1750" method="getOptical()"/>
+            <!-- Now we have a float -->
+            <!-- brightness -->
+            <setHeader name="p0">
+                <groovy>request.body</groovy>
+            </setHeader>
+
+            <setBody>
+                <groovy>headers.p0.toString()</groovy>
+            </setBody>
+            <log message="f1_nw brightness is ${body} (mqtt topic f1_nw/all/light)"/>
+            <to uri="paho:f1_nw/all/light?connectionTimeout=180"/>
+
         </route>
     </camelContext>
 
@@ -17,9 +37,9 @@
     <bean id="pigpioBH1750" class="nl.vandenzen.iot.beans.BH1750FVIDriver"
           factory-method="getInstance">
         <argument value="1"/> <!-- i2c bus number -->
-        <argument value="0x76"/> <!-- i2c address of bme280 sensor -->
+        <argument value="0x23"/> <!-- i2c address of sensor -->
     </bean>
-    <bean id="quartzBme280" class="org.apache.camel.component.quartz.QuartzComponent">
+    <bean id="quartzBH1750" class="org.apache.camel.component.quartz.QuartzComponent">
         <property name="startDelayedSeconds" value="5"/>
     </bean>
 

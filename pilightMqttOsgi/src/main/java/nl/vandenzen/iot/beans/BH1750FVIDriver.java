@@ -1,15 +1,14 @@
-package io.github.s5uishida.iot.device.bh1750fvi.driver;
+package nl.vandenzen.iot.beans;
+//package io.github.s5uishida.iot.device.bh1750fvi.driver;
+
+import uk.pigpioj.PigpioInterface;
+import uk.pigpioj.PigpioSocket;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.pi4j.io.i2c.I2CBus;
-import com.pi4j.io.i2c.I2CDevice;
-import com.pi4j.io.i2c.I2CFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * Refer to https://www.mouser.com/datasheet/2/348/bh1750fvi-e-186247.pdf
@@ -18,7 +17,7 @@ import com.pi4j.io.i2c.I2CFactory;
  *
  */
 public class BH1750FVIDriver {
-    private static final Logger LOG = LoggerFactory.getLogger(BH1750FVIDriver.class);
+    private static final Logger LOG = Logger.getLogger(BH1750FVIDriver.class.getName());
 
     public static final byte I2C_ADDRESS_23 = 0x23;
     public static final byte I2C_ADDRESS_5C = 0x5c;
@@ -40,14 +39,15 @@ public class BH1750FVIDriver {
     private static final int SENSOR_DATA_LENGTH = 2;
 
     private final byte i2cAddress;
-    private final I2CBus i2cBus;
-    private final I2CDevice i2cDevice;
+    private PigpioInterface i2cDevice;
     private final String i2cName;
     private final String logPrefix;
 
     private final AtomicInteger useCount = new AtomicInteger(0);
 
     private static final ConcurrentHashMap<String, BH1750FVIDriver> map = new ConcurrentHashMap<String, BH1750FVIDriver>();
+    private final int i2cBusNumber;
+    private int i2cHandle;
 
     synchronized public static BH1750FVIDriver getInstance(int i2cBusNumber, byte i2cAddress) {
         String key = i2cBusNumber + ":" + String.format("%x", i2cAddress);
@@ -59,10 +59,24 @@ public class BH1750FVIDriver {
         return bh1750fvi;
     }
 
+    /**
+     * Overload method because Blueprint attribute type for factory-method doesn't work, but maybe because this
+     * constructor was not public
+     * @param i2cBusNumber
+     * @param i2cAddress
+     * @return
+     */
+    synchronized public static BH1750FVIDriver getInstance(String i2cBusNumber, String i2cAddress) {
+        return getInstance(Integer.parseInt(i2cBusNumber),Byte.decode(i2cAddress));
+    }
+
+
     private BH1750FVIDriver(int i2cBusNumber, byte i2cAddress) {
-        if (i2cBusNumber != I2CBus.BUS_0 && i2cBusNumber != I2CBus.BUS_1) {
+        if (i2cBusNumber == 0 || i2cBusNumber == 1) {
+            this.i2cBusNumber = i2cBusNumber;
+        } else {
             throw new IllegalArgumentException("The set " + i2cBusNumber + " is not " +
-                    I2CBus.BUS_0 + " or " + I2CBus.BUS_1 + ".");
+                    0 + " or " + 1 + ".");
         }
         if (i2cAddress == I2C_ADDRESS_23 || i2cAddress == I2C_ADDRESS_5C) {
             this.i2cAddress = i2cAddress;
@@ -75,38 +89,40 @@ public class BH1750FVIDriver {
         logPrefix = "[" + i2cName + "] ";
 
         try {
-            this.i2cBus = I2CFactory.getInstance(i2cBusNumber);
-            this.i2cDevice = i2cBus.getDevice(i2cAddress);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
+            i2cDevice = new PigpioSocket();
+            ((PigpioSocket)i2cDevice).connect("ip6-localhost");
+        } catch (InterruptedException ex) {
+            LOG.log(Level.SEVERE,logPrefix + ex);
         }
     }
 
     synchronized public void open() throws IOException {
         try {
-            LOG.debug(logPrefix + "before - useCount:{}", useCount.get());
+            LOG.log(Level.FINE,logPrefix + "before - useCount:{}", useCount.get());
             if (useCount.compareAndSet(0, 1)) {
+
+                i2cHandle = i2cDevice.i2cOpen(i2cBusNumber, i2cAddress, 0);
                 LOG.info(logPrefix + "opened");
             }
         } finally {
-            LOG.debug(logPrefix + "after - useCount:{}", useCount.get());
+            LOG.log(Level.FINE,logPrefix + "after - useCount:{}", useCount.get());
         }
     }
 
     synchronized public void close() throws IOException {
         try {
-            LOG.debug(logPrefix + "before - useCount:{}", useCount.get());
+            LOG.log(Level.FINE,logPrefix + "before - useCount:{}", useCount.get());
             if (useCount.compareAndSet(1, 0)) {
-                i2cBus.close();
+                i2cDevice.close();
                 LOG.info(logPrefix + "closed");
             }
         } finally {
-            LOG.debug(logPrefix + "after - useCount:{}", useCount.get());
+            LOG.log(Level.FINE,logPrefix + "after - useCount:{}", useCount.get());
         }
     }
 
     public int getI2cBusNumber() {
-        return i2cBus.getBusNumber();
+        return i2cBusNumber;
     }
 
     public byte getI2cAddress() {
@@ -122,45 +138,48 @@ public class BH1750FVIDriver {
     }
 
     private void dump(byte data, String tag) {
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isLoggable(Level.FINEST)) {
             StringBuffer sb = new StringBuffer();
             sb.append(String.format("%02x", data));
-            LOG.trace(logPrefix + "{}{}", tag, sb.toString());
+            LOG.log(Level.FINEST,logPrefix + "{}{}", new String[]{tag, sb.toString()});
         }
     }
 
     private void dump(byte[] data, String tag) {
-        if (LOG.isTraceEnabled()) {
+        if (LOG.isLoggable(Level.FINEST)) {
             StringBuffer sb = new StringBuffer();
             for (byte data1 : data) {
                 sb.append(String.format("%02x ", data1));
             }
-            LOG.trace(logPrefix + "{}{}", tag, sb.toString().trim());
+            LOG.log(Level.FINEST,logPrefix + "{}{}", new String[]{tag, sb.toString().trim()});
         }
     }
 
     private void write(byte out) throws IOException {
         try {
             dump(out, "BH1750FVI sensor command: write: ");
-            i2cDevice.write(out);
-        } catch (IOException e) {
+            i2cDevice.i2cWriteByte(i2cHandle,out);
+        } catch (Exception e) {
             String message = logPrefix + "failed to write.";
-            LOG.warn(message);
+            LOG.log(Level.WARNING,message);
             throw new IOException(message, e);
         }
     }
 
     private byte[] read(int length) throws IOException {
+        byte[] in = new byte[length];
         try {
-            byte[] in = new byte[length];
-            i2cDevice.read(in, 0, length);
+            // original pi4j: i2cDevice.read(in, 0, length);
+            //byte in = (byte) i2cDevice.i2cReadByteData(i2cHandle,(int)register&0xff);
+            //int r1=i2cDevice.i2cReadI2CBlockData(i2cHandle, (int)register&0xff, in, length);
+            i2cDevice.i2cReadDevice(i2cHandle,in, length);
             dump(in, "BH1750FVI sensor command: read:  ");
-            return in;
-        } catch (IOException e) {
+        } catch (Exception e) {
             String message = logPrefix + "failed to read.";
-            LOG.warn(message);
+            LOG.log(Level.WARNING,message);
             throw new IOException(message, e);
         }
+        return in;
     }
 
     public float getOptical() throws IOException {
@@ -182,7 +201,7 @@ public class BH1750FVIDriver {
     public static void main(String[] args) throws IOException {
         BH1750FVIDriver bh1750fvi = null;
         try {
-            bh1750fvi = BH1750FVIDriver.getInstance(I2CBus.BUS_1, BH1750FVIDriver.I2C_ADDRESS_23);
+            bh1750fvi = BH1750FVIDriver.getInstance(1, BH1750FVIDriver.I2C_ADDRESS_23);
             bh1750fvi.open();
 
             while (true) {
@@ -192,9 +211,9 @@ public class BH1750FVIDriver {
                 Thread.sleep(10000);
             }
         } catch (InterruptedException e) {
-            LOG.warn("caught - {}", e.toString());
+            LOG.log(Level.WARNING,"caught - {}", e.toString());
         } catch (IOException e) {
-            LOG.warn("caught - {}", e.toString());
+            LOG.log(Level.WARNING,"caught - {}", e.toString());
         } finally {
             if (bh1750fvi != null) {
                 bh1750fvi.close();

@@ -759,7 +759,7 @@ camel v 3.5.0 oct 2020
 
         <!-- Display temp hum pressure on lcd display -->
         <route id="displayF1_nw_time">
-            <from uri="quartz://groep/timerDisplayF1_nw_time?cron=15+*+*+*+*+?"/>
+            <from uri="quartz://groep/timerDisplayF1_nw_time?cron=2+*+*+*+*+?"/>
             <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <setHeader name="dateTimeString">
                 <groovy>new java.text.SimpleDateFormat('dd-MM-yyyy HH:mm:ss').format(request.headers.fireTime)</groovy>
@@ -817,18 +817,19 @@ camel v 3.5.0 oct 2020
             <convertBodyTo type="java.lang.String"/>
             <to uri="paho:camel/f1_nw/display/set/cursor"/>
             <setBody>
-                <constant>223</constant>
+                <constant>4,1,223</constant>
             </setBody>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/message/char"/>
+            <to uri="paho:camel/f1_nw/display/message/charAt"/>
             <delay>
                 <constant>453</constant>
             </delay>
             <setBody>
-                <constant>C </constant>
+                <!-- <constant>5,1,C </constant> -->
+                <groovy>result="5,1,C "</groovy>
             </setBody>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/message/message"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
         </route>
 
 
@@ -868,6 +869,20 @@ camel v 3.5.0 oct 2020
             </setBody>
             <convertBodyTo type="java.lang.String"/>
             <to uri="paho:camel/f1_nw/display/message/message"/>
+        </route>
+        <route id="adjustBacklight">
+            <from uri="paho:oh/all/f1_nw_light/state?connectionTimeout=180"/>
+            <!-- We have a byte[] ??? -->
+            <log message="Received oh/all/f1_nw_light/state, body=${body}"/>
+            <convertBodyTo type="java.lang.String"/>
+            <log message="Received oh/all/f1_nw_light/state, String body=${body}"/>
+            <convertBodyTo type="java.lang.Float"/>
+            <log message="Received oh/all/f1_nw_light/state, Float body=${body}"/>
+            <setBody>
+                <groovy>result=ceil(min((int)10,max((int)255,5*ceil(request.body))))</groovy>
+            </setBody>
+            <log message="Adjust backlight to ${body}"/>
+            <to uri="paho:camel/f1_nw/display/backlight"/>
         </route>
 
     </camelContext>

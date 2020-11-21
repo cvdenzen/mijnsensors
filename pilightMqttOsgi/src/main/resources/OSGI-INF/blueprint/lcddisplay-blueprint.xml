@@ -15,30 +15,13 @@ camel v 3.5.0 oct 2020
 
         <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimer?repeatCount=1"/>
-            <bean ref="pigpio" method="connect(ip6-localhost)"/>
-            <bean ref="pigpio" method="setPWMFrequency(12,400)"/>
-        </route>
-
-        <route id="TestBacklight" autoStartup="true" startupOrder="100">
-
-            <from uri="quartzlcd://groep/timerlcddisplay1?cron=0/10+*+*+*+*+?"/>
-            <setBody>
-                <constant>false</constant>
-            </setBody>
-            <!-- pigpio.MODE_PI_OUTPUT = 1 -->
-            <bean ref="pigpio" method="setMode(12,1)"/>
-            <!-- bean ref="pigpio" method="write(12,false)"/ -->
-
-            <bean ref="pigpio" method="setPWMFrequency(12,400)"/>
-            <bean ref="pigpio" method="getPWMRealRange(12)"/>
-            <log message="${body}"/>
-            <bean ref="pigpio" method="setPWMDutyCycle(12,10)"/>
+            <log message="Start lcddisplay-blueprint.xml"/>
         </route>
 
         <route id="setBacklight" autoStartup="true" startupOrder="200">
             <from uri="paho:+/f1_nw/display/backlight"/>
             <!-- values from 0 to 255, BCM pin 12 -->
-            <bean ref="pigpio" method="setPWMDutyCycle(12,${body})"/>
+            <bean ref="lcdDisplay" method="setBacklight(${body})"/>
         </route>
 
         <route id="displayMessage" autoStartup="true" startupOrder="300">
@@ -50,7 +33,7 @@ camel v 3.5.0 oct 2020
         <!-- Atomic position and write. Input is csv: "col,line,message" -->
         <route id="displayMessageAt" autoStartup="true" startupOrder="400">
             <from uri="paho:+/f1_nw/display/message/messageAt"/>
-            <log message="displayMessageAt body=${body}"/>
+            <!-- <log message="displayMessageAt body=${body}"/> -->
             <to uri="bean:lcdDisplay?method=messageAt"/>
         </route>
 
@@ -58,15 +41,21 @@ camel v 3.5.0 oct 2020
         <!-- Display the string encoded as a char. Input "223" will print a degree sign -->
         <route id="displayMessageChar" autoStartup="true" startupOrder="500">
             <from uri="paho:+/f1_nw/display/message/char"/>
-            <log message="displayMessageChar body=${body}"/>
+            <!-- <log message="displayMessageChar body=${body}"/> -->
             <to uri="bean:lcdDisplay?method=messageChar"/>
+        </route>
+        <!-- Display the string encoded as a char. Input "col,line,223" will print a degree sign -->
+        <route id="displayMessageCharAt" autoStartup="true" startupOrder="600">
+            <from uri="paho:+/f1_nw/display/message/charAt"/>
+            <!-- <log message="displayMessageCharAt body=${body}"/> -->
+            <to uri="bean:lcdDisplay?method=messageCharAt"/>
         </route>
         <!-- Temporary solution, not synchronized with message.
              input is "col,line"
              -->
-        <route id="setCursor" autoStartup="true" startupOrder="600">
+        <route id="setCursor" autoStartup="true" startupOrder="1200">
             <from uri="paho:+/f1_nw/display/set/cursor"/>
-            <log message="setCursor input=${body}"/>
+            <!-- <log message="setCursor input=${body}"/> -->
             <to uri="bean:lcdDisplay?method=set_cursor"/>
         </route>
 
