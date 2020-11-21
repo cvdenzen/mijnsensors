@@ -4,11 +4,12 @@ pipeline {
         stage('build') {
             steps {
                 sh 'mvn --version'
+                sh 'cd pilightMqttOsgi;mvn clean install'
             }
         }
         stage('Deploy') {
             steps {
-
+                sh 'cd pilightMqttOsgi;sshpass -p $(cat ~/keys/rpi3) rsync target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3:/usr/share/karaf/deploy'
             }
         }
     }
