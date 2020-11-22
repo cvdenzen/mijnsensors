@@ -2,6 +2,8 @@ package nl.vandenzen.iot.beans;
 
 import uk.pigpioj.PigpioSocket;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -339,29 +341,34 @@ import Adafruit_GPIO.PWM as PWM
     /**
      * @param csvMessage: col,line,message
      */
-    public synchronized void messageAt(String csvMessage) {
-        String[] s1 = csvMessage.split(",", 3);
-        short col=Short.decode(s1[0]);
-        short line=Short.decode(s1[1]);
-        String message=s1[2];
-        set_cursor(col, line);
-        message(message);
+    public void messageAt(String csvMessage) {
+        lock1.lock();
+        try {
+            String[] s1 = csvMessage.split(",", 3);
+            short col = Short.decode(s1[0]);
+            short line = Short.decode(s1[1]);
+            String message = s1[2];
+            set_cursor(col, line);
+            message(message);
+        }
+        finally {
+            lock1.unlock();
+        }
     }
 
     /**
      * @param csvMessageChar A String like "8,1,223" will print a degree sign
      *                       at col 8 in line 1
      */
-    public synchronized void messageCharAt(String csvMessageChar) {
-        String[] s1 = csvMessageChar.split(",", 3);
-        // use messageAt for synchronization, format as unicode character
-        String t=String.format("%s,%s,%s",new Object[]{s1[0],s1[1], Character.toString(Integer.decode(s1[2]))});
-        log.info("messageCharAt:"+t);
-        messageAt(t);
-        /*
-        set_cursor(Short.decode(s1[0]), Short.decode(s1[1]));
-        write8(Short.decode(s1[2]), true);
-         */
+    public void messageCharAt(String csvMessageChar) {
+        lock1.lock();
+        String[] s1=csvMessageChar.split(",",3);
+        try {
+            set_cursor(Short.decode(s1[0]), Short.decode(s1[1]));
+            write8(Short.decode(s1[2]), true);
+        } finally {
+            lock1.unlock();
+        }
     }
 
     /**
@@ -481,4 +488,5 @@ import Adafruit_GPIO.PWM as PWM
     }
 
     private static Logger log = Logger.getLogger(Lcddisplay.class.getSimpleName());
+    private Lock lock1 = new ReentrantLock();
 }

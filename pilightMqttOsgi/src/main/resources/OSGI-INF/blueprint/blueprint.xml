@@ -847,12 +847,20 @@ camel v 3.5.0 oct 2020
             <log message="Received oh/all/f1_nw_light/state, String body=${body}"/>
             <convertBodyTo type="java.lang.Float"/>
             <log message="Received oh/all/f1_nw_light/state, Float body=${body}"/>
-            <setHeader name="savedBody"><groovy>request.body</groovy></setHeader>
-            <setBody><groovy>result="f1_nw_display_backlight_min,f1_nw_display_backlight_max,f1_nw_display_backlight_bias,f1_nw_display_backlight_multiplier</groovy></setBody>
+            <setHeader name="savedBody">
+                <groovy>request.body</groovy>
+            </setHeader>
+            <setBody>
+                <groovy>
+                    result="f1_nw_display_backlight_min,f1_nw_display_backlight_max,f1_nw_display_backlight_bias,f1_nw_display_backlight_multiplier"
+                </groovy>
+            </setBody>
             <to uri="direct:getOHItem"/>
             <setBody>
-                <groovy>result=Math.ceil(Math.min(request.headers.f1_nw_display_backlight_min,Math.max(request.headers.f1_nw_display_backlight_max,
-                    request.headers.f1_nw_display_bias+request.headers.f1_nw_display_multiplier*Math.ceil(request.body))))</groovy>
+                <groovy>
+                    result=Math.ceil(Math.min(request.headers.f1_nw_display_backlight_min,Math.max(request.headers.f1_nw_display_backlight_max,
+                    request.headers.f1_nw_display_bias+request.headers.f1_nw_display_multiplier*Math.ceil(request.body))))
+                </groovy>
             </setBody>
             <convertBodyTo type="java.lang.Integer"/>
             <log message="Adjust backlight to ${body}"/>
