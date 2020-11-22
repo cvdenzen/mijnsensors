@@ -364,7 +364,7 @@ import Adafruit_GPIO.PWM as PWM
     public synchronized void messageCharAt(String csvMessageChar) {
         String[] s1 = csvMessageChar.split(",", 3);
         // use messageAt for synchronization, format as unicode character
-        String t=String.format("%d,%d,%c",new Object[]{s1[0],s1[1],Integer.decode(s1[2]));
+        String t=String.format("%d,%d,%c",new Object[]{s1[0],s1[1],Integer.decode(s1[2])});
         log.info("messageCharAt:"+t);
         messageAt(t);
         set_cursor(Short.decode(s1[0]), Short.decode(s1[1]));
