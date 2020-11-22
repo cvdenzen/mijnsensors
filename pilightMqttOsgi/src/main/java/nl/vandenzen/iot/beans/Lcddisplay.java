@@ -239,7 +239,7 @@ import Adafruit_GPIO.PWM as PWM
      *
      * @param pos col,line
      */
-    public synchronized void set_cursor(String pos) {
+    private synchronized void set_cursor(String pos) {
         log.log(Level.INFO, "set_cursor, pos=" + pos);
         String[] s1 = pos.split(",", 2);
         set_cursor(Short.decode(s1[0]), Short.decode(s1[1]));
@@ -363,6 +363,10 @@ import Adafruit_GPIO.PWM as PWM
      */
     public synchronized void messageCharAt(String csvMessageChar) {
         String[] s1 = csvMessageChar.split(",", 3);
+        // use messageAt for synchronization, format as unicode character
+        String t=String.format("%d,%d,%c",s1);
+        log.info("messageCharAt:"+t);
+        messageAt(t);
         set_cursor(Short.decode(s1[0]), Short.decode(s1[1]));
         write8(Short.decode(s1[2]), true);
     }

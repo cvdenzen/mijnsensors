@@ -764,23 +764,10 @@ camel v 3.5.0 oct 2020
             <setHeader name="dateTimeString">
                 <groovy>new java.text.SimpleDateFormat('dd-MM-yyyy HH:mm:ss').format(request.headers.fireTime)</groovy>
             </setHeader>
-            <log message="f1_nw_time: body=${body}"/>
-            <convertBodyTo type="java.lang.String"/>
-            <!-- save body -->
-            <setHeader name="savedBody">
-                <simple>${body}</simple>
-            </setHeader>
-            <!-- Display in column x, row y -->
             <setBody>
-                <constant>0,0</constant>
+                <groovy>result="0,0,"+request.headers.dateTimeString</groovy>
             </setBody>
-            <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/set/cursor"/>
-            <!-- restore body -->
-            <setBody>
-                <simple>${header.dateTimeString}</simple>
-            </setBody>
-            <to uri="paho:camel/f1_nw/display/message/message"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
         </route>
 
         <!-- Display temp hum pressure on lcd display -->
@@ -801,12 +788,12 @@ camel v 3.5.0 oct 2020
                 <constant>0,1</constant>
             </setBody>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/set/cursor"/>
+            <!-- use messageAt <to uri="paho:camel/f1_nw/display/set/cursor"/> -->
             <!-- restore body -->
             <setBody>
-                <simple>${header.temperatuur}</simple>
+                <groovy>result="0,1,"+request.headers.temperatuur</groovy>
             </setBody>
-            <to uri="paho:camel/f1_nw/display/message/message"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
             <delay>
                 <constant>563</constant>
             </delay>
@@ -815,7 +802,7 @@ camel v 3.5.0 oct 2020
                 <constant>4,1</constant>
             </setBody>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/set/cursor"/>
+            <!-- <to uri="paho:camel/f1_nw/display/set/cursor"/> -->
             <setBody>
                 <constant>4,1,223</constant>
             </setBody>
@@ -856,19 +843,19 @@ camel v 3.5.0 oct 2020
             <to uri="paho:camel/f1_nw/display/set/cursor"/>
             <!-- restore body -->
             <setBody>
-                <simple>${header.savedBody}</simple>
+                <groovy>result="7,1,"+request.headers.savedBody</groovy>
             </setBody>
-            <to uri="paho:camel/f1_nw/display/message/message"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
             <setBody>
                 <constant>13,1</constant>
             </setBody>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/set/cursor"/>
+            <!-- use messageAt <to uri="paho:camel/f1_nw/display/set/cursor"/> -->
             <setBody>
-                <constant>hPa</constant>
+                <constant>13,1,hPa</constant>
             </setBody>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/message/message"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
         </route>
         <route id="adjustBacklight">
             <from uri="paho:oh/all/f1_nw_light/state?connectionTimeout=180"/>
@@ -878,9 +865,14 @@ camel v 3.5.0 oct 2020
             <log message="Received oh/all/f1_nw_light/state, String body=${body}"/>
             <convertBodyTo type="java.lang.Float"/>
             <log message="Received oh/all/f1_nw_light/state, Float body=${body}"/>
+            <setHeader name="savedBody"><groovy>request.body</groovy></setHeader>
+            <setBody><groovy>result="f1_nw_display_backlight_min,f1_nw_display_backlight_max,f1_nw_display_backlight_bias,f1_nw_display_backlight_multiplier</groovy></setBody>
+            <to uri="direct.getOHItem"/>
             <setBody>
-                <groovy>result=ceil(min((int)10,max((int)255,5*ceil(request.body))))</groovy>
+                <groovy>result=Math.ceil(Math.min(request.headers.f1_nw_display_backlight_min,Math.max(request.headers.f1_nw_display_backlight_max,
+                    request.headers.f1_nw_display_bias+request.headers.f1_nw_display_multiplier*Math.ceil(request.body))))</groovy>
             </setBody>
+            <convertBodyTo type="java.lang.Integer"/>
             <log message="Adjust backlight to ${body}"/>
             <to uri="paho:camel/f1_nw/display/backlight"/>
         </route>

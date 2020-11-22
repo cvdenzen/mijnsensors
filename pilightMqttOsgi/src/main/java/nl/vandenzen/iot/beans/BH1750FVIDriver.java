@@ -1,7 +1,6 @@
 package nl.vandenzen.iot.beans;
 //package io.github.s5uishida.iot.device.bh1750fvi.driver;
 
-import uk.pigpioj.PigpioInterface;
 import uk.pigpioj.PigpioSocket;
 
 import java.io.IOException;
@@ -39,7 +38,7 @@ public class BH1750FVIDriver {
     private static final int SENSOR_DATA_LENGTH = 2;
 
     private final byte i2cAddress;
-    private PigpioInterface i2cDevice;
+    private PigpioSocket i2cDevice;
     private final String i2cName;
     private final String logPrefix;
 
