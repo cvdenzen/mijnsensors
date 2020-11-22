@@ -119,8 +119,7 @@ camel v 3.5.0 oct 2020
             </choice>
         </route>
 
-        <!-- Do a REST call to OpenHab to get the value of one or more items who's names are in headers.OHItem,
-         into headers with the corresponding item name -->
+        <!-- Do a REST call to OpenHab to get the value of one item who's name is in headers.OHItem, into body -->
         <route id="getOHItem" autoStartup="true" streamCache="true">
             <from uri="direct:getOHItem"/>
             <log message="getOHItem header.OHItem=${header.OHItem}"/>
@@ -145,7 +144,7 @@ camel v 3.5.0 oct 2020
                         </setBody>
                         <log message="OHItem na split and restore is ${header.OHItem}"/>
                         <log message="body na split and restore is ${body}"/>
-                        <log message="ERROR: multiple items is NOT SUPPORTED"/>
+                        <log message="ERROR: multiple items is NOT SUPPORTED, too difficult dynamic header name"/>
                         <!-- to uri="direct:getOHItem"/ -->
                     </split>
                 </when>
@@ -851,12 +850,47 @@ camel v 3.5.0 oct 2020
             <setHeader name="savedBody">
                 <groovy>request.body</groovy>
             </setHeader>
+
             <setHeader name="OHItem">
                 <groovy>
-                    result="f1_nw_display_backlight_min,f1_nw_display_backlight_max,f1_nw_display_backlight_bias,f1_nw_display_backlight_multiplier"
+                    result="f1_nw_display_backlight_min"
                 </groovy>
             </setHeader>
             <to uri="direct:getOHItem"/>
+            <!-- value is body -->
+            <setHeader name="f1_nw_display_backlight_min">
+                <groovy>body</groovy>
+            </setHeader>
+            <setHeader name="OHItem">
+                <groovy>
+                    result="f1_nw_display_backlight_max"
+                </groovy>
+            </setHeader>
+            <to uri="direct:getOHItem"/>
+            <!-- value is body -->
+            <setHeader name="f1_nw_display_backlight_max">
+                <groovy>body</groovy>
+            </setHeader>
+            <setHeader name="OHItem">
+                <groovy>
+                    result="f1_nw_display_backlight_bias"
+                </groovy>
+            </setHeader>
+            <to uri="direct:getOHItem"/>
+            <!-- value is body -->
+            <setHeader name="f1_nw_display_backlight_bias">
+                <groovy>body</groovy>
+            </setHeader>
+            <setHeader name="OHItem">
+                <groovy>
+                    result="f1_nw_display_backlight_multiplier"
+                </groovy>
+            </setHeader>
+            <to uri="direct:getOHItem"/>
+            <!-- value is body -->
+            <setHeader name="f1_nw_display_backlight_multiplier">
+                <groovy>body</groovy>
+            </setHeader>
             <setBody>
                 <groovy>
                     result=Math.ceil(Math.min(request.headers.f1_nw_display_backlight_min,Math.max(request.headers.f1_nw_display_backlight_max,
