@@ -859,7 +859,7 @@ camel v 3.5.0 oct 2020
             <to uri="direct:getOHItem"/>
             <!-- value is body -->
             <setHeader name="f1_nw_display_backlight_min">
-                <groovy>body</groovy>
+                <groovy>java.lang.Float.valueOf(body)</groovy>
             </setHeader>
             <setHeader name="OHItem">
                 <groovy>
@@ -869,7 +869,7 @@ camel v 3.5.0 oct 2020
             <to uri="direct:getOHItem"/>
             <!-- value is body -->
             <setHeader name="f1_nw_display_backlight_max">
-                <groovy>body</groovy>
+                <groovy>java.lang.Float.valueOf(body)</groovy>
             </setHeader>
             <setHeader name="OHItem">
                 <groovy>
@@ -879,7 +879,7 @@ camel v 3.5.0 oct 2020
             <to uri="direct:getOHItem"/>
             <!-- value is body -->
             <setHeader name="f1_nw_display_backlight_bias">
-                <groovy>body</groovy>
+                <groovy>java.lang.Float.valueOf(body)</groovy>
             </setHeader>
             <setHeader name="OHItem">
                 <groovy>
@@ -889,7 +889,7 @@ camel v 3.5.0 oct 2020
             <to uri="direct:getOHItem"/>
             <!-- value is body -->
             <setHeader name="f1_nw_display_backlight_multiplier">
-                <groovy>body</groovy>
+                <groovy>java.lang.Float.valueOf(body)</groovy>
             </setHeader>
             <setBody>
                 <groovy>
