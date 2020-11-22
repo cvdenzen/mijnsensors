@@ -336,25 +336,16 @@ import Adafruit_GPIO.PWM as PWM
         }
     }
 
-    private synchronized void messageAt(String message, short col, short line) {
-        set_cursor(col, line);
-        message(message);
-    }
-
     /**
      * @param csvMessage: col,line,message
      */
     public synchronized void messageAt(String csvMessage) {
         String[] s1 = csvMessage.split(",", 3);
-        messageAt(s1[2], Short.decode(s1[0]), Short.decode(s1[1]));
-    }
-
-    /**
-     * @param c A String like "223" will print a degree sign
-     */
-    public synchronized void messageChar(String c) {
-        short b = Short.decode(c);
-        write8(b, true);
+        short col=Short.decode(s1[0]);
+        short line=Short.decode(s1[1]);
+        String message=s1[2];
+        set_cursor(col, line);
+        message(message);
     }
 
     /**
@@ -364,11 +355,13 @@ import Adafruit_GPIO.PWM as PWM
     public synchronized void messageCharAt(String csvMessageChar) {
         String[] s1 = csvMessageChar.split(",", 3);
         // use messageAt for synchronization, format as unicode character
-        String t=String.format("%d,%d,%c",new Object[]{s1[0],s1[1],Integer.decode(s1[2])});
+        String t=String.format("%s,%s,%s",new Object[]{s1[0],s1[1], Character.toString(Integer.decode(s1[2]))});
         log.info("messageCharAt:"+t);
         messageAt(t);
+        /*
         set_cursor(Short.decode(s1[0]), Short.decode(s1[1]));
         write8(Short.decode(s1[2]), true);
+         */
     }
 
     /**
