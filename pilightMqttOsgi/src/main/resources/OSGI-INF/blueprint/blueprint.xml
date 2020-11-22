@@ -119,7 +119,8 @@ camel v 3.5.0 oct 2020
             </choice>
         </route>
 
-        <!-- Do a REST call to OpenHab to get the value of one item who's name is in headers.OHItem, into body -->
+        <!-- Do a REST call to OpenHab to get the value of one or more items who's names are in headers.OHItem,
+         into headers with the corresponding item name -->
         <route id="getOHItem" autoStartup="true" streamCache="true">
             <from uri="direct:getOHItem"/>
             <log message="getOHItem header.OHItem=${header.OHItem}"/>
@@ -850,11 +851,11 @@ camel v 3.5.0 oct 2020
             <setHeader name="savedBody">
                 <groovy>request.body</groovy>
             </setHeader>
-            <setBody>
+            <setHeader name="OHItem">
                 <groovy>
                     result="f1_nw_display_backlight_min,f1_nw_display_backlight_max,f1_nw_display_backlight_bias,f1_nw_display_backlight_multiplier"
                 </groovy>
-            </setBody>
+            </setHeader>
             <to uri="direct:getOHItem"/>
             <setBody>
                 <groovy>
