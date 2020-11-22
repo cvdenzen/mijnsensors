@@ -891,6 +891,8 @@ camel v 3.5.0 oct 2020
             <setHeader name="f1_nw_display_backlight_multiplier">
                 <groovy>java.lang.Float.valueOf(body)</groovy>
             </setHeader>
+            <!-- restore body -->
+            <setBody><groovy>request.headers.savedBody</groovy></setBody>
             <setBody>
                 <groovy>
                     result=Math.ceil(Math.min(request.headers.f1_nw_display_backlight_min,Math.max(request.headers.f1_nw_display_backlight_max,
