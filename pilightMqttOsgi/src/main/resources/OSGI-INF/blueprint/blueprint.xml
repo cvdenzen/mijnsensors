@@ -893,6 +893,11 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <!-- restore body -->
             <setBody><groovy>request.headers.savedBody</groovy></setBody>
+            <log message="body=${body}"/>
+            <log message="f1_nw_display_backlight_min=${request.headers.f1_nw_display_backlight_min}"/>
+            <log message="f1_nw_display_backlight_max=${request.headers.f1_nw_display_backlight_max}"/>
+            <log message="f1_nw_display_bias=${request.headers.f1_nw_display_bias}"/>
+            <log message="f1_nw_display_multiplier=${request.headers.f1_nw_display_multiplier}"/>
             <setBody>
                 <groovy>
                     result=Math.ceil(Math.min(request.headers.f1_nw_display_backlight_min,Math.max(request.headers.f1_nw_display_backlight_max,
