@@ -177,16 +177,14 @@ camel v 3.5.0 oct 2020
 
         <!-- ** Multiple items.
         Do a REST call to OpenHab to get the value items
-         Input: body, array of Strings (names of items)
+         Input: header OHItems, array of Strings (names of items)
          Output: body, array of Strings -->
         <route id="getOHItems" autoStartup="true" streamCache="true">
             <from uri="direct:getOHItems"/>
             <log message="getOHItems body=${body}"/>
-            <setHeader name="OHItems">
-                <groovy>request.body</groovy>
-            </setHeader>
+            <log message="getOHItems OHItems=${header.OHItems}"/>
             <setHeader name="OHItemsResult">
-                <groovy>new String[request.body.length]</groovy>
+                <groovy>new String[request.headers.OHItems.length]</groovy>
             </setHeader>
             <loop>
                 <groovy>result=request.headers.OHItems.length</groovy>
@@ -918,11 +916,12 @@ camel v 3.5.0 oct 2020
             </setBody>
             <setBody>
                 <groovy>
-                    result=Math.ceil(Math.min(request.headers.OHItemsFloat[0],Math.max(OHItemsFloat[1],
-                    OHItemsFloat[2]+request.headers.OHItemsFloat[0]*Math.ceil(request.body))))
+                    result=Math.ceil(Math.min(request.headers.OHItemsFloat[0],Math.max(request.headers.OHItemsFloat[1],
+                    request.headers.OHItemsFloat[2]+request.headers.OHItemsFloat[3]*Math.ceil(request.body))))
                 </groovy>
             </setBody>
             <convertBodyTo type="java.lang.Integer"/>
+            <convertBodyTo type="java.lang.String"/>
             <log message="Adjust backlight to ${body}"/>
             <to uri="paho:camel/f1_nw/display/backlight"/>
         </route>
