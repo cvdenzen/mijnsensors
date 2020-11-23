@@ -174,6 +174,36 @@ camel v 3.5.0 oct 2020
                 </otherwise>
             </choice>
         </route>
+
+        <!-- ** Multiple items.
+        Do a REST call to OpenHab to get the value items
+         Input: body, array of Strings (names of items)
+         Output: body, array of Strings -->
+        <route id="getOHItems" autoStartup="true" streamCache="true">
+            <from uri="direct:getOHItems"/>
+            <log message="getOHItems body=${body}"/>
+            <setHeader name="OHItems">
+                <groovy>request.body</groovy>
+            </setHeader>
+            <setHeader name="OHItemsResult">
+                <groovy>new String[request.body.length]</groovy>
+            </setHeader>
+            <loop>
+                <groovy>result=request.headers.OHItems.length</groovy>
+                <setHeader name="OHItem">
+                    <groovy>request.headers.OHItems[exchange.properties.CamelLoopIndex]</groovy>
+                </setHeader>
+                <!-- log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/ -->
+                <to uri="direct:getOHItem"/>
+                <!-- Result is in body -->
+                <setHeader name="dummy">
+                    <groovy>request.headers.OHItemsResult[exchange.properties.CamelLoopIndex]=request.body</groovy>
+                </setHeader>
+            </loop>
+            <setBody>
+                <groovy>request.headers.OHItemsResult</groovy>
+            </setBody>
+        </route>
         <!-- Test setOHItem-->
         <route id="testGetOHItem" autoStartup="false">
             <from uri="quartz://groep/timerTestGetOHItem?cron=0/10+*+*+*+*+?"/>
@@ -847,61 +877,49 @@ camel v 3.5.0 oct 2020
             <log message="Received oh/all/f1_nw_light/state, String body=${body}"/>
             <convertBodyTo type="java.lang.Float"/>
             <log message="Received oh/all/f1_nw_light/state, Float body=${body}"/>
-            <setHeader name="savedBody">
+            <setHeader name="f1_nw_light">
                 <groovy>request.body</groovy>
             </setHeader>
+            <setHeader name="OHItems">
+                <groovy>new String[]{"f1_nw_display_backlight_min","f1_nw_display_backlight_max",
+                    "f1_nw_display_backlight_bias","f1_nw_display_backlight_multiplier"}
+                </groovy>
+            </setHeader>
+            <to uri="direct:getOHItems"/>
+            <!-- results are in body as String[], make them float -->
+            <setHeader name="OHItemsFloat"><groovy>new Float[request.headers.OHItems.length]</groovy></setHeader>
 
-            <setHeader name="OHItem">
-                <groovy>
-                    result="f1_nw_display_backlight_min"
-                </groovy>
-            </setHeader>
-            <to uri="direct:getOHItem"/>
-            <!-- value is body -->
-            <setHeader name="f1_nw_display_backlight_min">
-                <groovy>java.lang.Float.valueOf(body)</groovy>
-            </setHeader>
-            <setHeader name="OHItem">
-                <groovy>
-                    result="f1_nw_display_backlight_max"
-                </groovy>
-            </setHeader>
-            <to uri="direct:getOHItem"/>
-            <!-- value is body -->
-            <setHeader name="f1_nw_display_backlight_max">
-                <groovy>java.lang.Float.valueOf(body)</groovy>
-            </setHeader>
-            <setHeader name="OHItem">
-                <groovy>
-                    result="f1_nw_display_backlight_bias"
-                </groovy>
-            </setHeader>
-            <to uri="direct:getOHItem"/>
-            <!-- value is body -->
-            <setHeader name="f1_nw_display_backlight_bias">
-                <groovy>java.lang.Float.valueOf(body)</groovy>
-            </setHeader>
-            <setHeader name="OHItem">
-                <groovy>
-                    result="f1_nw_display_backlight_multiplier"
-                </groovy>
-            </setHeader>
-            <to uri="direct:getOHItem"/>
-            <!-- value is body -->
-            <setHeader name="f1_nw_display_backlight_multiplier">
-                <groovy>java.lang.Float.valueOf(body)</groovy>
-            </setHeader>
-            <!-- restore body -->
-            <setBody><groovy>request.headers.savedBody</groovy></setBody>
+            <loop>
+                <groovy>result=request.headers.OHItems.length</groovy>
+                <setHeader name="dummy">
+                    <groovy>
+                        request.headers.OHItemsFloat[exchange.properties.CamelLoopIndex]=java.lang.Float.valueOf(request.body[exchange.properties.CamelLoopIndex])
+                    </groovy>
+                </setHeader>
+            </loop>
+
+            <log message="f1_nw_display_backlight_min s=${header.OHItems[0]}"/>
+            <log message="f1_nw_display_backlight_max s=${header.OHItems[1]}"/>
+            <log message="f1_nw_display_bias s=${header.OHItems[2]}"/>
+            <log message="f1_nw_display_multiplier s=${header.OHItems[3]}"/>
+            <log message="OHItems.length s=${header.OHItems.length}"/>
             <log message="body=${body}"/>
-            <log message="f1_nw_display_backlight_min=${header.f1_nw_display_backlight_min}"/>
-            <log message="f1_nw_display_backlight_max=${header.f1_nw_display_backlight_max}"/>
-            <log message="f1_nw_display_bias=${header.f1_nw_display_bias}"/>
-            <log message="f1_nw_display_multiplier=${header.f1_nw_display_multiplier}"/>
+            <log message="f1_nw_display_backlight_min=${header.OHItemsFloat[0]}"/>
+            <log message="f1_nw_display_backlight_max=${header.OHItemsFloat[1]}"/>
+            <log message="f1_nw_display_bias=${header.OHItemsFloat[2]}"/>
+            <log message="f1_nw_display_multiplier=${header.OHItemsFloat[3]}"/>
+            <!-- give log messages some time to print -->
+            <delay>
+                <constant>1000</constant>
+            </delay>
+            <!-- restore body -->
+            <setBody>
+                <groovy>request.headers.f1_nw_light</groovy>
+            </setBody>
             <setBody>
                 <groovy>
-                    result=Math.ceil(Math.min(request.headers.f1_nw_display_backlight_min,Math.max(request.headers.f1_nw_display_backlight_max,
-                    request.headers.f1_nw_display_bias+request.headers.f1_nw_display_multiplier*Math.ceil(request.body))))
+                    result=Math.ceil(Math.min(request.headers.OHItemsFloat[0],Math.max(OHItemsFloat[1],
+                    OHItemsFloat[2]+request.headers.OHItemsFloat[0]*Math.ceil(request.body))))
                 </groovy>
             </setBody>
             <convertBodyTo type="java.lang.Integer"/>
