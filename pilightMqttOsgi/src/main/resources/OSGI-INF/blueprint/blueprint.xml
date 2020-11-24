@@ -916,7 +916,8 @@ camel v 3.5.0 oct 2020
             </setBody>
             <setBody>
                 <groovy>
-                    result=Math.ceil(Math.min(request.headers.OHItemsFloat[0],Math.max(request.headers.OHItemsFloat[1],
+                    result=Math.ceil(Math.max(request.headers.OHItemsFloat[0],
+                    Math.min(request.headers.OHItemsFloat[1],
                     request.headers.OHItemsFloat[2]+request.headers.OHItemsFloat[3]*Math.ceil(request.body))))
                 </groovy>
             </setBody>
