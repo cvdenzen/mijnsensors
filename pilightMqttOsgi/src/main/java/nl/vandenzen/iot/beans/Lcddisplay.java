@@ -225,7 +225,6 @@ import Adafruit_GPIO.PWM as PWM
     private void set_cursor(short col, short row) {
 //        """Move the cursor to an explicit column and row position."""
 //            #Clamp row to the last row of the display.
-        log.log(Level.INFO, "set_cursor, col=" + col + ", line=" + row);
         if (row > this.lines) {
             row = (short) (this.lines - 1);
         }
@@ -315,7 +314,7 @@ import Adafruit_GPIO.PWM as PWM
         write8((short) (LCD_ENTRYMODESET | this.displaymode));
     }
 
-    public synchronized void message(String text) {
+    private synchronized void message(String text) {
 //            """Write text to display.  Note that text can include newlines."""
         log.info("message, message=" + text);
         short line = 0;
