@@ -316,7 +316,7 @@ import Adafruit_GPIO.PWM as PWM
 
     private synchronized void message(String text) {
 //            """Write text to display.  Note that text can include newlines."""
-        log.info("message, message=" + text);
+        log.fine("message, message=" + text);
         short line = 0;
 //            #  Iterate through each character.
         int a = 5;

@@ -870,11 +870,8 @@ camel v 3.5.0 oct 2020
         <route id="adjustBacklight">
             <from uri="paho:oh/all/f1_nw_light/state?connectionTimeout=180"/>
             <!-- We have a byte[] ??? -->
-            <log message="Received oh/all/f1_nw_light/state, body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
-            <log message="Received oh/all/f1_nw_light/state, String body=${body}"/>
             <convertBodyTo type="java.lang.Float"/>
-            <log message="Received oh/all/f1_nw_light/state, Float body=${body}"/>
             <setHeader name="f1_nw_light">
                 <groovy>request.body</groovy>
             </setHeader>
@@ -896,16 +893,6 @@ camel v 3.5.0 oct 2020
                 </setHeader>
             </loop>
 
-            <log message="f1_nw_display_backlight_min s=${header.OHItems[0]}"/>
-            <log message="f1_nw_display_backlight_max s=${header.OHItems[1]}"/>
-            <log message="f1_nw_display_bias s=${header.OHItems[2]}"/>
-            <log message="f1_nw_display_multiplier s=${header.OHItems[3]}"/>
-            <log message="OHItems.length s=${header.OHItems.length}"/>
-            <log message="body=${body}"/>
-            <log message="f1_nw_display_backlight_min=${header.OHItemsFloat[0]}"/>
-            <log message="f1_nw_display_backlight_max=${header.OHItemsFloat[1]}"/>
-            <log message="f1_nw_display_bias=${header.OHItemsFloat[2]}"/>
-            <log message="f1_nw_display_multiplier=${header.OHItemsFloat[3]}"/>
             <!-- give log messages some time to print -->
             <delay>
                 <constant>1000</constant>
@@ -923,7 +910,7 @@ camel v 3.5.0 oct 2020
             </setBody>
             <convertBodyTo type="java.lang.Integer"/>
             <convertBodyTo type="java.lang.String"/>
-            <log message="Adjust backlight to ${body}"/>
+            <log message="Adjust paho:camel/f1_nw/display/backlight to ${body}"/>
             <to uri="paho:camel/f1_nw/display/backlight"/>
         </route>
 
