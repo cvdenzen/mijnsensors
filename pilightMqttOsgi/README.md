@@ -51,6 +51,13 @@ sudo apt-get upgrade
 ====================================================================================================================
 Install Java. sudo apt install default-jdk (oct 2020: java 11).
 ====================================================================================================================
+Install artemis.
+sudo adduser artemis
+Edit service file to make service run as user artemis, group artemis
+sudo systemctl edit artemis
+[Service]
+  Environment="ARTEMIS_CLUSTER_PROPS=-Dcom.sun.management.jmxremote.port=21601 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+====================================================================================================================
 Install influxdb (oct 2020: v1.6.4-1)
 sudo apt install influxdb
 sudo apt install influxdb-client
@@ -100,7 +107,6 @@ sudo adduser karaf spi
 sudo adduser artemis
 sudo adduser pi artemis
 
-
 chmod g+w /usr/share/karaf/etc
 chmod g+w /usr/share/karaf/deploy
 
@@ -115,11 +121,15 @@ sudo systemctl enable karaf.service
 # and etc/jetty.xml change secure.port to e.g. 8444.
 sudo systemctl edit karaf, add next lines:
 [Service]
+  # next line only for old karaf version (<4.3)
   Environment="ORG_APACHE_KARAF_SSH_SSHPORT=8102"
+  Environment="ORG_APACHE_KARAF_SHELL_SSHPORT=8102"
+  Environment="JAVA_OPTS=-Dcom.sun.management.jmxremote.port=21602 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
   TimeoutSec=infinity
   ExecStartPre=sleep 10
 #==== end edit
 ====================================================================================================================
+Deprecated (nov 2020), replaced by pigpiod and diozero
 Python scripts for sensors connected to rpi (pi4j doesn't work with java 9)
 sudo apt-get install python3
 # https://linuxconfig.org/how-to-change-default-python-version-on-debian-9-stretch-linux
@@ -236,7 +246,7 @@ mysensors rfm69: https://www.mysensors.org/build/raspberry
 
 lcd:
 4 bit mode: lcd display use d4..d7
-backlight led: 5V 23mA (isolated from rest)
+backlight led: 5V 23mA (isolated from rest), high=on, with transistor
 RS=register select
 RW=H=read, L=write. USE WRITE ONLY, otherwise 5V will be supplied to raspberry pins!
 pwm, resistor, transistor.
@@ -245,3 +255,6 @@ See https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-press
 
 Lightsensor i2c address 0x23 BH1750
 
+jmx: artemis jconsole rpi3:21601
+jmx karaf jconsole rpi3:21602
+ssh karaf: ssh rpi3 -p 8102

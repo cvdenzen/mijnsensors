@@ -8,8 +8,15 @@ camel v 3.5.0 oct 2020
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="
              http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
-             http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
-
+             http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+    <!-- blueprint property placeholders -->
+    <cm:property-placeholder persistent-id="my-placeholders" update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="pahoPubOptions" value="qos=0&amp;connectionTimeout=180&amp;retained=true&amp;lazyStartProducer=true"/>
+            <cm:property name="destination" value="mock:result"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
         <dataFormats>
             <json id="jsonJsonOHRestItem" library="Gson"
@@ -44,7 +51,7 @@ camel v 3.5.0 oct 2020
         <route id="HelloWorldFromBlueprint" autoStartup="true" startupOrder="6">
             <from uri="timer:simple?period=5000&amp;repeatCount=3"/>
             <setBody>
-                <simple>Hello World from blueprint (Camel UPSPIco)</simple>
+                <simple>Hello World from blueprint</simple>
             </setBody>
             <to uri="log:nl.vandenzen.iot?level=INFO"/>
         </route>
@@ -573,13 +580,13 @@ camel v 3.5.0 oct 2020
             <from uri="quartz://groep/timer4?cron=4+*+*+*+*+?"/>
             <bean ref="Runtime" method="maxMemory"/>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:sensors/all/runtime/maxMemory?connectionTimeout=180"/>
+            <to uri="paho:sensors/all/runtime/maxMemory?{{pahoPubOptions}}"/>
             <bean ref="Runtime" method="totalMemory"/>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:sensors/all/runtime/totalMemory?connectionTimeout=180"/>
+            <to uri="paho:sensors/all/runtime/totalMemory?{{pahoPubOptions}}"/>
             <bean ref="Runtime" method="freeMemory"/>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:sensors/all/runtime/freeMemory?connectionTimeout=180"/>
+            <to uri="paho:sensors/all/runtime/freeMemory?{{pahoPubOptions}}"/>
         </route>
 
         <!-- Generic entry point for turning on the lights automatically based on light settings -->
@@ -795,7 +802,7 @@ camel v 3.5.0 oct 2020
             <setBody>
                 <groovy>result="0,0,"+request.headers.dateTimeString</groovy>
             </setBody>
-            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt?{{pahoPubOptions}}"/>
         </route>
 
         <!-- Display temp hum pressure on lcd display -->
@@ -815,7 +822,7 @@ camel v 3.5.0 oct 2020
             <setBody>
                 <groovy>result="0,1,"+request.headers.temperatuur</groovy>
             </setBody>
-            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt?{{pahoPubOptions}}"/>
             <delay>
                 <constant>563</constant>
             </delay>
@@ -828,7 +835,7 @@ camel v 3.5.0 oct 2020
                 <constant>4,1,223</constant>
             </setBody>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/message/charAt"/>
+            <to uri="paho:camel/f1_nw/display/message/charAt?{{pahoPubOptions}}"/>
             <delay>
                 <constant>453</constant>
             </delay>
@@ -837,7 +844,7 @@ camel v 3.5.0 oct 2020
                 <groovy>result="5,1,C "</groovy>
             </setBody>
             <convertBodyTo type="java.lang.String"/>
-            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt?{{pahoPubOptions}}"/>
         </route>
 
 
@@ -860,7 +867,7 @@ camel v 3.5.0 oct 2020
             <setBody>
                 <groovy>result="7,1,"+request.headers.savedBody</groovy>
             </setBody>
-            <to uri="paho:camel/f1_nw/display/message/messageAt"/>
+            <to uri="paho:camel/f1_nw/display/message/messageAt?{{pahoPubOptions}}"/>
             <setBody>
                 <constant>13,1,hPa</constant>
             </setBody>
@@ -882,7 +889,9 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <to uri="direct:getOHItems"/>
             <!-- results are in body as String[], make them float -->
-            <setHeader name="OHItemsFloat"><groovy>new Float[request.headers.OHItems.length]</groovy></setHeader>
+            <setHeader name="OHItemsFloat">
+                <groovy>new Float[request.headers.OHItems.length]</groovy>
+            </setHeader>
 
             <loop>
                 <groovy>result=request.headers.OHItems.length</groovy>
@@ -911,7 +920,7 @@ camel v 3.5.0 oct 2020
             <convertBodyTo type="java.lang.Integer"/>
             <convertBodyTo type="java.lang.String"/>
             <log message="Adjust paho:camel/f1_nw/display/backlight to ${body}"/>
-            <to uri="paho:camel/f1_nw/display/backlight"/>
+            <to uri="paho:camel/f1_nw/display/backlight?{{pahoPubOptions}}"/>
         </route>
 
     </camelContext>
