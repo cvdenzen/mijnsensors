@@ -258,7 +258,7 @@ camel v 3.5.0 oct 2020
         </route>
 
         <route id="requestLightsOnIntensity" autoStartup="true" streamCache="true">
-            <from uri="quartz://groep/timerRq001?cron=3+*+*+*+*+?"/>
+            <from uri="quartz://groep/timerRq001?startDelayedSeconds=45&amp;cron=3+*+*+*+*+?"/>
             <setHeader name="OHItem">
                 <constant>LightsOnIntensityThreshold</constant>
             </setHeader>
@@ -466,7 +466,7 @@ camel v 3.5.0 oct 2020
         </route>
 
         <route id="listen_bg_w_tv_w_timer" autoStartup="true" startupOrder="217">
-            <from uri="quartz://groep/timer_bg_w_tv_w_?cron=3/15+*+*+*+*+?"/>
+            <from uri="quartz://groep/timer_bg_w_tv_w_?startDelayedSeconds=63&amp;cron=3/15+*+*+*+*+?"/>
             <setHeader name="OHItem">
                 <constant>bg_w_tv_w</constant>
             </setHeader>
@@ -577,7 +577,7 @@ camel v 3.5.0 oct 2020
 
         <route id="ReportMemoryUsage" autoStartup="true" startupOrder="304">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz://groep/timer4?cron=4+*+*+*+*+?"/>
+            <from uri="quartz://groep/timer4?startDelayedSeconds=122&amp;cron=4+*+*+*+*+?"/>
             <bean ref="Runtime" method="maxMemory"/>
             <convertBodyTo type="java.lang.String"/>
             <to uri="paho:sensors/all/runtime/maxMemory?{{pahoPubOptions}}"/>
@@ -794,7 +794,7 @@ camel v 3.5.0 oct 2020
 
         <!-- Display temp hum pressure on lcd display -->
         <route id="displayF1_nw_time">
-            <from uri="quartz://groep/timerDisplayF1_nw_time?cron=2+*+*+*+*+?"/>
+            <from uri="quartz://groep/timerDisplayF1_nw_time?startDelayedSeconds=182&amp;cron=2+*+*+*+*+?"/>
             <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <setHeader name="dateTimeString">
                 <groovy>new java.text.SimpleDateFormat('dd-MM-yyyy HH:mm:ss').format(request.headers.fireTime)</groovy>
