@@ -263,18 +263,18 @@ camel v 3.5.0 oct 2020
                 <constant>LightsOnIntensityThreshold</constant>
             </setHeader>
             <to uri="direct:getOHItem"/>
-            <log message="LightOnInt..Threshold, body=${body}"/>
+            <log message="LightsOnInt..Threshold, body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
             <choice>
                 <when>
-                    <groovy>body</groovy>
+                    <groovy>!request.body</groovy>
                     <setBody>
                         <groovy>"8.0"</groovy>
                     </setBody>
-                    <log message="LightOnInt..Threshold was null, using default 8.0, body=${body}"/>
+                    <log message="LightsOnInt..Threshold was null, using default 8.0, body=${body}"/>
                 </when>
                 <otherwise>
-                    <log message="LightOnInt..Threshold was not null, body=${body}"/>
+                    <log message="LightsOnInt..Threshold was not null, body=${body}"/>
                 </otherwise>
             </choice>
             <convertBodyTo type="java.lang.Float"/>
