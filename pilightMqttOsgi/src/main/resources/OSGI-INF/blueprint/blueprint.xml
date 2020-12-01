@@ -820,7 +820,7 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <!-- Display in column 0, row -->
             <setBody>
-                <groovy>result="0,1,"+request.headers.temperatuur.take(3)</groovy>
+                <groovy>result="0,1,"+request.headers.temperatuur.take(4)</groovy>
             </setBody>
             <to uri="paho:camel/f1_nw/display/message/messageAt?{{pahoPubOptions}}"/>
             <delay>
