@@ -11,7 +11,7 @@
         <feature>camel-http</feature>
         <feature>camel-netty</feature>
         <feature>camel-quartz</feature>
-        <feaAAAture>camel-jsonpath</feaAAAture>
+        <feature>camel-jsonpath</feature>
         <feature>camel-jackson</feature>
         <feature>camel-jms</feature>
         <feature>service-wrapper</feature>
