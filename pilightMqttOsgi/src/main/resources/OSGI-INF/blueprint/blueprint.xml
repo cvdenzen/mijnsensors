@@ -571,6 +571,7 @@ camel v 3.5.0 oct 2020
                 <constant>true</constant>
             </setBody>
             <bean ref="AutoOffEnabled" method="setValue"/>
+            <log message="AutoOffEnabled_aan: bean AutoOffEnabled set to true"/>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
@@ -621,6 +622,11 @@ camel v 3.5.0 oct 2020
         <route id="LightsOff" autoStartup="true" startupOrder="402">
             <from uri="direct:LightsOffCalc"/>
             <to uri="direct:SetHeaders"/>
+            <log message="LightsOff, header.AutoOffEnabled  =${header.AutoOffEnabled}"/>
+            <log message="LightsOff, header.bg_w_tv_w       =${header.bg_w_tv_w}"/>
+            <log message="LightsOff, header.Stable          =${header.Stable}"/>
+            <log message="LightsOff, header.bg_x_imac2      =${header.bg_x_imac2}"/>
+            <log message="LightsOff, header.bg_x_imac3      =${header.bg_x_imac3}"/>
             <choice>
                 <when>
                     <simple>
