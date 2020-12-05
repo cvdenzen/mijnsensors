@@ -129,7 +129,7 @@ camel v 3.5.0 oct 2020
         <!-- Do a REST call to OpenHab to get the value of one item who's name is in headers.OHItem, into body -->
         <route id="getOHItem" autoStartup="true" streamCache="true">
             <from uri="direct:getOHItem"/>
-            <log message="getOHItem header.OHItem=${header.OHItem}"/>
+            <!-- <log message="getOHItem header.OHItem=${header.OHItem}"/> -->
             <choice>
                 <when>
                     <groovy>headers.OHItem.contains(",")</groovy>
@@ -177,7 +177,7 @@ camel v 3.5.0 oct 2020
                     <setBody>
                         <groovy>body.state</groovy>
                     </setBody>
-                    <log message="na groovy: headers.OHItem=${headers.OHItem}, body=${body}"/>
+                    <log message="getOHItem: headers.OHItem=${headers.OHItem}, body=${body}"/>
                 </otherwise>
             </choice>
         </route>
@@ -462,6 +462,7 @@ camel v 3.5.0 oct 2020
         </route>
         <route id="listen_bg_w_tv_w_mqtt" autoStartup="true" startupOrder="216">
             <from uri="paho:oh/all/bg_w_tv_w/state?connectionTimeout=180"/>
+            <log message="listen_bg_w_tv_mqtt: received message ${body}"/>
             <to uri="direct:listen_bg_w_tv_w"/>
         </route>
 
