@@ -298,7 +298,8 @@ camel v 3.5.0 oct 2020
         <route id="setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" autoStartup="true">
             <from uri="direct:setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
             <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Integer"/>
+            <convertBodyTo type="java.lang.Float"/>
+            <bean class="java.lang.Float" method="intValue"/>
             <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" method="setValue"/>
             <setHeader name="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm">
                 <method ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" method="getValue"/>
