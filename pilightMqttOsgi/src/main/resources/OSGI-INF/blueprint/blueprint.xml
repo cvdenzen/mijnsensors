@@ -299,7 +299,6 @@ camel v 3.5.0 oct 2020
             <from uri="direct:setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Float"/>
-            <bean class="java.lang.Float" method="intValue"/>
             <bean ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" method="setValue"/>
             <setHeader name="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm">
                 <method ref="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" method="getValue"/>
@@ -945,7 +944,7 @@ camel v 3.5.0 oct 2020
     <bean id="LichtIntensiteit_Woonkamer" class="nl.vandenzen.iot.util.MutableFloat">
         <property name="value" value="50"/>
     </bean>
-    <bean id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" class="nl.vandenzen.iot.util.MutableInteger"/>
+    <bean id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" class="nl.vandenzen.iot.util.MutableFloat"/>
     <bean id="Light_GF_Huiskamer_Achter_Staandelamp" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="GF_Passenger_minutes" class="nl.vandenzen.iot.util.MutableLong">
         <property name="value" value="1"/>
