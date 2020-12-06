@@ -2,16 +2,14 @@ package nl.vandenzen.iot.beans;
 
 
 import org.apache.camel.EndpointInject;
-import org.apache.camel.EndpointInject;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
-import org.apache.camel.support.DefaultExchange;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ExtendableDelay {
 
@@ -41,6 +39,8 @@ public class ExtendableDelay {
                 try {
                     lock.lock();
                     if (timer!=null) {
+                        producer = exchange.getContext().createProducerTemplate();
+                        logger.log(Level.INFO, "ExtendableDelay tripped, created producer: " + producer);
                         producer.send(uri, exchange);
                         logger.log(Level.INFO, "ExtendableDelay tripped and started: " + uri);
                         timer = null; // signal for restartTimer
