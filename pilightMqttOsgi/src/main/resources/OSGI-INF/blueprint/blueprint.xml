@@ -709,6 +709,8 @@ camel v 3.5.0 oct 2020
             </setBody>
             <convertBodyTo type="java.lang.Boolean"/>
             <bean ref="Stable" method="setValue"/>
+            <to uri="direct:SetHeaders"/>
+            <log message="set_stable_true, header.Stable          =${header.Stable}"/>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
