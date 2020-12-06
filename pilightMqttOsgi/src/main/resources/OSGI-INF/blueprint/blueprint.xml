@@ -210,7 +210,7 @@ camel v 3.5.0 oct 2020
             </setBody>
         </route>
         <!-- Test setOHItem-->
-        <route id="testGetOHItem" autoStartup="false">
+        <route id="testCamel" autoStartup="false">
             <from uri="quartz://groep/timerTestGetOHItem?cron=0/10+*+*+*+*+?"/>
             <setHeader name="OHItem">
                 <groovy>"Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"
@@ -227,6 +227,10 @@ camel v 3.5.0 oct 2020
             <log message="headers.Light_GF_Huiskamer_LampGroteKast_Dimm=${headers.Light_GF_Huiskamer_LampGroteKast_Dimm}"/>
             <log message="Light_GF_Huiskamer_LampLadenkastje_Dimm=${headers.Light_GF_Huiskamer_LampLadenkastje_Dimm}"/>
             <log message="bg_w_tv_w=${headers.bg_w_tv_w}"/>
+            <to uri="direct:SetHeaders"/>
+            <log message="testCamel, header.AutoOffEnabled  =${header.AutoOffEnabled}"/>
+            <log message="testCamel, header.bg_w_tv_w       =${header.bg_w_tv_w}"/>
+            <log message="testCamel, header.Stable          =${header.Stable}"/>
         </route>
 
         <!-- Deze werkt 17 jan 2020.-->
