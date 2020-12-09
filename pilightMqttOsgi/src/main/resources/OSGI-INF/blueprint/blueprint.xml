@@ -696,12 +696,16 @@ camel v 3.5.0 oct 2020
             <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
-            <setHeader name="OHItem">AutoOnEnabled</setHeader>
+            <setHeader name="OHItem">
+                <constant>AutoOnEnabled</constant>
+            </setHeader>
             <to uri="direct:getOHItem"/>
             <setHeader name="AutoOnEnabled">
                 <groovy>request.body</groovy>
             </setHeader>
-            <setHeader name="OHItem">AutoOffEnabled</setHeader>
+            <setHeader name="OHItem">
+                <constant>AutoOffEnabled</constant>
+            </setHeader>
             <to uri="direct:getOHItem"/>
             <setHeader name="AutoOffEnabled">
                 <groovy>request.body</groovy>
