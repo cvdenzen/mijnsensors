@@ -13,7 +13,8 @@ camel v 3.5.0 oct 2020
     <!-- blueprint property placeholders -->
     <cm:property-placeholder persistent-id="my-placeholders" update-strategy="reload">
         <cm:default-properties>
-            <cm:property name="pahoPubOptions" value="qos=0&amp;connectionTimeout=180&amp;retained=true&amp;lazyStartProducer=true"/>
+            <cm:property name="pahoPubOptions"
+                         value="qos=0&amp;connectionTimeout=180&amp;retained=true&amp;lazyStartProducer=true"/>
             <cm:property name="destination" value="mock:result"/>
         </cm:default-properties>
     </cm:property-placeholder>
@@ -695,12 +696,12 @@ camel v 3.5.0 oct 2020
             <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
-            <setheader name="OHItem">AutoOnEnabled</setheader>
+            <setHeader name="OHItem">AutoOnEnabled</setHeader>
             <to uri="direct:getOHItem"/>
             <setHeader name="AutoOnEnabled">
                 <groovy>request.body</groovy>
             </setHeader>
-            <setheader name="OHItem">AutoOffEnabled</setheader>
+            <setHeader name="OHItem">AutoOffEnabled</setHeader>
             <to uri="direct:getOHItem"/>
             <setHeader name="AutoOffEnabled">
                 <groovy>request.body</groovy>
