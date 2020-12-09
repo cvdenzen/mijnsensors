@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-autoonenabled wordt in principe hier bijgehouden en niet in Openhab.
+
 camel v 3.5.0 oct 2020
 
 -->
@@ -37,15 +37,6 @@ camel v 3.5.0 oct 2020
         <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimer?repeatCount=1"/>
             <to uri="direct:set_stable_false"/>
-            <!-- enable automatic turning off the lights -->
-            <setBody>
-                <constant>true</constant>
-            </setBody>
-            <bean ref="AutoOffEnabled" method="setValue"/>
-            <setBody>
-                <constant>true</constant>
-            </setBody>
-            <bean ref="AutoOnEnabled" method="setValue"/>
         </route>
 
         <route id="HelloWorldFromBlueprint" autoStartup="true" startupOrder="6">
@@ -433,7 +424,7 @@ camel v 3.5.0 oct 2020
             <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="extend"/>
         </route>
 
-        <!-- This is not used, AutoOnEnabled is not handled by openhab (march 2020) -->
+        <!-- This is used, AutoOnEnabled is handled by openhab (dec 2020) -->
         <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="202">
             <from uri="paho:oh/all/AutoOnEnabled/state?connectionTimeout=180"/>
             <to uri="direct:convert_body_to_boolean"/>
@@ -563,19 +554,39 @@ camel v 3.5.0 oct 2020
         <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="301">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer1?cron=0+0+12+*+*+?"/>
+            <!-- deprecated, now in OpenHab dec 2020 -->
+            <!--
             <setBody>
                 <constant>true</constant>
             </setBody>
             <bean ref="AutoOnEnabled" method="setValue"/>
             <log message="bean AutoOnEnabled set to ${body}"/>
+            -->
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <setHeader name="OHItem">
+                <constant>AutoOnEnabled</constant>
+            </setHeader>
+            <to uri="direct:setOHItem"/>
         </route>
         <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer2?cron=47+50+22+*+*+?"/>
+            <!-- deprecated, now in OpenHab dec 2020 -->
+            <!--
             <setBody>
                 <constant>true</constant>
             </setBody>
             <bean ref="AutoOffEnabled" method="setValue"/>
+            -->
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <setHeader name="OHItem">
+                <constant>AutoOffEnabled</constant>
+            </setHeader>
+            <to uri="direct:setOHItem"/>
             <log message="AutoOffEnabled_aan: bean AutoOffEnabled set to true"/>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
@@ -618,7 +629,10 @@ camel v 3.5.0 oct 2020
                         <setBody>
                             <constant>false</constant>
                         </setBody>
-                        <bean ref="AutoOnEnabled" method="setValue"/>
+                        <setHeader name="OHItem">
+                            <constant>AutoOffEnabled</constant>
+                        </setHeader>
+                        <to uri="direct:setOHItem"/>
                     </when>
                 </when>
             </choice>
@@ -649,7 +663,10 @@ camel v 3.5.0 oct 2020
                     <setBody>
                         <constant>false</constant>
                     </setBody>
-                    <bean ref="AutoOffEnabled" method="setValue"/>
+                    <setHeader name="OHItem">
+                        <constant>AutoOffEnabled</constant>
+                    </setHeader>
+                    <to uri="direct:setOHItem"/>
                     <!-- alle lampen direct uitzetten, achterdeurlamp pas na een delay -->
                     <to uri="direct:ZetLichtenUit"/>
                     <!-- delay for only one light (achterdeur)-->
@@ -678,11 +695,15 @@ camel v 3.5.0 oct 2020
             <setHeader name="LightsOnIntensityThreshold">
                 <method ref="LightsOnIntensityThreshold" method="getValue"/>
             </setHeader>
+            <setheader name="OHItem">AutoOnEnabled</setheader>
+            <to uri="direct:getOHItem"/>
             <setHeader name="AutoOnEnabled">
-                <method ref="AutoOnEnabled" method="getValue"/>
+                <groovy>request.body</groovy>
             </setHeader>
+            <setheader name="OHItem">AutoOffEnabled</setheader>
+            <to uri="direct:getOHItem"/>
             <setHeader name="AutoOffEnabled">
-                <method ref="AutoOffEnabled" method="getValue"/>
+                <groovy>request.body</groovy>
             </setHeader>
             <setHeader name="pir_gf_achterdeur17">
                 <method ref="pir_gf_achterdeur17" method="getValue"/>
