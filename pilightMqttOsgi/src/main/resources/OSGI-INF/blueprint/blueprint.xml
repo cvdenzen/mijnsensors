@@ -53,9 +53,12 @@ camel v 3.5.0 oct 2020
             <log message="convert_body_to_boolean entry body=${body}"/>
             <choice>
                 <when>
-                    <simple>${body} == "1"
-                        || ${body} == "ON"
-                    </simple>
+                    <groovy>"1".equals(request.body)
+                        || request.body == 1
+                        || request.body == true
+                        || "ON".equals(request.body.toUpperCase())
+                        || "true".equals(request.body.toLowerCase())
+                    </groovy>
                     <setBody>
                         <constant>true</constant>
                     </setBody>
