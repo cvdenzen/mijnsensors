@@ -614,11 +614,11 @@ camel v 3.5.0 oct 2020
             <log message="Start Enable_lights_on_by_daylight, header.AutoOnEnabled=${header.AutoOnEnabled}"/>
             <choice>
                 <when>
-                    <simple>
-                        ${header.AutoOnEnabled} == 1
-                        || ${header.AutoOnEnabled} == true
-                        || ${header.AutoOnEnabled} == ON
-                    </simple>
+                    <groovy>
+                        headers.AutoOnEnabled == 1
+                        || headers.AutoOnEnabled == true
+                        || "ON".equals(headers.AutoOnEnabled)
+                    </groovy>
                     <log message="header.AutoOnEnabled==true=${header.AutoOnEnabled}"/>
                     <when>
                         <!-- it is dark -->
@@ -632,7 +632,7 @@ camel v 3.5.0 oct 2020
                             <constant>OFF</constant>
                         </setBody>
                         <setHeader name="OHItem">
-                            <constant>AutoOffEnabled</constant>
+                            <constant>AutoOnEnabled</constant>
                         </setHeader>
                         <to uri="direct:setOHItem"/>
                     </when>
@@ -650,13 +650,13 @@ camel v 3.5.0 oct 2020
             <log message="LightsOff, header.bg_x_imac3      =${header.bg_x_imac3}"/>
             <choice>
                 <when>
-                    <simple>
-                        ${header.AutoOffEnabled} == true
-                        &amp;&amp; ${header.bg_w_tv_w} == false
-                        &amp;&amp; ${header.Stable} == true
-                        &amp;&amp; ${header.bg_x_imac2} == false
-                        &amp;&amp; ${header.bg_x_imac3} == false <!-- // and imac is off -->
-                    </simple>
+                    <groovy>
+                        "ON".equals(headers.AutoOffEnabled)
+                        &amp;&amp; headers.bg_w_tv_w == false
+                        &amp;&amp; headers.Stable == true
+                        &amp;&amp; headers.bg_x_imac2 == false
+                        &amp;&amp; headers.bg_x_imac3 == false <!-- // and imac is off -->
+                    </groovy>
                     <setBody>
                         <simple>Licht gaat uit.</simple>
                     </setBody>
