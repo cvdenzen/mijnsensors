@@ -50,6 +50,7 @@ camel v 3.5.0 oct 2020
 
         <route id="convert_body_to_boolean" autoStartup="true" startupOrder="7">
             <from uri="direct:convert_body_to_boolean"/>
+            <log message="convert_body_to_boolean entry body=${body}"/>
             <choice>
                 <when>
                     <simple>${body} == "1"
@@ -66,6 +67,7 @@ camel v 3.5.0 oct 2020
                 </otherwise>
             </choice>
             <convertBodyTo type="java.lang.Boolean"/>
+            <log message="convert_body_to_boolean return body=${body}"/>
         </route>
 
         <!-- Set OpenHab Item to value: use a rest POST call to OpenHab. This will probably
