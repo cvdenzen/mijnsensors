@@ -564,7 +564,7 @@ camel v 3.5.0 oct 2020
             <log message="bean AutoOnEnabled set to ${body}"/>
             -->
             <setBody>
-                <constant>true</constant>
+                <constant>ON</constant>
             </setBody>
             <setHeader name="OHItem">
                 <constant>AutoOnEnabled</constant>
@@ -582,7 +582,7 @@ camel v 3.5.0 oct 2020
             <bean ref="AutoOffEnabled" method="setValue"/>
             -->
             <setBody>
-                <constant>true</constant>
+                <constant>ON</constant>
             </setBody>
             <setHeader name="OHItem">
                 <constant>AutoOffEnabled</constant>
@@ -617,6 +617,7 @@ camel v 3.5.0 oct 2020
                     <simple>
                         ${header.AutoOnEnabled} == 1
                         || ${header.AutoOnEnabled} == true
+                        || ${header.AutoOnEnabled} == ON
                     </simple>
                     <log message="header.AutoOnEnabled==true=${header.AutoOnEnabled}"/>
                     <when>
@@ -628,7 +629,7 @@ camel v 3.5.0 oct 2020
                         <to uri="direct:ZetLichtenAan"/>
                         <!-- disable automatic turning on the lights -->
                         <setBody>
-                            <constant>false</constant>
+                            <constant>OFF</constant>
                         </setBody>
                         <setHeader name="OHItem">
                             <constant>AutoOffEnabled</constant>
@@ -662,7 +663,7 @@ camel v 3.5.0 oct 2020
                     <to uri="log:nl.vandenzen.iot?level=INFO"/>
                     <!-- disable automatic turning off the lights -->
                     <setBody>
-                        <constant>false</constant>
+                        <constant>OFF</constant>
                     </setBody>
                     <setHeader name="OHItem">
                         <constant>AutoOffEnabled</constant>
