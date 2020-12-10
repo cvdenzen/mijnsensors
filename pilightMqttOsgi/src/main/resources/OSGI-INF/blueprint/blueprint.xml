@@ -56,8 +56,8 @@ camel v 3.5.0 oct 2020
                     <groovy>"1".equals(request.body)
                         || request.body == 1
                         || request.body == true
-                        || "ON".equals(request.body.toUpperCase())
-                        || "true".equals(request.body.toLowerCase())
+                        || "ON".equals(request.body)
+                        || "true".equals(request.body)
                     </groovy>
                     <setBody>
                         <constant>true</constant>
