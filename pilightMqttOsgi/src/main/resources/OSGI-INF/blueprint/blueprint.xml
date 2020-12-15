@@ -259,33 +259,6 @@ camel v 3.5.0 oct 2020
             <to uri="direct:setOHItem"/>
         </route>
 
-        <route id="requestLightsOnIntensity" autoStartup="true" streamCache="true">
-            <from uri="quartz://groep/timerRq001?startDelayedSeconds=45&amp;cron=3+*+*+*+*+?"/>
-            <setHeader name="OHItem">
-                <constant>LightsOnIntensityThreshold</constant>
-            </setHeader>
-            <to uri="direct:getOHItem"/>
-            <log message="LightsOnInt..Threshold, body=${body}"/>
-            <convertBodyTo type="java.lang.String"/>
-            <choice>
-                <when>
-                    <groovy>!request.body</groovy>
-                    <setBody>
-                        <groovy>"8.0"</groovy>
-                    </setBody>
-                    <log message="LightsOnInt..Threshold was null, using default 8.0, body=${body}"/>
-                </when>
-                <otherwise>
-                    <log message="LightsOnInt..Threshold was not null, body=${body}"/>
-                </otherwise>
-            </choice>
-            <convertBodyTo type="java.lang.Float"/>
-            <bean ref="LightsOnIntensityThreshold" method="setValue"/>
-            <setHeader name="LightsOnIntensityThreshold">
-                <method ref="LightsOnIntensityThreshold" method="getValue"/>
-            </setHeader>
-        </route>
-
         <!-- set header and bean -->
         <route id="requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" autoStartup="true" streamCache="true">
             <from uri="direct:requestLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
@@ -375,8 +348,7 @@ camel v 3.5.0 oct 2020
             <log message="LichtIntensiteit_Woonkamer_updated: body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Float"/>
-            <bean ref="LichtIntensiteit_Woonkamer" method="setValue"/>
-            <log message="LichtIntensiteit_Woonkamer updated (oh/.../state): header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
+            <log message="LichtIntensiteit_Woonkamer updated (oh/.../state): header.LichtIntensiteit_Woonkamer=${body}"/>
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
 
@@ -447,7 +419,6 @@ camel v 3.5.0 oct 2020
             <to uri="log:nl.vandenzen.iot?level=INFO"/>
             <convertBodyTo type="java.lang.Integer"/>
             <to uri="log:nl.vandenzen.iot?level=INFO"/>
-            <bean ref="LightsOnIntensityThreshold" method="setValue"/>
             <!-- Turn on lights? -->
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
@@ -696,13 +667,23 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <log message="Start SetHeaders"/>
 
+
+            <setHeader name="OHItem">
+                <constant>LichtIntensiteit_Woonkamer</constant>
+            </setHeader>
+            <to uri="direct:getOHItem"/>
             <setHeader name="LichtIntensiteit_Woonkamer">
-                <method ref="LichtIntensiteit_Woonkamer" method="getValue"/>
+                <groovy>request.body</groovy>
             </setHeader>
-            <log message="SetHeader: header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
+
+            <setHeader name="OHItem">
+                <constant>LightsOnIntensityThreshold</constant>
+            </setHeader>
+            <to uri="direct:getOHItem"/>
             <setHeader name="LightsOnIntensityThreshold">
-                <method ref="LightsOnIntensityThreshold" method="getValue"/>
+                <groovy>request.body</groovy>
             </setHeader>
+
             <setHeader name="OHItem">
                 <constant>AutoOnEnabled</constant>
             </setHeader>
@@ -974,14 +955,8 @@ camel v 3.5.0 oct 2020
     <bean id="AutoOnEnabled" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="AutoOffEnabled" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="pir_gf_achterdeur17" class="nl.vandenzen.iot.util.MutableBoolean"/>
-    <bean id="LightsOnIntensityThreshold" class="nl.vandenzen.iot.util.MutableFloat">
-        <property name="value" value="8"/>
-    </bean>
     <bean id="LightsEnableIntensityThreshold" class="nl.vandenzen.iot.util.MutableInteger">
         <property name="value" value="31"/>
-    </bean>
-    <bean id="LichtIntensiteit_Woonkamer" class="nl.vandenzen.iot.util.MutableFloat">
-        <property name="value" value="50"/>
     </bean>
     <bean id="Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm" class="nl.vandenzen.iot.util.MutableFloat"/>
     <bean id="Light_GF_Huiskamer_Achter_Staandelamp" class="nl.vandenzen.iot.util.MutableBoolean"/>
