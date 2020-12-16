@@ -599,9 +599,12 @@ camel v 3.5.0 oct 2020
                     <log message="header.AutoOnEnabled==true=${header.AutoOnEnabled}"/>
                     <when>
                         <!-- it is dark -->
-                        <simple>
-                            ${header.LichtIntensiteit_Woonkamer} &lt; ${header.LightsOnIntensityThreshold}
-                        </simple>
+                        <log message="Start Enable_lights_on_by_daylight, header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
+                        <log message="Start Enable_lights_on_by_daylight, header.LightsOnIntensityThreshold=${header.LightsOnIntensityThreshold}"/>
+                        <groovy>
+                            java.lang.Float.valueOf(headers.LichtIntensiteit_Woonkamer)
+                              &lt; java.lang.Float.valueOf(headers.LightsOnIntensityThreshold)
+                        </groovy>
                         <log message="Licht gaat aan!"/>
                         <to uri="direct:ZetLichtenAan"/>
                         <!-- disable automatic turning on the lights -->
