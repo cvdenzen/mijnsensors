@@ -375,8 +375,11 @@ camel v 3.5.0 oct 2020
                         <simple>${header.pir_gf_achterdeur17}</simple>
                         <log message="pir is true"/>
                         <when>
-                            <simple>${header.LichtIntensiteit_Woonkamer} &lt; ${header.LightsOnIntensityThreshold}
-                            </simple>
+                            <!-- it is dark -->
+                            <groovy>
+                                java.lang.Float.valueOf(headers.LichtIntensiteit_Woonkamer)
+                                &lt; java.lang.Float.valueOf(headers.LightsOnIntensityThreshold)
+                            </groovy>
                             <log message="lichtinsiteit woonkamer&lt;threshold"/>
                             <when>
                                 <simple>${header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm} &lt; 1</simple>
