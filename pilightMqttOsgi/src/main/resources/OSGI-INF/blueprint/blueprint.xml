@@ -288,7 +288,8 @@ camel v 3.5.0 oct 2020
             <to uri="direct:set_HueStable_false"/>
             <setHeader name="OHItem">
                 <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle,"
-                    .concat("Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle")
+                    .concat("Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle,")
+                    .concat("Light_GF_Huiskamer_Kerstboom")
                 </groovy>
             </setHeader>
             <setBody>
@@ -311,7 +312,8 @@ camel v 3.5.0 oct 2020
             <log message="Lichten gaan uit!"/>
             <to uri="direct:set_HueStable_false"/>
             <setHeader name="OHItem">
-                <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle"
+                <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle,"
+                    .concat("Light_GF_Huiskamer_Kerstboom")
                 </groovy>
             </setHeader>
             <setBody>
