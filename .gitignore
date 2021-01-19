@@ -5,3 +5,4 @@ lib/**
 
 target/**
 /mqttPilight/pilightMqttOsgi/target/
+/pilightMqttOsgi/target/

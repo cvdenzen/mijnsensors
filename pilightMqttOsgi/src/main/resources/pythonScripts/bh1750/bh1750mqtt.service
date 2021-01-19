@@ -1,0 +1,21 @@
+[Unit]
+Description=bh1750 brightness sensor mqtt
+After=syslog.target network.target
+
+[Service]
+#EnvironmentFile=/usr/share/karaf/etc/karaf.conf
+
+ExecStart=/home/pi/pythonScript/bh1750/bh1750mqtt.py
+
+User=openhab
+Group=openhab
+
+SuccessExitStatus=0 143
+RestartSec=15
+Restart=on-failure
+
+LimitNOFILE=102642
+
+[Install]
+WantedBy=multi-user.target
+

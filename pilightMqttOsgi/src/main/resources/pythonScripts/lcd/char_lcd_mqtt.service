@@ -1,0 +1,21 @@
+[Unit]
+Description=char_lcd display mqtt
+After=syslog.target network.target
+
+[Service]
+#EnvironmentFile=/usr/share/karaf/etc/karaf.conf
+
+ExecStart=/usr/bin/python /home/pi/pythonScripts/lcd/char_lcd_mqtt.py 2>&1 >/home/pi/pythonScripts/lcd/char_lcd_mqtt.log
+
+User=pi
+Group=pi
+
+SuccessExitStatus=0 143
+RestartSec=15
+Restart=on-failure
+
+LimitNOFILE=102642
+
+[Install]
+WantedBy=multi-user.target
+
