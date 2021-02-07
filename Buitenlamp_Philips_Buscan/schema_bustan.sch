@@ -177,3 +177,69 @@ T 47300 44400 9 10 1 0 0 0 3
 Voeding Bustan lamp: Uout max 42V
 Iout DC 350mA
 Pout rated 10W
+V 43700 42500 1800 3 0 0 0 -1 -1 0 -1 -1 -1 -1 -1
+C 43800 43400 1 0 0 terminal-1.sym
+{
+T 44110 44150 5 10 0 0 0 0 1
+device=terminal
+T 44110 44000 5 10 0 0 0 0 1
+footprint=CONNECTOR 1 1
+T 44050 43450 5 10 1 1 0 6 1
+refdes=T?
+}
+C 44300 42900 1 0 0 terminal-1.sym
+{
+T 44610 43650 5 10 0 0 0 0 1
+device=terminal
+T 44610 43500 5 10 0 0 0 0 1
+footprint=CONNECTOR 1 1
+T 44550 42950 5 10 1 1 0 6 1
+refdes=T?
+}
+C 44300 42200 1 0 0 terminal-1.sym
+{
+T 44610 42950 5 10 0 0 0 0 1
+device=terminal
+T 44610 42800 5 10 0 0 0 0 1
+footprint=CONNECTOR 1 1
+T 44550 41950 5 10 1 1 0 6 1
+refdes=T3
+T 44300 41700 5 10 1 0 0 0 1
+netname=0V
+}
+C 43600 41500 1 180 0 terminal-1.sym
+{
+T 43290 40750 5 10 0 0 180 0 1
+device=terminal
+T 43290 40900 5 10 0 0 180 0 1
+footprint=CONNECTOR 1 1
+T 43350 41450 5 10 1 1 180 6 1
+refdes=T4
+T 43400 41700 5 10 1 0 180 0 1
+netname=+3V3
+}
+C 43200 42100 1 180 0 terminal-1.sym
+{
+T 42890 41350 5 10 0 0 180 0 1
+device=terminal
+T 42890 41500 5 10 0 0 180 0 1
+footprint=CONNECTOR 1 1
+T 43150 42050 5 10 1 1 180 6 1
+refdes=T5
+T 42900 42300 5 10 1 0 180 0 1
+netname=RELOutput
+}
+C 43100 42900 1 180 0 terminal-1.sym
+{
+T 42790 42150 5 10 0 0 180 0 1
+device=terminal
+T 42790 42300 5 10 0 0 180 0 1
+footprint=CONNECTOR 1 1
+T 42950 42850 5 10 1 1 180 6 1
+refdes=T6
+T 42800 42600 5 10 1 1 180 0 1
+netname=ONTIME
+}
+B 45200 43300 800 400 3 0 0 0 -1 -1 0 -1 -1 -1 -1 -1
+T 40800 44200 9 10 1 0 0 0 1
+BS612 pir onderaanzicht
