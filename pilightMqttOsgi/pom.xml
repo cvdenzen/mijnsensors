@@ -150,7 +150,7 @@
         <dependency>
             <groupId>uk.pigpioj</groupId>
             <artifactId>pigpioj-java</artifactId>
-            <version>${pigpioj-java.version}/version>
+            <version>${pigpioj-java.version}</version>
         </dependency>
 
     </dependencies>
