@@ -1,13 +1,9 @@
 
 This files describes the actions to take for the separate karaf instance, NOT for the openhab instance.
 
-# pilight, in a unix shell on iMac (jan 2020: deprecated, no more pilight, everything is Philips Hue)
-scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/lib/*.jar pi@rpi3:/usr/share/karaf/deploy
-scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen.iot/pilightmqttosgi-features.xml  pi@rpi3:/usr/share/karaf/deploy
-:q
 
-# 20201113 deprecated, use standalone artemis server copy activemq.xml from lastpass to /usr/share/karaf/etc/activemq.xml
-# rpi2: chmod g+w /usr/share/apache-karaf/deploy
+# 20210410 artemis is not good, use activemq copy activemq.xml from password manager (BitWarden in apr 2021) to /usr/share/karaf/etc/activemq.xml
+# rpiX: chmod g+w /usr/share/apache-karaf/deploy
 # copy jar from imac to raspberry (rpi2=192.168.2.9 jan 2020)
 mvn clean install && scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@raspberrypi:/usr/share/karaf/deploy
 scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vandenzen.iot/pilightmqttosgi.properties pi@rpi3:/usr/share/karaf/etc/
@@ -23,8 +19,6 @@ Connect to openhab system (raspberry):
 Terminal, ssh pi@192.168.2.3 (ssh pi@rpi3) (of pi@168.2.18 27 jan 2020 ethernetkabel)
 
 openhab@raspberrypi:/home/pi/gitrepos/etc_openhab2$ gpio readall
-
-
 
 bin/client to connect to running karaf. User is karaf, password ?????
 
@@ -88,8 +82,7 @@ systemctl edit openhab2,
   TimeoutSec=infinity
   ExecStartPre=sleep 120
 ============================================================================
-Install Karaf (for pilightMqttOsgi):
-Download karaf jar. Untar in /usr/share/karaf (or make a symlink, might be better)
+System users on karaf/openhab server (raspberry)
 
 sudo adduser karaf
 sudo adduser pi openhab
@@ -107,27 +100,6 @@ sudo adduser karaf spi
 sudo adduser artemis
 sudo adduser pi artemis
 
-chmod g+w /usr/share/karaf/etc
-chmod g+w /usr/share/karaf/deploy
-
-sudo chown -R karaf.karaf /usr/share/karaf apache-karaf-4.3.0
-Install karaf as service in systemd in Linux: see web site karaf:
-karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
-Run in subdir bin/contrib sudo ./karaf-service.sh -k /usr/share/karaf
-sudo vi karaf.service, change user/group to karaf / karaf
-sudo cp karaf.service /lib/systemd/system
-sudo systemctl enable karaf.service
-# if already in use by e.g. openhab, change ssh port in systemctl edit (see next lines) from 8101 in e.g. 8102.
-# and etc/jetty.xml change secure.port to e.g. 8444.
-sudo systemctl edit karaf, add next lines:
-[Service]
-  # next line only for old karaf version (<4.3)
-  Environment="ORG_APACHE_KARAF_SSH_SSHPORT=8102"
-  Environment="ORG_APACHE_KARAF_SHELL_SSHPORT=8102"
-  Environment="JAVA_OPTS=-Dcom.sun.management.jmxremote.port=21602 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
-  TimeoutSec=infinity
-  ExecStartPre=sleep 10
-#==== end edit
 ====================================================================================================================
 Deprecated (nov 2020), replaced by pigpiod and diozero
 Python scripts for sensors connected to rpi (pi4j doesn't work with java 9)
@@ -164,7 +136,7 @@ edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197 (or in commandl
 --my-mqtt-client-id=mygateway1 \
 --my-mqtt-user=mysensors \
 --my-mqtt-password='<PASS>'
-# <PASS>: see lastpass, activemq.xml, user mysensors, passwd. Do not use strange characters like #^&$ (?),
+# <PASS>: see password manager (BitWarden/LastPass etc.), activemq.xml, user mysensors, passwd. Do not use strange characters like #^&$ (?),
 # shell/make can be confused.
 make
 sudo make install
@@ -182,8 +154,41 @@ systemctl edit grafana-server
   TimeoutSec=infinity
   ExecStartPre=sleep 300
 =====================================================================================================================
-Install karaf
-repo-add camel x.y.z (oct 2020 version camel 3.6.0)
+Install Karaf (for pilightMqttOsgi):
+Download karaf jar. 
+wget https://downloads.apache.org/karaf/4.3.1/apache-karaf-4.3.1.tar.gz
+Untar in /usr/share/apache-karaf-x.y.z
+in /usr/share: sudo tar -xzf /home/pi/Downloads/apache-karaf-4.3.1.tar.gz
+Make a symlink: sudo rm karaf; sudo ln -s apache-karaf-x.y.z karaf
+sudo chown karaf.karaf karaf
+sudo chown -R karaf.karaf apache-karaf-x.y.z
+sudo chmod g+w /usr/share/karaf/etc
+sudo chmod g+w /usr/share/karaf/deploy
+
+Install karaf as service in systemd in Linux: see web site karaf:
+karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
+Run in subdir bin/contrib sudo ./karaf-service.sh -k /usr/share/karaf
+(more info https://karaf.apache.org/manual/latest/#_integration_in_the_operating_system)
+sudo vi karaf.service, change user/group to karaf / karaf
+sudo cp karaf.service /lib/systemd/system
+sudo systemctl enable karaf.service
+# if already in use by e.g. openhab, change ssh port in systemctl edit (see next lines) from 8101 in e.g. 8102.
+# and etc/jetty.xml change secure.port to e.g. 8444.
+sudo systemctl edit karaf, add next lines:
+[Service]
+# next line only for old karaf version (<4.3)
+Environment="ORG_APACHE_KARAF_SSH_SSHPORT=8102"
+Environment="ORG_APACHE_KARAF_SHELL_SSHPORT=8102"
+Environment="JAVA_OPTS=-Dcom.sun.management.jmxremote.port=21602 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+TimeoutSec=infinity
+ExecStartPre=sleep 10
+#==== end edit
+crontab -e, crontab.txt file (restart camel every week, there is a memory leak somewhere)
+
+
+=====================================================================================================================
+Install camel in karaf
+repo-add camel x.y.z (apr 2021 version camel 3.9.0)
 feature:install camel
 # cellar distributed karaf support, not useful (summer 2020)
 repo-add cellar
@@ -191,11 +196,19 @@ feature:install cellar
 
 - karaf, install camel and camel-blueprint
 Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy)
+  - pigpioj-java-2.5.5.jar !No: should go via pom.xml in pilightmqttosgi jar
+scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/lib/*.jar pi@rpi3:/usr/share/karaf/deploy
+scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen.iot/pilightmqttosgi-features.xml  pi@rpi3:/usr/share/karaf/deploy
+
+
 feature:install pilightmqttosgi
 #
 # end of feature install commands
 #
-
+=====================================================================================================================
+Install activemq in karaf
+repo-add activemq
+feature:install activemq-broker
 
 ============================================================================
 rpi board connection (as of dec 2018), should be usable on rpi2 and rpi3.
