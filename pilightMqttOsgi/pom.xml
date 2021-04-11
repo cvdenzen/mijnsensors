@@ -176,7 +176,7 @@
                     <instructions>
 
                         <Embed-Dependency></Embed-Dependency>
-                        <Include-Resource>lib/</Include-Resource>
+                        <Include-Resource>lib/gson-2.8.6.jar</Include-Resource>
                         <!-- https://github.com/bndtools/bndtools/wiki/Big-Bad-Bundle -->
                         <Bundle-ClassPath>.</Bundle-ClassPath>
                         <Export-Package>
