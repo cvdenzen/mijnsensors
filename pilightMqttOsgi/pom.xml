@@ -153,6 +153,7 @@
             <artifactId>camel-groovy</artifactId>
             <version>${camel.version}</version>
         </dependency>
+        <!-- pigpio is deployed by Jenkins, see jenkinsfile -->
         <!-- https://mvnrepository.com/artifact/uk.pigpioj/pigpioj-java -->
         <dependency>
             <groupId>uk.pigpioj</groupId>
@@ -175,8 +176,7 @@
                     <instructions>
 
                         <Embed-Dependency></Embed-Dependency>
-                        <!-- Include-Resourcelog:tail
-                        >lib</Include-Resource -->
+                        <Include-Resource>lib</Include-Resource>
                         <!-- https://github.com/bndtools/bndtools/wiki/Big-Bad-Bundle -->
                         <Bundle-ClassPath>.</Bundle-ClassPath>
                         <Export-Package>
