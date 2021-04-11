@@ -153,13 +153,6 @@
             <artifactId>camel-groovy</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/uk.pigpioj/pigpioj-java -->
-        <dependency>
-            <groupId>uk.pigpioj</groupId>
-            <artifactId>pigpioj-java</artifactId>
-            <version>${pigpioj-java.version}</version>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -174,7 +167,7 @@
 
                     <instructions>
 
-                        <Embed-Dependency>pigpio-java;scope=compile|runtime</Embed-Dependency>
+                        <Embed-Dependency></Embed-Dependency>
                         <!-- Include-Resourcelog:tail
                         >lib</Include-Resource -->
                         <!-- https://github.com/bndtools/bndtools/wiki/Big-Bad-Bundle -->

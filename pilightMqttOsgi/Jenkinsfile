@@ -13,9 +13,9 @@ pipeline {
             }
             steps {
                 // remove old file
-                // sh 'sshpass -p $PI_RPI3_CREDS_PSW ssh pi@rpi3 \'rm --force /usr/share/karaf/deploy/pigpioj-java-2.4.jar\''
+                sh 'sshpass -p $PI_RPI3_CREDS_PSW ssh pi@rpi3 \'rm --force /usr/share/karaf/deploy/pigpioj-java-*.jar\''
                 sh 'cd pilightMqttOsgi;sshpass -p $PI_RPI3_CREDS_PSW rsync target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy'
-                // sh 'sshpass -p $PI_RPI3_CREDS_PSW rsync /home/carl/.m2/repository/uk/pigpioj/pigpioj-java/2.5.1/pigpioj-java-2.5.1.jar pi@rpi3:/usr/share/karaf/deploy'
+                sh 'sshpass -p $PI_RPI3_CREDS_PSW rsync /home/carl/.m2/repository/uk/pigpioj/pigpioj-java/2.5.7/pigpioj-java-2.5.7.jar pi@rpi3:/usr/share/karaf/deploy'
             }
         }
     }
