@@ -153,6 +153,13 @@
             <artifactId>camel-groovy</artifactId>
             <version>${camel.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/uk.pigpioj/pigpioj-java -->
+        <dependency>
+            <groupId>uk.pigpioj</groupId>
+            <artifactId>pigpioj-java</artifactId>
+            <version>${pigpioj-java.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
