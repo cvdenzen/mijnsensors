@@ -17,6 +17,7 @@ pipeline {
                 // remove old file
                 sh 'sshpass -p $PI_RPI3_CREDS_PSW ssh $PI_USER@$PI_HOST \'rm --force /usr/share/karaf/deploy/pigpioj-java-*.jar\''
                 sh 'cd pilightMqttOsgi;sshpass -p $PI_RPI3_CREDS_PSW rsync target/pilightMqttOsgi-1.0-SNAPSHOT.jar $PI_USER@$PI_HOST:/usr/share/karaf/deploy'
+                sh 'cd pilightMqttOsgi;sshpass -p $PI_RPI3_CREDS_PSW rsync target/classes/OSGI-INF/blueprint/blueprint.xml $PI_USER@$PI_HOST:/usr/share/karaf/deploy'
                 sh 'cd pilightMqttOsgi;sshpass -p $PI_RPI3_CREDS_PSW rsync target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml $PI_USER@$PI_HOST:/usr/share/karaf/deploy'
                 sh 'sshpass -p $PI_RPI3_CREDS_PSW rsync /home/carl/.m2/repository/uk/pigpioj/pigpioj-java/2.5.7/pigpioj-java-*.jar $PI_USER@$PI_HOST:/usr/share/karaf/deploy'
             }
