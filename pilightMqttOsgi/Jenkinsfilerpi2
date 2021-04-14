@@ -19,7 +19,6 @@ pipeline {
                 sh 'cd pilightMqttOsgi;sshpass -p $PI_RPI3_CREDS_PSW rsync target/pilightMqttOsgi-1.0-SNAPSHOT.jar $PI_USER@$PI_HOST:/usr/share/karaf/deploy'
                 sh 'cd pilightMqttOsgi;sshpass -p $PI_RPI3_CREDS_PSW rsync target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml $PI_USER@$PI_HOST:/usr/share/karaf/deploy'
                 sh 'sshpass -p $PI_RPI3_CREDS_PSW rsync /home/carl/.m2/repository/uk/pigpioj/pigpioj-java/2.5.7/pigpioj-java-*.jar $PI_USER@$PI_HOST:/usr/share/karaf/deploy'
-                sh 'sshpass -p $PI_RPI3_CREDS_PSW rsync target/resources/etc/activemq.conf $PI_USER@$PI_HOST:/etc'
             }
         }
     }

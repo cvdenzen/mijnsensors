@@ -97,6 +97,9 @@ sudo adduser karaf i2c
 sudo adduser karaf gpio
 sudo adduser karaf spi
 
+sudo adduser activemq
+sudo adduser pi activemq
+# not used (apr 2021), artemis is not stable, use activemq
 sudo adduser artemis
 sudo adduser pi artemis
 
@@ -185,7 +188,11 @@ ExecStartPre=sleep 10
 #==== end edit
 crontab -e, crontab.txt file (restart camel every week, there is a memory leak somewhere)
 
-
+=====================================================================================================================
+Install pipgpio daemon, see https://github.com/mattjlewis/pigpioj
+sudo apt update && sudo apt -y install pigpio pigpio-tools pigpiod
+sudo systemctl enable pigpiod.service
+sudo systemctl start pigpiod.service
 =====================================================================================================================
 Install camel in karaf
 repo-add camel x.y.z (apr 2021 version camel 3.9.0)
