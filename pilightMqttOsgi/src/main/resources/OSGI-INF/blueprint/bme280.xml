@@ -68,7 +68,7 @@
         <argument value="0x76"/> <!-- i2c address of bme280 sensor -->
     </bean>
     <bean id="quartzBme280" class="org.apache.camel.component.quartz.QuartzComponent">
-        <property name="groupName"  value="quartzBme280Group"
+        <property name="groupName"  value="quartzBme280Group"/>
         <property name="startDelayedSeconds" value="5"/>
     </bean>
 
