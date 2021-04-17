@@ -193,10 +193,10 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <loop>
                 <groovy>result=request.headers.OHItems.length</groovy>
+                <log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}, CamelLoopIndex=${exchange.properties.CamelLoopIndex}"/>
                 <setHeader name="OHItem">
                     <groovy>request.headers.OHItems[exchange.properties.CamelLoopIndex]</groovy>
                 </setHeader>
-                <log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}, CamelLoopIndex=${exchange.properties.CamelLoopIndex}"/>
                 <to uri="direct:getOHItem"/>
                 <!-- Result is in body -->
                 <setHeader name="dummy">
