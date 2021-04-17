@@ -21,6 +21,7 @@
     <feature name="pilightmqttosgi" version="1.0.0-SNAPSHOT">
         <!--bundle>pilightMqttOsgi OSGi Bundle</bundle -->
         <bundle>file:/usr/share/karaf/deploy/pilightMqttOsgi-1.0-SNAPSHOT.jar</bundle>
+        <bundle>file:/usr/share/karaf/deploy/pigpioj-java-2.5.7.jar</bundle>
         <feature>pilightmqttosgibundles</feature>
     </feature>
 </features>
