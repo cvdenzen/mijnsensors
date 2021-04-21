@@ -932,7 +932,7 @@ camel v 3.5.0 oct 2020
                 <groovy>result=request.headers.OHItems.length</groovy>
                 <setHeader name="dummy">
                     <groovy>
-                        request.headers.OHItemsFloat[exchange.properties.CamelLoopIndex]=java.lang.Float.valueOf(request.body[exchange.properties.CamelLoopIndex])
+                        request.headers.OHItemsFloat[exchange.allProperties.CamelLoopIndex]=java.lang.Float.valueOf(request.body[exchange.allProperties.CamelLoopIndex])
                     </groovy>
                 </setHeader>
             </loop>
