@@ -168,7 +168,7 @@
 
                     <instructions>
 
-                        <Embed-Dependency></Embed-Dependency>
+                        <Embed-Dependency>pigpio-java;scope=compile|runtime</Embed-Dependency>
                         <!-- Include-Resource>gson-2.8.6.jar=lib/gson-2.8.6.jar</Include-Resource -->
                         <!-- https://github.com/bndtools/bndtools/wiki/Big-Bad-Bundle -->
                         <Bundle-ClassPath>.</Bundle-ClassPath>
