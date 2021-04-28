@@ -201,7 +201,7 @@ feature:install cellar
 
 - karaf, install camel
 Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy)
-  - pigpioj-java-2.5.5.jar !No: should go via pom.xml in pilightmqttosgi jar
+  - pigpioj-java-2.5.5.jar !No, is in lib subdir
 scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/lib/*.jar pi@rpi3:/usr/share/karaf/deploy
 mvn clean install && scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
 scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen.iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy

@@ -41,13 +41,6 @@
         </repository>
     </repositories>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.framework -->
-        <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>6.0.3</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.camel.karaf/apache-camel -->
         <dependency>
             <groupId>org.apache.camel.karaf</groupId>
