@@ -4,8 +4,6 @@ This files describes the actions to take for the separate karaf instance, NOT fo
 
 # 20210410 artemis is not good, use activemq copy activemq.xml from password manager (BitWarden in apr 2021) to /usr/share/karaf/etc/activemq.xml
 # rpiX: chmod g+w /usr/share/apache-karaf/deploy
-# copy jar from imac to raspberry (rpi2=192.168.2.9 jan 2020)
-mvn clean install && scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@raspberrypi:/usr/share/karaf/deploy
 scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vandenzen.iot/pilightmqttosgi.properties pi@rpi3:/usr/share/karaf/etc/
 # deprecated, needed if deploy is not writable by user pi: cp ~/gitrepos/mijnsensors/pilightMqttOsgi/ pi@rpi2:/usr/share/apache-karaf/deploy
 # On raspberry:
@@ -201,11 +199,12 @@ feature:install camel
 repo-add cellar
 feature:install cellar
 
-- karaf, install camel and camel-blueprint
+- karaf, install camel
 Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy)
   - pigpioj-java-2.5.5.jar !No: should go via pom.xml in pilightmqttosgi jar
 scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/lib/*.jar pi@rpi3:/usr/share/karaf/deploy
-scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen.iot/pilightmqttosgi-features.xml  pi@rpi3:/usr/share/karaf/deploy
+mvn clean install && scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
+scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen.iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy
 
 
 feature:install pilightmqttosgi

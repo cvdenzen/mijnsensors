@@ -14,7 +14,7 @@ camel v 3.5.0 oct 2020
     <cm:property-placeholder persistent-id="my-placeholders" update-strategy="reload">
         <cm:default-properties>
             <cm:property name="pahoPubOptions"
-                         value="qos=0&amp;connectionTimeout=180&amp;retained=true&amp;lazyStartProducer=true"/>
+                         value="qos=0&amp;connectionTimeout=600&amp;retained=true&amp;lazyStartProducer=true"/>
             <cm:property name="destination" value="mock:result"/>
         </cm:default-properties>
     </cm:property-placeholder>
