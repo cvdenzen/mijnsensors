@@ -195,6 +195,9 @@ sudo systemctl start pigpiod.service
 Install camel in karaf
 repo-add camel x.y.z (apr 2021 version camel 3.9.0)
 feature:install camel
+#Install activemq in karaf
+repo-add activemq
+feature:install activemq-broker
 # cellar distributed karaf support, not useful (summer 2020)
 repo-add cellar
 feature:install cellar
@@ -212,9 +215,7 @@ feature:install pilightmqttosgi
 # end of feature install commands
 #
 =====================================================================================================================
-Install activemq in karaf
-repo-add activemq
-feature:install activemq-broker
+
 
 ============================================================================
 rpi board connection (as of dec 2018), should be usable on rpi2 and rpi3.
