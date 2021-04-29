@@ -40,7 +40,6 @@
         <argument value="0x23"/> <!-- i2c address of sensor -->
     </bean>
     <bean id="quartzBH1750" class="org.apache.camel.component.quartz.QuartzComponent">
-        <property name="startDelayedSeconds" value="5"/>
     </bean>
 
 
