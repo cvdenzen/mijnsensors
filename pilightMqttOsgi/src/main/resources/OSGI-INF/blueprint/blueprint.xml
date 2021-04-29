@@ -14,7 +14,7 @@ camel v 3.5.0 oct 2020
     <cm:property-placeholder persistent-id="my-placeholders" update-strategy="reload">
         <cm:default-properties>
             <cm:property name="pahoPubOptions"
-                         value="qos=0&amp;connectionTimeout=600&amp;retained=true&amp;lazyStartProducer=true"/>
+                         value="qos=0&amp;connectionTimeout=6xx&amp;retained=true&amp;lazyStartProducer=true"/>
             <cm:property name="destination" value="mock:result"/>
         </cm:default-properties>
     </cm:property-placeholder>
@@ -430,6 +430,7 @@ camel v 3.5.0 oct 2020
             <log message="paho:oh/all/LightsOnIntensityThreshod changed to ${body}"/>
             <convertBodyTo type="java.lang.String"/>
             <to uri="log:nl.vandenzen.iot?level=INFO"/>
+            <convertBodyTo type="java.lang.Float"/>
             <convertBodyTo type="java.lang.Integer"/>
             <to uri="log:nl.vandenzen.iot?level=INFO"/>
             <!-- Turn on lights? -->
