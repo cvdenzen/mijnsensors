@@ -463,7 +463,7 @@ camel v 3.5.0 oct 2020
         </route>
 
         <!-- Input is body with value ON of OFF for tv -->
-        <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="206">
+        <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="218">
             <from uri="direct:listen_bg_w_tv_w"/>
             <log message="bg_w_tv_w/state: new: ${body}"/>
             <!-- get old value of bg_w_tv_w -->
