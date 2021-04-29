@@ -14,7 +14,7 @@ camel v 3.5.0 oct 2020
     <cm:property-placeholder persistent-id="my-placeholders" update-strategy="reload">
         <cm:default-properties>
             <cm:property name="pahoPubOptions"
-                         value="qos=0&amp;connectionTimeout=6xx&amp;retained=true&amp;lazyStartProducer=true"/>
+                         value="qos=0&amp;connectionTimeout=600&amp;retained=true&amp;lazyStartProducer=true"/>
             <cm:property name="destination" value="mock:result"/>
         </cm:default-properties>
     </cm:property-placeholder>
@@ -337,14 +337,14 @@ camel v 3.5.0 oct 2020
 
         <!-- als de schakelaar gebruikt wordt, moet de pir-automaat gecancelled worden -->
         <route id="dimmerSwitchBijTv" autoStartup="true" startupOrder="108">
-            <from uri="paho:oh/all/WoonkamerSchakelaarBijTv/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/WoonkamerSchakelaarBijTv/state?connectionTimeout=600"/>
             <log message="aho:oh/all/WoonkamerSchakelaarBijTv/state=${body}"/>
             <to uri="direct:set_HueStable_false"/>
             <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="cancel"/>
         </route>
 
         <route id="LichtIntensiteit_Woonkamer_updated" autoStartup="true" startupOrder="200">
-            <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/LichtIntensiteit_Woonkamer/state?connectionTimeout=600"/>
             <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <log message="LichtIntensiteit_Woonkamer_updated: body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
@@ -409,7 +409,7 @@ camel v 3.5.0 oct 2020
 
         <!-- This is used, AutoOffEnabled is handled by openhab (dec 2020) -->
         <route id="listenAutoOffEnabled" autoStartup="true" startupOrder="202">
-            <from uri="paho:oh/all/AutoOffEnabled/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/AutoOffEnabled/state?connectionTimeout=600"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="AutoOffEnabled" method="setValue"/>
             <!-- Turn off lights? -->
@@ -418,7 +418,7 @@ camel v 3.5.0 oct 2020
         </route>
         <!-- This is used, AutoOnEnabled is handled by openhab (dec 2020) -->
         <route id="listenAutoOnEnabled" autoStartup="true" startupOrder="203">
-            <from uri="paho:oh/all/AutoOnEnabled/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/AutoOnEnabled/state?connectionTimeout=600"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="AutoOnEnabled" method="setValue"/>
             <!-- Turn on lights? -->
@@ -426,7 +426,7 @@ camel v 3.5.0 oct 2020
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
         <route id="listenLightsOnIntensityThreshold" autoStartup="true" startupOrder="204">
-            <from uri="paho:oh/all/LightsOnIntensityThreshold/state?{{pahoPubOptions}}"/>
+            <from uri="paho:oh/all/LightsOnIntensityThreshold/state?connectionTimeout=600"/>
             <log message="paho:oh/all/LightsOnIntensityThreshod changed to ${body}"/>
             <convertBodyTo type="java.lang.String"/>
             <to uri="log:nl.vandenzen.iot?level=INFO"/>
@@ -437,18 +437,18 @@ camel v 3.5.0 oct 2020
             <to uri="direct:Enable_lights_on_by_daylight"/>
         </route>
         <route id="listenLight_GF_Huiskamer_Achterdeur_Schemerlamp" autoStartup="true" startupOrder="205">
-            <from uri="paho:oh/all/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm/state?connectionTimeout=600"/>
             <to uri="direct:setLight_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm"/>
             <to uri="direct:calcOneLightOn"/>
         </route>
         <route id="listenGF_Passenger_minutes" autoStartup="true" startupOrder="206">
-            <from uri="paho:oh/all/GF_Passenger_minutes/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/GF_Passenger_minutes/state?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Integer"/>
             <bean ref="GF_Passenger_minutes" method="setValue"/>
         </route>
         <route id="listen_bg_w_tv_w_mqtt" autoStartup="true" startupOrder="216">
-            <from uri="paho:oh/all/bg_w_tv_w/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/bg_w_tv_w/state?connectionTimeout=600"/>
             <log message="listen_bg_w_tv_mqtt: received message ${body}"/>
             <to uri="direct:listen_bg_w_tv_w"/>
         </route>
@@ -491,7 +491,7 @@ camel v 3.5.0 oct 2020
         </route>
 
         <route id="listen_bg_x_imac2" autoStartup="true" startupOrder="207">
-            <from uri="paho:oh/all/bg_x_imac2/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/bg_x_imac2/state?connectionTimeout=600"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_x_imac2" method="setValue"/>
             <!-- check whether to turn lights off -->
@@ -499,7 +499,7 @@ camel v 3.5.0 oct 2020
         </route>
 
         <route id="listen_bg_x_imac3" autoStartup="true" startupOrder="208">
-            <from uri="paho:oh/all/bg_x_imac3/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/bg_x_imac3/state?connectionTimeout=600"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_x_imac3" method="setValue"/>
             <!-- check whether to turn lights off -->
@@ -508,7 +508,7 @@ camel v 3.5.0 oct 2020
 
         <!-- not used 17 jan 2020 -->
         <route id="listenPir_gf_achterdeur17" autoStartup="false" startupOrder="209">
-            <from uri="paho:oh/all/pir_gf_achterdeur17/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/pir_gf_achterdeur17/state?connectionTimeout=600"/>
             <log message="listenPir_gf_achterdeur17 body=${body}, deprecated"/>
             <convertBodyTo type="java.lang.String"/>
             <choice>
@@ -534,7 +534,7 @@ camel v 3.5.0 oct 2020
         <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item.
              This could be faster (no openhab action in between) -->
         <route id="listenPir_gf_achterdeur17a" autoStartup="true" startupOrder="220">
-            <from uri="paho:mysensors/all/153/1/1/0/2?connectionTimeout=180"/>
+            <from uri="paho:mysensors/all/153/1/1/0/2?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
             <log message="listenPir_gf_achterdeur17a locA is ${body}"/>
             <to uri="direct:convert_body_to_boolean"/>
@@ -851,7 +851,7 @@ camel v 3.5.0 oct 2020
 
         <!-- Display temp hum pressure on lcd display -->
         <route id="displayF1_nw_temperatuur">
-            <from uri="paho:oh/all/f1_nw_temperatuur/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/f1_nw_temperatuur/state?connectionTimeout=600"/>
             <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <delay>
                 <constant>1000</constant>
@@ -894,7 +894,7 @@ camel v 3.5.0 oct 2020
 
         <!-- Display temp hum pressure on lcd display -->
         <route id="displayF1_nw_pressure">
-            <from uri="paho:oh/all/f1_nw_pressure/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/f1_nw_pressure/state?connectionTimeout=600"/>
             <!-- to uri="log:nl.vandenzen.iot?level=INFO"/ -->
             <delay>
                 <constant>5500</constant>
@@ -919,7 +919,7 @@ camel v 3.5.0 oct 2020
             <to uri="paho:camel/f1_nw/display/message/messageAt"/>
         </route>
         <route id="adjustBacklight">
-            <from uri="paho:oh/all/f1_nw_light/state?connectionTimeout=180"/>
+            <from uri="paho:oh/all/f1_nw_light/state?connectionTimeout=600"/>
             <!-- We have a byte[] ??? -->
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Float"/>
