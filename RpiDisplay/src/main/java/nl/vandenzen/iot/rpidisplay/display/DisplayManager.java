@@ -5,6 +5,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 import nl.vandenzen.iot.rpidisplay.ContentProvider;
 
+import java.util.logging.Logger;
+
 public class DisplayManager implements BundleActivator, Runnable {
     private volatile Thread thread;
     private ServiceTracker<ContentProvider, ContentProvider> tracker;
@@ -24,13 +26,15 @@ public class DisplayManager implements BundleActivator, Runnable {
     public void run() {
         Thread current = Thread.currentThread();
         int n = 0;
+        log.info("WHITEBOARD: Start run()");
         while (current == thread) {
+            log.info("WHITEBOARD: Start while loop, n=" +n);
             ContentProvider[] providers = tracker.getServices(new ContentProvider[0]);
             if (providers.length > 0) {
                 if (n >= providers.length)
                     n = 0;
                 ContentProvider cp = providers[n++];
-                System.out.println("WHITEBOARD " + cp.getContent());
+                log.info("WHITEBOARD " + cp.getContent());
             }
             try {
                 Thread.sleep(5000);
@@ -38,4 +42,5 @@ public class DisplayManager implements BundleActivator, Runnable {
             }
         }
     }
+    private static Logger log = Logger.getLogger(DisplayManager.class.getSimpleName());
 }
