@@ -2,3 +2,5 @@ Een 220V buitenlamp met sensor, 2020-2021.
 Twee exemplaren gekocht, de eerste sneuvelde toen ik die eind 2020 fout aansloot (220V over de sensormodule,
 de kleuren van de draden blauw en zwart waren voor mijn ogen te onduidelijk).
 De sensormodule bevat een BS612 pir sensor.
+
+De .sch file is een gEDA schematic file.
