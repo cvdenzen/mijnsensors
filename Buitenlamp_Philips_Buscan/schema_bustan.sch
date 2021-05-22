@@ -130,14 +130,18 @@ T 52600 48100 9 10 1 0 0 0 1
 V1+
 T 52600 46400 9 10 1 0 0 0 1
 V1+
-N 41900 46400 40600 46400 4
-C 42800 46500 1 180 0 terminal-1.sym
+N 42000 46300 40600 46400 4
 {
-T 42490 45750 5 10 0 0 180 0 1
+T 41100 46500 5 10 1 1 0 0 1
+graphical=Rood
+}
+C 42900 46400 1 180 0 terminal-1.sym
+{
+T 42590 45650 5 10 0 0 180 0 1
 device=terminal
-T 42490 45900 5 10 0 0 180 0 1
+T 42590 45800 5 10 0 0 180 0 1
 footprint=CONNECTOR 1 1
-T 42550 46450 5 10 1 1 180 6 1
+T 42650 46350 5 10 1 1 180 6 1
 refdes=T?
 }
 C 42800 47400 1 180 0 terminal-1.sym
@@ -150,6 +154,10 @@ T 42550 47350 5 10 1 1 180 6 1
 refdes=T?
 }
 N 41900 47300 40500 47300 4
+{
+T 41000 47500 5 10 1 1 0 0 1
+graphical=Zwart
+}
 T 41400 46000 9 10 1 0 0 0 1
 +20V
 T 54500 46900 9 10 1 0 0 0 1
@@ -185,7 +193,7 @@ device=terminal
 T 44110 44000 5 10 0 0 0 0 1
 footprint=CONNECTOR 1 1
 T 44050 43450 5 10 1 1 0 6 1
-refdes=T?
+refdes=T1
 }
 C 44300 42900 1 0 0 terminal-1.sym
 {
@@ -194,7 +202,7 @@ device=terminal
 T 44610 43500 5 10 0 0 0 0 1
 footprint=CONNECTOR 1 1
 T 44550 42950 5 10 1 1 0 6 1
-refdes=T?
+refdes=T2
 }
 C 44300 42200 1 0 0 terminal-1.sym
 {
@@ -243,3 +251,18 @@ netname=ONTIME
 B 45200 43300 800 400 3 0 0 0 -1 -1 0 -1 -1 -1 -1 -1
 T 40800 44200 9 10 1 0 0 0 1
 BS612 pir onderaanzicht
+T 46400 41600 9 10 1 0 0 0 12
+https://www.senbasensor.com/products/intelligent-pir-motion-detector-from-senba.html
+http://www.hjpsensor.com/index.php?_m=mod_product&_a=view&p_id=487
+T1 SENS, input, VSS=max sensitive, 0.3*VDD is minimum sensitive
+T2 OEN, logische input, <0.8, >1.2V OEN to VDD if no LDR, hysteresis 0.2 en 0.4 VDD
+T3 VSS
+T4 VDD
+T5 REL, output, 10mA, time low (lock time, no adjust)=2s, on time= time high 2 to 3600s
+T6 ONTIME input, 0V-VDD/2, 1uA
+
+IR (Passive Infrared Detector) are used to detect motion object like human movement.
+All the PIR sensor must work with Fresnel Lens, this version can detetc more than 10 meters. It can support long rang and wide angle.
+
+T 50200 40900 9 10 1 0 0 0 1
+schema_bustan.sch
