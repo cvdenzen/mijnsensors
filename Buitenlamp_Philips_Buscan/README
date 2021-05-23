@@ -13,18 +13,18 @@ Connect CTS to GND
 VCC 3.3V
 
 
-         =D1    TXO | RAW RAW
-         =D0    RXI | GND GND
-         =Reset RST | RST Reset
-         =GND   GND | VCC VCC 3.3V
-RFM-DIO0 =D2    2   | A3  A3/D17
-PIR INT1 =D3    3   | A2  A2/D16
-RFM-DIO1 =D4    4   | A1  A1/D15
-         =D5    5   | A0  A0/D14    =PC0 ADC0 LIGHT IN (not needed, we have VF1750 i2c)
-         =D6    6   | 13  D13
-         =D7    7   | 12  D12       =RFM-MISO
-         =D8    8   | 11  D11       =RFM-MOSI
-RFM-Reset=D9    9   | 10  D10       =RFM-CS/NSS
+         =D1        TXO | RAW RAW
+         =D0        RXI | GND GND
+         =Reset     RST | RST Reset
+         =GND       GND | VCC VCC 3.3V
+RFM-DIO0 =D2        2   | A3  A3/D17
+PIR INT1 =D3        3   | A2  A2/D16
+RFM-DIO1 =D4        4   | A1  A1/D15
+led-out  =D5/PWM    5   | A0  A0/D14/PC0/ADC0    =LIGHT IN (not needed, we have VF1750 i2c)
+         =D6        6   | 13  D13/SCK            =RFM-SCLK
+         =D7        7   | 12  D12/PB4/MISO       =RFM-MISO
+         =D8        8   | 11  D11/PB3/MOSI       =RFM-MOSI
+RFM-Reset=D9/PB1    9   | 10  D10/PB2/SS         =RFM-CS/NSS
 
 A5  | A5/D19 PC5 ADC4 SCL =SCL I2C
 A4  | A4/D18 PC4 ADC4 SDA =SDA I2C
