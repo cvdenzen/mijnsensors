@@ -1,0 +1,2 @@
+# Ignore temporary gschem (gEDA) files, they start and end with a #
+\#*\#
