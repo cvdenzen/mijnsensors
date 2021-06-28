@@ -18,12 +18,12 @@ gnd cts vcc rx0 tx0 dtr
                 rst | rst
                 gnd | vcc
 RFM69:DIO0!D2 - 2   | a3 - D17 - ADC3 - ntc Sensor
-CC11:GD02 !D3 - 3   | a2 - D16 - ADC2 - ntc reference input
+CC11:GD02 !D3 - 3   | a2 - D16 - ADC2 - ntc reference input (resistor divider)
 LED:RM     D4 - 4   | a1 - D15 - ADC0 - digital out: ntc sensor power
 LED:G1     D5 - 5   | A0 - D14 - PC0 - CC11:CSN
-LED:G2     D6 - 6   | 13 - D13 - PB5 - SCK  RFM69:SCK
+LED:G2     D6 - 6   | 13 - D13 - PB5 - SCK  RFM69:SCK  CC11:SCK
 CNTCT      D7 - 7   | 12 - D12 - PB4 - MISO RFM69:MISO CC11:MISO
-           D8 - 8   | 11 - D11 - PB3 - MOSI RFM69:MISO CC11:MISO
+ONEWIRE    D8 - 8   | 11 - D11 - PB3 - MOSI RFM69:MOSI CC11:MOSI
            D9 - 9   | 10 - D10 - PB2 - SS   RFM69:NSS
 
 A5
@@ -37,6 +37,7 @@ LED:RM: red (or amber) led, indicating manually controlled fan
 LED:G1: green led, indicating speed 1
 LED:G2: green led, indicating speed 2
 CNTCT: Switch to control fan to manual (cycle: auto-manOff-manSpeed1-manSpeed2)
+ONEWIRE: For e.g. temp sensor, needs 4k7 pull-up
 
 cc1101: https://www.ti.com/lit/ds/symlink/cc1101.pdf?ts=1624529600954&ref_url=https%253A%252F%252Fwww.google.com%252F
 spi clock idle is 0
