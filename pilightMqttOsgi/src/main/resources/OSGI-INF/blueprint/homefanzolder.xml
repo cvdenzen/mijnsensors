@@ -19,9 +19,10 @@
             <log message="Start calcHomeFan, body=${body}"/>
             <!-- If fan is not stable, turn it to "low" (command=4), wait
             a few seconds, turn it to "Timer1" (command=8) -->
+            <bean ref="fanStable" method="getValue"/>
             <choice>
                 <when>
-                    <bean ref="fanStable" method="getValue"/>
+                    <simple>${body}</simple>
                     <log message="calcHomeFan, fan already started, body=${body}"/>
                 </when>
                 <otherwise>
