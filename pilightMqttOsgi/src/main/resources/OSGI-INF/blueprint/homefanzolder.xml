@@ -71,7 +71,7 @@
             <!-- If hotter than 49.1 degrees, start fan -->
             <choice>
                 <when>
-                    <groovy>result=${body}>49.1</groovy>
+                    <groovy>result=java.lang.Float.valueOf(request.body)>49.1f</groovy>
                     <to uri="direct:startHomeFan"/>
                 </when>
             </choice>
