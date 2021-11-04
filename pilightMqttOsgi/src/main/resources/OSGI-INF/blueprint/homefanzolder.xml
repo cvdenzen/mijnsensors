@@ -12,7 +12,7 @@
         </cm:default-properties>
     </cm:property-placeholder>
 
-    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="homefanzolder">
+    <camelContext xmlns="http://camel.apache.org/schema/blueprintxx" id="homefanzolder">
 
         <route id="startHomeFan" autoStartup="true">
             <from uri="direct:startHomeFan"/>
