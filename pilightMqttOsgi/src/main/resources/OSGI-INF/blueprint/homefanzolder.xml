@@ -50,7 +50,7 @@
                     <!-- Start timer to set fanstable to false again -->
                     <setBody>
                         <!-- 1000*60*10 is 10 minutes -->
-                        <groovy>result="1000*60*10"</groovy>
+                        <groovy>result=1000*60*10</groovy>
                     </setBody>
                     <convertBodyTo type="java.lang.String"/>
                     <convertBodyTo type="java.lang.Long"/>
