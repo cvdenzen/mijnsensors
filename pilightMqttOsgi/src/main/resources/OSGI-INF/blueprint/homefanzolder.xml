@@ -62,7 +62,9 @@
                             result="4"
                         </groovy>
                     </setBody>
+                    <convertBodyTo type="java.lang.String"/>
                     <to uri="paho:c/mysensors/156/8/1/0/24?{{pahoPubOptions}}"/>
+                    <log message="calcHomeFan, mqtt sent to c/mysensors/156/8/1/0/24?{{pahoPubOptions}}, body=${body} (should be 4)"/>
                     <!-- wait a few milliseconds -->
                     <delay>
                         <constant>2000</constant>
@@ -72,8 +74,10 @@
                         <groovy>
                             result="8"
                         </groovy>
+                        <convertBodyTo type="java.lang.String"/>
                     </setBody>
                     <to uri="paho:c/mysensors/156/8/1/0/24?{{pahoPubOptions}}"/>
+                    <log message="calcHomeFan, mqtt sent to c/mysensors/156/8/1/0/24?{{pahoPubOptions}}, body=${body} (should be 8)"/>
                 </otherwise>
             </choice>
         </route>
