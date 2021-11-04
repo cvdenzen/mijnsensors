@@ -128,15 +128,7 @@ gateway on rpi:
 git clone https://github.com/mysensors/MySensors.git
 cd MySensors
 edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197 (or in commandline, see next line)
-
-./configure --my-transport=rfm69 --my-rfm69-frequency=868 \
---my-rfm69-networkid=197 \
---my-gateway=mqtt --my-controller-ip-address=127.0.0.1 \
---my-mqtt-publish-topic-prefix=mysensors/all \
---my-mqtt-subscribe-topic-prefix=+/mysensors \
---my-mqtt-client-id=mygateway1 \
---my-mqtt-user=mysensors \
---my-mqtt-password='<PASS>'
+ss
 # <PASS>: see password manager (BitWarden/LastPass etc.), activemq.xml, user mysensors, passwd. Do not use strange characters like #^&$ (?),
 # shell/make can be confused.
 make

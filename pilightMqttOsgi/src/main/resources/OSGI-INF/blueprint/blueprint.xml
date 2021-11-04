@@ -967,6 +967,8 @@ camel v 3.5.0 oct 2020
             <to uri="paho:camel/f1_nw/display/backlight?{{pahoPubOptions}}"/>
         </route>
 
+
+
     </camelContext>
     <!-- bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/ -->
     <bean id="AutoOnEnabled" class="nl.vandenzen.iot.util.MutableBoolean"/>

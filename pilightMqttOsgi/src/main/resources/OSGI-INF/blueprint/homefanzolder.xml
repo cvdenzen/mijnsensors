@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+    <!-- blueprint property placeholders -->
+    <cm:property-placeholder persistent-id="my-placeholders" update-strategy="reload">
+        <cm:default-properties>
+            <cm:property name="pahoPubOptions"
+                         value="qos=0&amp;connectionTimeout=600&amp;retained=true&amp;lazyStartProducer=true"/>
+        </cm:default-properties>
+    </cm:property-placeholder>
+
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="homefanzolder">
+
+        <route id="startHomeFan" autoStartup="true">
+            <from uri="direct:startHomeFan"/>
+            <log message="Start calcHomeFan, body=${body}"/>
+            <!-- If fan is not stable, turn it to "low" (command=4), wait
+            a few seconds, turn it to "Timer1" (command=8) -->
+            <choice>
+                <when>
+                    <bean ref="fanStable" method="getValue"/>
+                    <log message="calcHomeFan, fan already started, body=${body}"/>
+                </when>
+                <otherwise>
+                    <!-- is not stable, so start new cycle: low, wait Timer1 -->
+                    <log message="calcHomeFan, start fan (low, wait, Timer1), body=${body}"/>
+                    <to uri="direct:set_fanstable_true"/>
+                    <!-- Start timer to set fanstable to false again -->
+                    <setBody>
+                        <!-- 1000*60*10 is 10 minutes -->
+                        <groovy>result="1000*60*10"</groovy>
+                    </setBody>
+                    <convertBodyTo type="java.lang.String"/>
+                    <convertBodyTo type="java.lang.Long"/>
+                    <bean ref="DelaySetHomeFanIdle" method="setDelay"/>
+                    <bean ref="DelaySetHomeFanIdle" method="schedule"/>
+                    <setBody>
+                        <!-- command 4 is "IthoLow" -->
+                        <groovy>
+                            result="4"
+                        </groovy>
+                    </setBody>
+                    <to uri="paho:c/mysensors/156/8/1/0/24?{{pahoPubOptions}}"/>
+                    <!-- wait a few milliseconds -->
+                    <delay>
+                        <constant>2000</constant>
+                    </delay>
+                    <setBody>
+                        <!-- command 8 is "IthoTimer1" -->
+                        <groovy>
+                            result="8"
+                        </groovy>
+                    </setBody>
+                    <to uri="paho:c/mysensors/156/8/1/0/24?{{pahoPubOptions}}"/>
+                </otherwise>
+            </choice>
+        </route>
+        <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item.
+             This could be faster (no openhab action in between) -->
+        <route id="listenPir_gf_toilet" autoStartup="true">
+            <from uri="paho:mysensors/all/155/1/1/0/2?connectionTimeout=600"/>
+            <convertBodyTo type="java.lang.String"/>
+            <log message="listenPir_gf_toilet locA is ${body}"/>
+            <to uri="direct:convert_body_to_boolean"/>
+            <!-- simply always start fan -->
+            <to uri="direct:startHomeFan"/>
+        </route>
+
+        <route id="ListenHotWaterTemp" autoStartup="true">
+            <from uri="paho:mysensors/all/156/0/1/0/0?connectionTimeout=600"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Float"/>
+            <log message="ListenHotWaterTemp locA is ${body}"/>
+            <!-- If hotter than 49.1 degrees, start fan -->
+            <choice>
+                <when>
+                    <groovy>result=${body}>49.1</groovy>
+                    <to uri="direct:startHomeFan"/>
+                </when>
+            </choice>
+        </route>
+
+
+        <!-- this route is called by bean DelaySetStableTrue -->
+        <route id="set_fanstable_true" autoStartup="true">
+            <from uri="direct:set_stable_true"/>
+            <log message="Start set_stable_true"/>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="fanStable" method="setValue"/>
+        </route>
+
+        <route id="set_fanstable_false" autoStartup="true">
+            <from uri="direct:set_fanstable_false"/>
+            <log message="Start set_fanstable_false"/>
+            <setBody>
+                <constant>false</constant>
+            </setBody>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <bean ref="fanStable" method="setValue"/>
+        </route>
+
+
+    </camelContext>
+
+    <!-- <bean id="pigpioBme280" class="uk.pigpioj.PigpioSocket"> </bean> -->
+    <bean id="fanStable" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="DelaySetHomeFanIdle" class="nl.vandenzen.iot.beans.ExtendableDelay">
+        <argument value="direct:set_fanstable_false"/>
+    </bean>
+
+</blueprint>
