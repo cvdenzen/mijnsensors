@@ -74,8 +74,8 @@
                         <groovy>
                             result="8"
                         </groovy>
-                        <convertBodyTo type="java.lang.String"/>
                     </setBody>
+                    <convertBodyTo type="java.lang.String"/>
                     <to uri="paho:c/mysensors/156/8/1/0/24?{{pahoPubOptions}}"/>
                     <log message="calcHomeFan, mqtt sent to c/mysensors/156/8/1/0/24?{{pahoPubOptions}}, body=${body} (should be 8)"/>
                 </otherwise>
