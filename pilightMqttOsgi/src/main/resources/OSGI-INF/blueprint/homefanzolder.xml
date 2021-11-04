@@ -105,8 +105,8 @@
 
         <!-- this route is called by bean DelaySetStableTrue -->
         <route id="set_fanstable_true" autoStartup="true">
-            <from uri="direct:set_stable_true"/>
-            <log message="Start set_stable_true"/>
+            <from uri="direct:set_fanstable_true"/>
+            <log message="Start set_fanstable_true"/>
             <setBody>
                 <constant>true</constant>
             </setBody>
