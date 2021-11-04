@@ -7,6 +7,31 @@
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="homefanzolder">
 
+        <route id="convert_body_to_boolean" autoStartup="true" startupOrder="7">
+            <from uri="direct:convert_body_to_boolean"/>
+            <log message="convert_body_to_boolean entry body=${body}"/>
+            <choice>
+                <when>
+                    <groovy>"1".equals(request.body)
+                        || request.body == 1
+                        || request.body == true
+                        || "ON".equals(request.body)
+                        || "true".equals(request.body)
+                        || (request.body!=null &amp;&amp; new String(request.body).equals("1".toString())) // input is byte[]
+                    </groovy>
+                    <setBody>
+                        <constant>true</constant>
+                    </setBody>
+                </when>
+                <otherwise>
+                    <setBody>
+                        <constant>false</constant>
+                    </setBody>
+                </otherwise>
+            </choice>
+            <convertBodyTo type="java.lang.Boolean"/>
+            <log message="convert_body_to_boolean return body=${body}"/>
+        </route>
         <route id="startHomeFan" autoStartup="true">
             <from uri="direct:startHomeFan"/>
             <log message="Start calcHomeFan, body=${body}"/>
