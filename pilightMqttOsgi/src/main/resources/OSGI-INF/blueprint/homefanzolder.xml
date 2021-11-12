@@ -17,7 +17,8 @@
                         || request.body == true
                         || "ON".equals(request.body)
                         || "true".equals(request.body)
-                        || (request.body!=null &amp;&amp; new String(request.body).equals("1".toString())) // input is byte[]
+                        || (request.body!=null &amp;&amp; new String(request.body).equals("1".toString())) // input is
+                        byte[]
                     </groovy>
                     <setBody>
                         <constant>true</constant>
@@ -38,9 +39,12 @@
             <!-- If fan is not stable, turn it to "low" (command=4), wait
             a few seconds, turn it to "Timer1" (command=8) -->
             <bean ref="fanStable" method="getValue"/>
+            <setHeader name="ToiletTimeoutEnabled">
+                <bean ref="ToiletTimeoutEnabled" method="getValue"/>
+            </setHeader>
             <choice>
                 <when>
-                    <simple>${body}</simple>
+                    <groovy>(request.body==true) &amp;&amp; (headers.ToiletTimeoutEnabled == true)</groovy>
                     <log message="calcHomeFan, fan already started, body=${body}"/>
                 </when>
                 <otherwise>
@@ -81,8 +85,7 @@
                 </otherwise>
             </choice>
         </route>
-        <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item.
-             This could be faster (no openhab action in between) -->
+        <!-- Listen to openhab gateway -->
         <route id="listenPir_gf_toilet" autoStartup="true">
             <from uri="paho:mysensors/all/155/1/1/0/2?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
@@ -90,6 +93,12 @@
             <to uri="direct:convert_body_to_boolean"/>
             <!-- simply always start fan -->
             <to uri="direct:startHomeFan"/>
+        </route>
+        <!-- Listen to mqtt messages -->
+        <route id="listenPir_gf_toilet" autoStartup="true">
+            <from uri="paho:paho:+/mysensors/156/8/1/0/24?connectionTimeout=600"/>
+            <convertBodyTo type="java.lang.String"/>
+            <log message="listen to messages meant for HomeFan, mqtt topic +/mysensors/156/8/1/0/24, body=${body}"/>
         </route>
 
         <route id="listenPir_gf_toilet_hue_motion_sensor" autoStartup="true">
@@ -138,10 +147,21 @@
         </route>
 
 
+        <!-- Listen to ToiletTimeoutEnabled -->
+        <route id="ToiletTimeoutEnabled">
+            <from uri="paho:oh/all/ToiletTimeoutEnabled/state?connectionTimeout=600"/>
+            <convertBodyTo type="Boolean"/>
+            <bean ref="ToiletTimeoutEnabled" method="setValue"/>
+        </route>
+
+
     </camelContext>
 
     <!-- <bean id="pigpioBme280" class="uk.pigpioj.PigpioSocket"> </bean> -->
     <bean id="fanStable" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="ToiletTimeoutEnabled" class="nl.vandenzen.iot.util.MutableBoolean">
+        <property name="value" value="true"/>
+    </bean>
     <bean id="DelaySetHomeFanIdle" class="nl.vandenzen.iot.beans.ExtendableDelay">
         <argument value="direct:set_fanstable_false"/>
     </bean>
