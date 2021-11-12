@@ -96,7 +96,7 @@
             <to uri="direct:startHomeFan"/>
         </route>
         <!-- Listen to mqtt messages -->
-        <route id="listenPir_gf_toilet" autoStartup="true">
+        <route id="listenMqttToMySensorsHomeFan" autoStartup="true">
             <from uri="paho:paho:+/mysensors/156/8/1/0/24?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
             <log message="listen to messages meant for HomeFan, mqtt topic +/mysensors/156/8/1/0/24, body=${body}"/>
