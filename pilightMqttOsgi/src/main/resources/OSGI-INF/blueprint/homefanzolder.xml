@@ -17,8 +17,8 @@
                         || request.body == true
                         || "ON".equals(request.body)
                         || "true".equals(request.body)
-                        || (request.body!=null &amp;&amp; new String(request.body).equals("1".toString())) // input is
-                        byte[]
+                        || (request.body!=null &amp;&amp; new String(request.body).equals("1".toString())) /* input is
+                        byte[] */
                     </groovy>
                     <setBody>
                         <constant>true</constant>
