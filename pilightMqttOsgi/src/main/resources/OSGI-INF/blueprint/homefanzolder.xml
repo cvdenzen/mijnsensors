@@ -38,10 +38,11 @@
             <log message="Start calcHomeFan, body=${body}"/>
             <!-- If fan is not stable, turn it to "low" (command=4), wait
             a few seconds, turn it to "Timer1" (command=8) -->
-            <bean ref="fanStable" method="getValue"/>
+            <bean ref="ToiletTimeoutEnabled" method="getValue"/>
             <setHeader name="ToiletTimeoutEnabled">
-                <bean ref="ToiletTimeoutEnabled" method="getValue"/>
+                <groovy>request.body</groovy>
             </setHeader>
+            <bean ref="fanStable" method="getValue"/>
             <choice>
                 <when>
                     <groovy>(request.body==true) &amp;&amp; (headers.ToiletTimeoutEnabled == true)</groovy>
@@ -71,7 +72,7 @@
                     <log message="calcHomeFan, mqtt sent to c/mysensors/156/8/1/0/24?{{pahoPubOptions}}, body=${body} (should be 4)"/>
                     <!-- wait a few milliseconds -->
                     <delay>
-                        <constant>2000</constant>
+                        <constant>5000</constant>
                     </delay>
                     <setBody>
                         <!-- command 8 is "IthoTimer1" -->
