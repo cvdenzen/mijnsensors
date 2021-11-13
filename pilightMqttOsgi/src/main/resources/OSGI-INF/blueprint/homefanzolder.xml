@@ -62,19 +62,6 @@
                     <bean ref="DelaySetHomeFanIdle" method="setDelay"/>
                     <bean ref="DelaySetHomeFanIdle" method="schedule"/>
                     <setBody>
-                        <!-- command 4 is "IthoLow" -->
-                        <groovy>
-                            result="4"
-                        </groovy>
-                    </setBody>
-                    <convertBodyTo type="java.lang.String"/>
-                    <to uri="paho:c/mysensors/156/8/1/0/24?{{pahoPubOptions}}"/>
-                    <log message="calcHomeFan, mqtt sent to c/mysensors/156/8/1/0/24?{{pahoPubOptions}}, body=${body} (should be 4)"/>
-                    <!-- wait a few milliseconds -->
-                    <delay>
-                        <constant>5000</constant>
-                    </delay>
-                    <setBody>
                         <!-- command 8 is "IthoTimer1" -->
                         <groovy>
                             result="8"
