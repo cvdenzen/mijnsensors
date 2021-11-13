@@ -86,7 +86,7 @@
         <route id="listenMqttToMySensorsHomeFan" autoStartup="true">
             <!-- 20211112 Bug still present in paho client: it does not accept wildcard + as first level -->
             <!-- See https://bugs.eclipse.org/bugs/show_bug.cgi?id=437839 -->
-            <from uri="paho:paho:c/mysensors/156/8/1/0/24?connectionTimeout=600"/>
+            <from uri="paho:c/mysensors/156/8/1/0/24?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
             <log message="listen to messages meant for HomeFan, mqtt topic +/mysensors/156/8/1/0/24, body=${body}"/>
         </route>
