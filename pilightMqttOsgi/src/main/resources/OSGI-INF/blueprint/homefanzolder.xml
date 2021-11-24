@@ -179,7 +179,7 @@
         </route>
 
         <route id="dummy">
-            <from ure="direct:dummy"/>
+            <from uri="direct:dummy"/>
         </route>
 
 
