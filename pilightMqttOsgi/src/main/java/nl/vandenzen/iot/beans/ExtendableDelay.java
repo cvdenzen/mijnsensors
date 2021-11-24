@@ -128,6 +128,8 @@ public class ExtendableDelay {
         this.delay = delay;
     }
 
+    public boolean isRunning() { return timer!=null; }
+
     private Timer timer;
 
     final private String uri;

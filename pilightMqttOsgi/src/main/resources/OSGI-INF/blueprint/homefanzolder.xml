@@ -33,6 +33,7 @@
             <convertBodyTo type="java.lang.Boolean"/>
             <log message="convert_body_to_boolean return body=${body}"/>
         </route>
+
         <route id="startHomeFan" autoStartup="true">
             <from uri="direct:startHomeFan"/>
             <log message="Start calcHomeFan, body=${body}"/>
@@ -62,14 +63,19 @@
                     <bean ref="DelaySetHomeFanIdle" method="setDelay"/>
                     <bean ref="DelaySetHomeFanIdle" method="schedule"/>
                     <setBody>
+                        <!-- command 4 is "IthoLow" -->
+                        <groovy>
+                            result="4"
+                        </groovy>
+                    </setBody>
+                    <to uri="direct:sendCommandToFan"/>
+                    <setBody>
                         <!-- command 8 is "IthoTimer1" -->
                         <groovy>
                             result="8"
                         </groovy>
                     </setBody>
-                    <convertBodyTo type="java.lang.String"/>
-                    <to uri="paho:c/mysensors/156/8/1/0/24?{{pahoPubOptions}}"/>
-                    <log message="calcHomeFan, mqtt sent to c/mysensors/156/8/1/0/24?{{pahoPubOptions}}, body=${body} (should be 8)"/>
+                    <to uri="direct:sendCommandToFan"/>
                 </otherwise>
             </choice>
         </route>
@@ -91,7 +97,8 @@
             <log message="listen to messages meant for HomeFan, mqtt topic +/mysensors/156/8/1/0/24, body=${body}"/>
         </route>
 
-        <route id="listenPir_gf_toilet_hue_motion_sensor" autoStartup="true">
+        <!-- do not use this hue sensor anymore, autoStartup disabled -->
+        <route id="listenPir_gf_toilet_hue_motion_sensor" autoStartup="false">
             <from uri="paho:oh/all/pir_toilet_motion/state?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
             <log message="listenPir_gf_toilet_hue_motion locA is ${body}"/>
@@ -109,9 +116,25 @@
             <choice>
                 <when>
                     <groovy>result=java.lang.Float.valueOf(request.body)>49.1f</groovy>
+                    <setBody>
+                        <!-- 1000*60*10 is 10 minutes -->
+                        <groovy>result=1000*60*16</groovy>
+                    </setBody>
+                    <convertBodyTo type="java.lang.String"/>
+                    <convertBodyTo type="java.lang.Long"/>
+                    <bean ref="RequestFanOnForHotWater" method="setDelay"/>
+                    <!-- restartTimer will start a new Timer with new delay -->
+                    <bean ref="RequestFanOnForHotWater" method="restartTimer"/>
                     <to uri="direct:startHomeFan"/>
                 </when>
             </choice>
+        </route>
+
+        <route id="sendCommandToFan" autoStartup="true">
+            <from uri="direct:sendCommandToFan"/>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="paho:c/mysensors/156/8/1/0/24?{{pahoPubOptions}}"/>
+            <log message="calcHomeFan, mqtt sent to c/mysensors/156/8/1/0/24?{{pahoPubOptions}}, body=${body}"/>
         </route>
 
 
@@ -124,8 +147,19 @@
             </setBody>
             <convertBodyTo type="java.lang.Boolean"/>
             <bean ref="fanStable" method="setValue"/>
+            <!-- Check whether water is hot, then restart fan -->
+            <bean ref="RequestFanOnForHotWater" method="isRunning"/>
+            <choice>
+                <when>
+                    <groovy>request.body</groovy>
+                    <!-- timer is running, restart fan -->
+                    <to uri="direct:startHomeFan"/>
+                </when>
+            </choice>
         </route>
 
+        <!-- This is called after timeout of the delay timer. That timer should end just before (few minutes)
+        the fan would stop (abt. 10 minutes?) -->
         <route id="set_fanstable_false" autoStartup="true">
             <from uri="direct:set_fanstable_false"/>
             <log message="Start set_fanstable_false"/>
@@ -144,6 +178,10 @@
             <bean ref="ToiletTimeoutEnabled" method="setValue"/>
         </route>
 
+        <route id="dummy">
+            <from ure="direct:dummy"/>
+        </route>
+
 
     </camelContext>
 
@@ -154,6 +192,9 @@
     </bean>
     <bean id="DelaySetHomeFanIdle" class="nl.vandenzen.iot.beans.ExtendableDelay">
         <argument value="direct:set_fanstable_false"/>
+    </bean>
+    <bean id="RequestFanOnForHotWater" class="nl.vandenzen.iot.beans.ExtendableDelay">
+        <argument value="direct:dummy"/>
     </bean>
 
 </blueprint>
