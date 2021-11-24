@@ -180,6 +180,8 @@
 
         <route id="dummy">
             <from uri="direct:dummy"/>
+            <!-- some dummy action -->
+            <bean ref="RequestFanOnForHotWater" method="isRunning"/>
         </route>
 
 
