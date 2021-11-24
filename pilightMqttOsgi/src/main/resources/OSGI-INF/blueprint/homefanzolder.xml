@@ -69,6 +69,9 @@
                         </groovy>
                     </setBody>
                     <to uri="direct:sendCommandToFan"/>
+                    <delay>
+                        <constant>3000</constant>
+                    </delay>
                     <setBody>
                         <!-- command 8 is "IthoTimer1" -->
                         <groovy>
