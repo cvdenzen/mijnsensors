@@ -165,16 +165,17 @@
         <route id="fanTimeout" autoStartup="true">
             <from uri="direct:fanTimeout"/>
             <log message="fanTimeout started"/>
+            <bean ref="RequestFanOnForHotWater" method="isRunning"/>
+            <setHeader name="reqHW">
+                <groovy>request.body</groovy>
+            </setHeader>
+            <bean ref="RequestFanOnForToilet" method="isRunning"/>
+            <setBody>
+                <groovy>request.body||headers.reqHW</groovy>
+            </setBody>
             <choice>
                 <when>
-                    <bean ref="RequestFanOnForHotWater" method="isRunning"/>
-                    <!-- fan must be restarted -->
-                    <to uri="direct:startHomeFan"/>
-                </when>
-            </choice>
-            <choice>
-                <when>
-                    <bean ref="RequestFanOnForToilet" method="isRunning"/>
+                    <groovy>request.body</groovy>
                     <!-- fan must be restarted -->
                     <to uri="direct:startHomeFan"/>
                 </when>
