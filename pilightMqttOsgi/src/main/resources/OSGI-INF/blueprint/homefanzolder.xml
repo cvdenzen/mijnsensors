@@ -53,10 +53,8 @@
                     <!-- is not stable, so start new cycle: low, wait Timer1 -->
                     <log message="startHomeFan, start fan (low, wait, Timer1), body=${body}"/>
                     <!-- Start timer -->
-                    <setBody>
-                        <!-- 1000*60*10 is 10 minutes -->
-                        <bean ref="homeFan" method="getRuntimeFanMinutes"/>
-                    </setBody>
+                    <!-- 1000*60*10 is 10 minutes -->
+                    <bean ref="homeFan" method="getRuntimeFanMinutes"/>
                     <setBody>
                         <groovy>result=1000*60*request.body</groovy>
                     </setBody>
@@ -78,7 +76,7 @@
             <log message="Start stopHomeFan, body=${body}"/>
             <!-- is not stable, so start new cycle: low, wait Timer1 -->
             <log message="stopHomeFan"/>
-                <bean ref="homeFan" method="getCommandStop"/>
+            <bean ref="homeFan" method="getCommandStop"/>
             <to uri="direct:sendCommandToFan"/>
             <bean ref="FanIsRunningTimer" method="cancel"/>
         </route>
@@ -90,7 +88,7 @@
             <to uri="direct:convert_body_to_boolean"/>
             <!-- simply always start fan -->
             <log message="listenPir_gf_toilet: Start fan is ${body}"/>
-                <bean ref="homeFan" method="getTimerToiletMinutes"/>
+            <bean ref="homeFan" method="getTimerToiletMinutes"/>
             <setBody>
                 <!-- 1000*60*10 is 10 minutes nalooptijd -->
                 <groovy>result=1000*60*request.body</groovy>
@@ -132,9 +130,7 @@
                 <when>
                     <groovy>result=java.lang.Float.valueOf(request.body)>45.1f</groovy>
                     <log message="ListenHotWaterTemp: Start fan, body=${body}"/>
-                    <setBody>
                         <bean ref="homeFan" method="getTimerHotwaterMinutes"/>
-                    </setBody>
                     <setBody>
                         <!-- 1000*60*10 is 10 minutes nalooptijd -->
                         <groovy>result=1000*60*request.body</groovy>
