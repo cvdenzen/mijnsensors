@@ -64,17 +64,11 @@
                     <convertBodyTo type="java.lang.Long"/>
                     <bean ref="FanIsRunningTimer" method="setDelay"/>
                     <bean ref="FanIsRunningTimer" method="restartTimer"/>
-                    <setBody>
-                        <bean ref="homeFan" method="getCommandStart1"/>
-                    </setBody>
+                    <bean ref="homeFan" method="getCommandStart1"/>
                     <to uri="direct:sendCommandToFan"/>
-                    <setBody>
-                        <bean ref="homeFan" method="getCommandStart2"/>
-                    </setBody>
+                    <bean ref="homeFan" method="getCommandStart2"/>
                     <to uri="direct:sendCommandToFan"/>
-                    <setBody>
-                        <bean ref="homeFan" method="getCommandStart3"/>
-                    </setBody>
+                    <bean ref="homeFan" method="getCommandStart3"/>
                     <to uri="direct:sendCommandToFan"/>
                 </otherwise>
             </choice>
@@ -84,9 +78,7 @@
             <log message="Start stopHomeFan, body=${body}"/>
             <!-- is not stable, so start new cycle: low, wait Timer1 -->
             <log message="stopHomeFan"/>
-            <setBody>
                 <bean ref="homeFan" method="getCommandStop"/>
-            </setBody>
             <to uri="direct:sendCommandToFan"/>
             <bean ref="FanIsRunningTimer" method="cancel"/>
         </route>
@@ -98,9 +90,7 @@
             <to uri="direct:convert_body_to_boolean"/>
             <!-- simply always start fan -->
             <log message="listenPir_gf_toilet: Start fan is ${body}"/>
-            <setBody>
                 <bean ref="homeFan" method="getTimerToiletMinutes"/>
-            </setBody>
             <setBody>
                 <!-- 1000*60*10 is 10 minutes nalooptijd -->
                 <groovy>result=1000*60*request.body</groovy>
@@ -194,11 +184,8 @@
                     <to uri="direct:startHomeFan"/>
                 </when>
                 <otherwise>
-                    <!-- Stop fan, command 4=IthoLow -->
-                    <setBody>
-                        <groovy>4</groovy>
-                    </setBody>
-                    <to uri="direct:sendCommandToFan"/>
+                    <!-- Stop fan -->
+                    <to uri="direct:stopHomeFan"/>
                 </otherwise>
             </choice>
 
