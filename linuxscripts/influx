@@ -1,0 +1,46 @@
+
+#!/bin/bash
+#
+# Probeer een csv van lichaamsgewichten in Influxdb te importeren.
+# april 2022
+# Influxdb v 1.6.4 op raspberry
+# Influx line protocol:
+# measurement,tag_set field_set timestamp
+#
+# lichaamsgewicht,onderwerp=Hester gewicht=75.3 1465839830100400200
+#
+# 1465839830100400200 (that’s 2016-06-13T17:43:50.1004002Z in RFC3339 format)
+#
+# wij kunnen beter als precision h (hour) opgeven IS TE MOEILIJK, OP SECONDE IS REDELIJK ALTERNATIEF.
+# Berekening met date op seconden is het makkelijkst, dus niet op uur.
+# date --date="2022-01-01" +%s
+#
+# werkt alleen onder Linux (raspberry).
+# gawk '{ split($1,a,/,/);print mktime(a[1]" "a[2]" "a[3] " 0 0 0");print a[1] a[2] a[3]}'
+
+# Datum,jaar,maand,dag,Dagnummer,Carl,Hester,Arjan,Martin,,10
+# 30-08-2012,2012,8,30,0,"64,8","87,4",,"52,0",,
+#
+inputfile="/home/pi/Downloads/LichaamsgewichtenGegevens.csv"
+for onderwerp in "Hester" "Carl" "Arjan" "Martin"
+do
+	echo Start $onderwerp
+	split -l 200 $inputfile INPUTFILE
+	influxcmd="FROM lichaamsgewicht WHERE onderwerp='$onderwerp'"
+	echo Start delete from influx, database vitals: $influxcmd
+	nice influx -execute "DELETE $influxcmd" -database 'vitals' -username 'admin' -password 'Ap28SP3T&y6$@@X7TDTlN#NxNbvxHKtR'
+	for file in INPUTFILE??
+	do
+		head --lines=10000 $file \
+		|gawk -v onderwerp=$onderwerp -f influx.awk >tmp.out
+		wc tmp.out
+		echo Start sleep
+		sleep 1
+		echo Start import $onderwerp, file $file
+		nice influx -import -database 'vitals' -path=tmp.out -precision=s -username 'admin' -password 'Ap28SP3T&y6$@@X7TDTlN#NxNbvxHKtR'
+	done
+	echo Removing files INPUTFILE??
+	rm INPUTFILE??
+done
+#
+#
