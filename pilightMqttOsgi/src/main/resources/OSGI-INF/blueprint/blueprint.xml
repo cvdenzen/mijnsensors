@@ -642,6 +642,8 @@ camel v 3.5.0 oct 2020
             <log message="LightsOff, header.Stable          =${header.Stable}"/>
             <log message="LightsOff, header.bg_x_imac2      =${header.bg_x_imac2}"/>
             <log message="LightsOff, header.bg_x_imac3      =${header.bg_x_imac3}"/>
+            <log message="LightsOff, header.bg_x_imac4      =${header.bg_x_imac4}"/>
+            <log message="LightsOff, header.gGFActivity      =${header.gGFActivity}"/>
             <choice>
                 <when>
                     <groovy>
@@ -727,6 +729,12 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <setHeader name="bg_x_imac3">
                 <method ref="bg_x_imac3" method="getValue"/>
+            </setHeader>
+            <setHeader name="bg_x_imac4">
+                <method ref="bg_x_imac4" method="getValue"/>
+            </setHeader>
+            <setHeader name="gGFActivity">
+                <method ref="gGFActivity" method="getValue"/>
             </setHeader>
             <setHeader name="Stable">
                 <method ref="Stable" method="getValue"/>
@@ -987,6 +995,8 @@ camel v 3.5.0 oct 2020
     <bean id="bg_w_tv_w" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac2" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="bg_x_imac4" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="gGFActivity" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of tv and imac is stable -->
     <bean id="Stable" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of hue is stable, polling time is 10 seconds! -->
