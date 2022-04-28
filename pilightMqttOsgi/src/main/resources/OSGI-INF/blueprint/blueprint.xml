@@ -56,15 +56,18 @@ camel v 3.5.0 oct 2020
                     <groovy>"1".equals(request.body)
                         || request.body == 1
                         || request.body == true
+                        || 'ON'.equals(request.body)
                         || "ON".equals(request.body)
                         || "true".equals(request.body)
                         || (request.body!=null &amp;&amp; new String(request.body).equals("1".toString())) // input is byte[]
                     </groovy>
+                    <log message="convert_body_to_boolean set to true for body=${body}"/>
                     <setBody>
                         <constant>true</constant>
                     </setBody>
                 </when>
                 <otherwise>
+                    <log message="convert_body_to_boolean set to false for body=${body}"/>
                     <setBody>
                         <constant>false</constant>
                     </setBody>
@@ -500,6 +503,7 @@ camel v 3.5.0 oct 2020
 
         <route id="listen_bg_x_imac3" autoStartup="true" startupOrder="208">
             <from uri="paho:oh/all/bg_x_imac3/state?connectionTimeout=600"/>
+            <log message="listen_bg_x_imac3 body=${body}"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_x_imac3" method="setValue"/>
             <!-- check whether to turn lights off -->
@@ -529,7 +533,16 @@ camel v 3.5.0 oct 2020
             <!-- Turn on lights? -->
             <to uri="direct:calcOneLightOn"/>
         </route>
-
+        <route id="listen_gGFActivity" autoStartup="true" startupOrder="210">
+            <from uri="paho:oh/all/gGFActivity/state?connectionTimeout=600"/>
+            <!-- from byte[] -->
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <log message="listen_gGFActivity is ${body}"/>
+            <bean ref="gGFActivity" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
 
         <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item.
              This could be faster (no openhab action in between) -->
@@ -640,7 +653,6 @@ camel v 3.5.0 oct 2020
             <log message="LightsOff, header.AutoOffEnabled  =${header.AutoOffEnabled}"/>
             <log message="LightsOff, header.bg_w_tv_w       =${header.bg_w_tv_w}"/>
             <log message="LightsOff, header.Stable          =${header.Stable}"/>
-            <log message="LightsOff, header.bg_x_imac2      =${header.bg_x_imac2}"/>
             <log message="LightsOff, header.bg_x_imac3      =${header.bg_x_imac3}"/>
             <log message="LightsOff, header.bg_x_imac4      =${header.bg_x_imac4}"/>
             <log message="LightsOff, header.gGFActivity      =${header.gGFActivity}"/>
@@ -650,8 +662,9 @@ camel v 3.5.0 oct 2020
                         "ON".equals(headers.AutoOffEnabled)
                         &amp;&amp; headers.bg_w_tv_w == false
                         &amp;&amp; headers.Stable == true
-                        &amp;&amp; headers.bg_x_imac2 == false
-                        &amp;&amp; headers.bg_x_imac3 == false <!-- // and imac is off -->
+                        &amp;&amp; headers.bg_x_imac3 == false
+                        &amp;&amp; headers.bg_x_imac4 == false <!-- // and imac is off -->
+                        &amp;&amp; headers.gGFActivity == 0 <!-- number of active devices like tv, imac, .. -->
                     </groovy>
                     <setBody>
                         <simple>Licht gaat uit.</simple>
@@ -996,7 +1009,7 @@ camel v 3.5.0 oct 2020
     <bean id="bg_x_imac2" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac4" class="nl.vandenzen.iot.util.MutableBoolean"/>
-    <bean id="gGFActivity" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="gGFActivity" class="nl.vandenzen.iot.util.MutableInteger"/>
     <!-- only after some time the state of tv and imac is stable -->
     <bean id="Stable" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of hue is stable, polling time is 10 seconds! -->
