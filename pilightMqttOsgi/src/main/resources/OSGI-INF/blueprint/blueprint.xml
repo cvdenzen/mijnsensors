@@ -493,16 +493,18 @@ camel v 3.5.0 oct 2020
             </choice>
         </route>
 
-        <route id="listen_bg_x_imac2" autoStartup="true" startupOrder="207">
-            <from uri="paho:oh/all/bg_x_imac2/state?connectionTimeout=600"/>
+        <route id="listen_bg_x_imac4" autoStartup="true" startupOrder="207">
+            <from uri="paho:oh/all/bg_x_imac4/state?connectionTimeout=600"/>
+            <convertBodyTo type="java.lang.String"/>
             <to uri="direct:convert_body_to_boolean"/>
-            <bean ref="bg_x_imac2" method="setValue"/>
+            <bean ref="bg_x_imac4" method="setValue"/>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
 
         <route id="listen_bg_x_imac3" autoStartup="true" startupOrder="208">
             <from uri="paho:oh/all/bg_x_imac3/state?connectionTimeout=600"/>
+            <convertBodyTo type="java.lang.String"/>
             <log message="listen_bg_x_imac3 body=${body}"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_x_imac3" method="setValue"/>
