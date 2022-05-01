@@ -7,3 +7,4 @@ target/**
 /mqttPilight/pilightMqttOsgi/target/
 /pilightMqttOsgi/target/
 /pilightMqttOsgi/lib/
+/pilightMqttOsgi/openhab-backup-*.zip

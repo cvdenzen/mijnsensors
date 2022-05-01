@@ -38,6 +38,43 @@ camel v 3.5.0 oct 2020
         <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimer?repeatCount=1"/>
             <to uri="direct:set_stable_false"/>
+
+            <!-- REST calls to OpenHab -->
+            <setHeader name="OHItems">
+                <groovy>new String[]{"bg_w_tv_w","bg_x_imac3","bg_x_imac4","gGFActivity"}
+                </groovy>
+            </setHeader>
+            <to uri="direct:getOHItems"/>
+            <!-- Results are in header OHItemsResult, it is probably a String[] -->
+
+            <setBody>
+                <groovy>request.headers.OHItemsResult[0]</groovy>
+            </setBody>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_w_tv_w" method="setValue"/>
+
+            <setBody>
+                <groovy>request.headers.OHItemsResult[1]</groovy>
+            </setBody>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_x_imac3" method="setValue"/>
+
+            <setBody>
+                <groovy>request.headers.OHItemsResult[2]</groovy>
+            </setBody>
+            <convertBodyTo type="java.lang.String"/>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_x_imac4" method="setValue"/>
+
+            <setBody>
+                <groovy>request.headers.OHItemsResult[3]</groovy>
+            </setBody>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <bean ref="gGFActivity" method="setValue"/>
+
         </route>
 
         <route id="HelloWorldFromBlueprint" autoStartup="true" startupOrder="6">
@@ -53,13 +90,30 @@ camel v 3.5.0 oct 2020
             <log message="convert_body_to_boolean entry body=${body}"/>
             <choice>
                 <when>
-                    <groovy>"1".equals(request.body)
+                    <groovy>
+                        java.util.logging.Logger logger = java.util.logging.Logger.getLogger("");
+                        logger.info ("I am a test info log");
+                        if ("1".equals(request.body)) logger.info("\"1\".equals(request.body) is true");
+                        if (request.body == 1) {logger.info("request.body == 1 is true");}
+                        if (request.body == true) {logger.info("request.body == true is true");}
+                        if ('ON'.equals(request.body)) {logger.info("'ON'.equals(request.body) is true");}
+                        if ("ON".equals(request.body)) {logger.info("\"ON\".equals(request.body) is true");}
+                        if ("true".equals(request.body)) {logger.info("\"true\".equals(request.body) is true");}
+                        if ((request.body!=null
+                        &amp;&amp; new String(request.body).equals("1".toString())))
+                        logger.info("(request.body!=null"
+                        +" &amp;&amp; new String(request.body)"
+                        +".equals(\"1\".toString())) is true");
+                        if (true) logger.info("Einde riedeltje met logging meldingen");
+                        logger.info("class is "+request.body.getClass().toString());
+                        "1".equals(request.body)
                         || request.body == 1
                         || request.body == true
                         || 'ON'.equals(request.body)
                         || "ON".equals(request.body)
                         || "true".equals(request.body)
-                        || (request.body!=null &amp;&amp; new String(request.body).equals("1".toString())) // input is byte[]
+                        || (request.body!=null &amp;&amp; new String(request.body).equals("1".toString())) /* input is
+                        byte[] */
                     </groovy>
                     <log message="convert_body_to_boolean set to true for body=${body}"/>
                     <setBody>
@@ -186,7 +240,8 @@ camel v 3.5.0 oct 2020
         <!-- ** Multiple items.
         Do a REST call to OpenHab to get the value items
          Input: header OHItems, array of Strings (names of items)
-         Output: body, array of Strings -->
+         Output: body, array of Strings
+                 header OHItemsResult,  String[] (same as body) -->
         <route id="getOHItems" autoStartup="true" streamCache="true">
             <from uri="direct:getOHItems"/>
             <log message="getOHItems body=${body}"/>
@@ -453,6 +508,8 @@ camel v 3.5.0 oct 2020
         <route id="listen_bg_w_tv_w_mqtt" autoStartup="true" startupOrder="216">
             <from uri="paho:oh/all/bg_w_tv_w/state?connectionTimeout=600"/>
             <log message="listen_bg_w_tv_mqtt: received message ${body}"/>
+            <!-- convert Byte[] to string -->
+            <convertBodyTo type="java.lang.String"/>
             <to uri="direct:listen_bg_w_tv_w"/>
         </route>
 
@@ -535,6 +592,7 @@ camel v 3.5.0 oct 2020
             <!-- Turn on lights? -->
             <to uri="direct:calcOneLightOn"/>
         </route>
+        <!-- This doesn't seem to work, group gGFActivity -->
         <route id="listen_gGFActivity" autoStartup="true" startupOrder="210">
             <from uri="paho:oh/all/gGFActivity/state?connectionTimeout=600"/>
             <!-- from byte[] -->
@@ -630,7 +688,7 @@ camel v 3.5.0 oct 2020
                         <!-- it is dark -->
                         <groovy>
                             java.lang.Float.valueOf(headers.LichtIntensiteit_Woonkamer)
-                              &lt; java.lang.Float.valueOf(headers.LightsOnIntensityThreshold)
+                            &lt; java.lang.Float.valueOf(headers.LightsOnIntensityThreshold)
                         </groovy>
                         <log message="Start Enable_lights_on_by_daylight, header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
                         <log message="Start Enable_lights_on_by_daylight, header.LightsOnIntensityThreshold=${header.LightsOnIntensityThreshold}"/>
@@ -668,10 +726,7 @@ camel v 3.5.0 oct 2020
                         &amp;&amp; headers.bg_x_imac4 == false <!-- // and imac is off -->
                         &amp;&amp; headers.gGFActivity == 0 <!-- number of active devices like tv, imac, .. -->
                     </groovy>
-                    <setBody>
-                        <simple>Licht gaat uit.</simple>
-                    </setBody>
-                    <to uri="log:nl.vandenzen.iot?level=INFO"/>
+                    <log message="Licht gaat uit."/>
                     <!-- disable automatic turning off the lights -->
                     <setBody>
                         <constant>OFF</constant>
@@ -689,6 +744,48 @@ camel v 3.5.0 oct 2020
                     <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
                     <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
                 </when>
+                <otherwise>
+                    <log message="Licht gaat niet uit."/>
+                    <choice>
+                        <when>
+                            <groovy>!"ON".equals(headers.AutoOffEnabled)</groovy>
+                            <log message='!"ON".equals(headers.AutoOffEnabled)'/>
+                        </when>
+                    </choice>
+                    <choice>
+                        <when>
+                            <groovy>!headers.bg_w_tv_w == false</groovy>
+                            <log message="!headers.bg_w_tv_w == false"/>
+                        </when>
+                    </choice>
+                    <choice>
+                        <when>
+                            <groovy>!headers.Stable == true</groovy>
+                            <log message="!headers.Stable == true"/>
+                        </when>
+                    </choice>
+                    <choice>
+                        <when>
+                            <groovy>!headers.bg_x_imac3 == false</groovy>
+                            <log message="!headers.bg_x_imac3 == false"/>
+                        </when>
+                    </choice>
+                    <choice>
+                        <when>
+                            <groovy>!headers.bg_x_imac4 == false</groovy>
+                            <log message="!headers.bg_x_imac4 == false"/>
+                        </when>
+                    </choice>
+                    <choice>
+                        <when>
+                            <groovy>!headers.gGFActivity.toString() == "0"</groovy>
+                            <log message="!headers.gGFActivity == 0"/>
+                        </when>
+                        <otherwise>
+                            <log message="headers.gGFActivity == 0; it is ${headers.gGFActivity} or (header) ${header.gGFActivity}"/>
+                        </otherwise>
+                    </choice>
+                </otherwise>
             </choice>
         </route>
 
@@ -701,6 +798,18 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <log message="Start SetHeaders"/>
 
+
+            <setHeader name="OHItem">
+                <constant>gGFActivity</constant>
+            </setHeader>
+            <to uri="direct:getOHItem"/>
+            <setHeader name="gGFActivity">
+                <groovy>request.body</groovy>
+            </setHeader>
+            <log message="setHeaders gGFActivity is ${body}"/>
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <bean ref="gGFActivity" method="setValue"/>
 
             <setHeader name="OHItem">
                 <constant>LichtIntensiteit_Woonkamer</constant>
@@ -747,9 +856,6 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <setHeader name="bg_x_imac4">
                 <method ref="bg_x_imac4" method="getValue"/>
-            </setHeader>
-            <setHeader name="gGFActivity">
-                <method ref="gGFActivity" method="getValue"/>
             </setHeader>
             <setHeader name="Stable">
                 <method ref="Stable" method="getValue"/>
@@ -989,7 +1095,6 @@ camel v 3.5.0 oct 2020
             <log message="Adjust paho:camel/f1_nw/display/backlight to ${body}"/>
             <to uri="paho:camel/f1_nw/display/backlight?{{pahoPubOptions}}"/>
         </route>
-
 
 
     </camelContext>
