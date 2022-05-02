@@ -804,7 +804,7 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <to uri="direct:getOHItem"/>
             <setHeader name="gGFActivity">
-                <groovy>request.body</groovy>
+                <groovy>Integer.valueOf(request.body)</groovy>
             </setHeader>
             <log message="setHeaders gGFActivity is ${body}"/>
             <convertBodyTo type="java.lang.String"/>
