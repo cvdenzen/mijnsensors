@@ -27,9 +27,7 @@
             <setBody>
                 <groovy>headers.p0.toString()</groovy>
             </setBody>
-            <log message="f1_nw brightness is ${body} (mqtt topic f1_nw/all/light)"/>
             <to uri="paho:f1_nw/all/light?connectionTimeout=180"/>
-
         </route>
     </camelContext>
 
