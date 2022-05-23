@@ -540,16 +540,24 @@ camel v 3.5.0 oct 2020
                     <!-- log message="bg_w_tv_w same value old: ${headers.bg_w_tv_w}, new: ${body}"/ -->
                 </when>
                 <otherwise>
+                    <!-- tv status has changed, body is new value (Boolean) -->
                     <!-- set stable false will automatically set it to true after a specified time -->
                     <to uri="direct:set_stable_false"/>
-                    <!-- twee minuten, 120s, 120.000 ms, na uitzetten tv mag evt mediabox uit -->
                     <setBody>
-                        <constant>120000</constant>
+                        <method ref="bg_w_tv_w" method="getValue"/>
                     </setBody>
-                    <convertBodyTo type="java.lang.String"/>
-                    <convertBodyTo type="java.lang.Long"/>
-                    <bean ref="DelayAutoOffMediabox" method="setDelay"/>
-                    <bean ref="DelayAutoOffMediabox" method="schedule"/>
+                    <choice>
+                        <when>
+                            <simple>${body}</simple>
+                            <!-- tv is on -->
+                            <log message="tv changed to on:${body}"/>
+                            <to uri="direct:calcMediaboxOn"/>
+                        </when>
+                        <otherwise>
+                            <log message="tv changed to off:${body}"/>
+                            <to uri="direct:calcMediaboxOff"/>
+                        </otherwise>
+                    </choice>
                 </otherwise>
             </choice>
         </route>
@@ -573,10 +581,11 @@ camel v 3.5.0 oct 2020
             <to uri="direct:LightsOffCalc"/>
         </route>
 
-        <!-- not used 17 jan 2020 -->
-        <route id="listenPir_gf_achterdeur17" autoStartup="false" startupOrder="209">
+        <!-- not used 17 jan 2020
+         Used again 23 may 2022 -->
+        <route id="listenPir_gf_achterdeur17" autoStartup="true" startupOrder="209">
             <from uri="paho:oh/all/pir_gf_achterdeur17/state?connectionTimeout=600"/>
-            <log message="listenPir_gf_achterdeur17 body=${body}, deprecated"/>
+            <log message="listenPir_gf_achterdeur17 body=${body}"/>
             <convertBodyTo type="java.lang.String"/>
             <choice>
                 <when>
@@ -595,17 +604,7 @@ camel v 3.5.0 oct 2020
             <bean ref="pir_gf_achterdeur17" method="setValue"/>
             <!-- Turn on lights? -->
             <to uri="direct:calcOneLightOn"/>
-        </route>
-        <!-- This doesn't seem to work, group gGFActivity -->
-        <route id="listen_gGFActivity" autoStartup="true" startupOrder="210">
-            <from uri="paho:oh/all/gGFActivity/state?connectionTimeout=600"/>
-            <!-- from byte[] -->
-            <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Integer"/>
-            <log message="listen_gGFActivity is ${body}"/>
-            <bean ref="gGFActivity" method="setValue"/>
-            <!-- check whether to turn lights off -->
-            <to uri="direct:LightsOffCalc"/>
+            <to uri="direct:calcMediabox"/>
         </route>
 
         <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item.
@@ -620,6 +619,17 @@ camel v 3.5.0 oct 2020
             <to uri="direct:calcOneLightOn"/>
         </route>
 
+        <!-- This doesn't seem to work, group gGFActivity -->
+        <route id="listen_gGFActivity" autoStartup="true" startupOrder="210">
+            <from uri="paho:oh/all/gGFActivity/state?connectionTimeout=600"/>
+            <!-- from byte[] -->
+            <convertBodyTo type="java.lang.String"/>
+            <convertBodyTo type="java.lang.Integer"/>
+            <log message="listen_gGFActivity is ${body}"/>
+            <bean ref="gGFActivity" method="setValue"/>
+            <!-- check whether to turn lights off -->
+            <to uri="direct:LightsOffCalc"/>
+        </route>
         <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="301">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer1?cron=0+0+12+*+*+?"/>
@@ -1107,23 +1117,21 @@ camel v 3.5.0 oct 2020
             <from uri="paho:oh/all/AutoOffMediaboxEnabled/state?connectionTimeout=600"/>
             <to uri="direct:convert_body_to_boolean"/>
             <log message="listenAutoOffMediaboxEnabled: AutoOffMediaboxEnabled set to ${body}"/>
-            <to uri="direct:calcMediaboxOff"/>
+            <to uri="direct:calcMediabox"/>
         </route>
         <!-- AutoOnMediaboxEnabled -->
         <route id="listenAutoOnMediaboxEnabled" autoStartup="true">
             <from uri="paho:oh/all/AutoOnMediaboxEnabled/state?connectionTimeout=600"/>
             <to uri="direct:convert_body_to_boolean"/>
             <log message="listenAutoOnMediaboxEnabled: AutoOnMediaboxEnabled set to ${body}"/>
-            <to uri="direct:calcMediaboxOn"/>
+            <to uri="direct:calcMediabox"/>
         </route>
-        <!-- delayPirHue1 -->
+        <!-- PirHue1 -->
         <route id="listenpir_hue1_motion" autoStartup="true">
             <from uri="paho:oh/all/pir_hue1_motion/state?connectionTimeout=600"/>
             <to uri="direct:convert_body_to_boolean"/>
             <log message="listenpir_hue1_motion, body=${body}"/>
-            <!-- Set delay to 15 minutes -->
-
-            <to uri="direct:calcMediaboxOn"/>
+            <to uri="direct:calcMediabox"/>
         </route>
 
         <route id="listen_chromecastAudio" autoStartup="true">
@@ -1156,7 +1164,7 @@ camel v 3.5.0 oct 2020
                         </when>
                         <otherwise>
                             <!-- when chromecast is turned off -->
-                            <to uri="direct:delayedSetOnAutoOffMediabox"/>
+                            <to uri="direct:calcMediaboxOff"/>
                         </otherwise>
                     </choice>
                 </otherwise>
@@ -1164,8 +1172,9 @@ camel v 3.5.0 oct 2020
         </route>
 
         <!-- Zet na een tijdje de AutoOffMediabox ON -->
-        <route id="delayedSetOnAutoOffMediabox">
-            <from uri="direct:delayedSetOnAutoOffMediabox"/>
+        <route id="delayedMediaboxOff" autoStartup="true">
+            <from uri="direct:delayedMediaboxOff"/>
+            <log message="Start delayedMediaboxOff"/>
             <!-- twee minuten, 120s, 120.000 ms, na uitzetten mag evt mediabox uit.
              Tien minuten is 600s, 600.000 ms -->
             <setBody>
@@ -1173,8 +1182,8 @@ camel v 3.5.0 oct 2020
             </setBody>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Long"/>
-            <bean ref="DelayAutoOffMediabox" method="setDelay"/>
-            <bean ref="DelayAutoOffMediabox" method="restartTimer"/>
+            <bean ref="DelayMediaboxOff" method="setDelay"/>
+            <bean ref="DelayMediaboxOff" method="restartTimer"/>
         </route>
         <!-- Mediabox gaat aan als: IS MOEILIJK
         - tv aan
@@ -1188,7 +1197,8 @@ camel v 3.5.0 oct 2020
             <!-- REST calls to OpenHab -->
             <setHeader name="OHItems">
                 <groovy>new
-                    String[]{"bg_w_tv_w","bg_w_chromecast_audio","Plug_GF_Mediabox","AutoOnMediaboxEnabled","pir_hue1_motion"}
+                    String[]{"bg_w_tv_w","bg_w_chromecast_audio","Plug_GF_Mediabox","AutoOnMediaboxEnabled","pir_hue1_motion",
+                    "pir_gf_achterdeur17"}
                 </groovy>
             </setHeader>
             <to uri="direct:getOHItems"/>
@@ -1203,22 +1213,23 @@ camel v 3.5.0 oct 2020
                         (
                         "ON".equals(headers.OHItemsResult[0]) /* tv */
                         ||"ON".equals(headers.OHItemsResult[1]) /* chromecast_audio */
+                        ||"ON".equals(headers.OHItemsResult[4]) /* pir hue1 (hall) */
+                        ||"OPEN".equals(headers.OHItemsResult[5]) /* pir achterdeur, normally CLOSED */
                         )
-                        &amp;&amp; "ON".equals(headers.OHItemsResult[3]) /* autoOnMediabox */
                     </groovy>
-                    <log message="calcMediaboxOn, turning it on"/>
-                    <!-- Niet gelijk weer uitzetten -->
-                    <setBody>
-                        <constant>OFF</constant>
-                    </setBody>
-                    <setHeader name="OHItem">
-                        <constant>AutoOffMediabox</constant>
-                    </setHeader>
-                    <to uri="direct:setOHItem"/>
-                    <!-- Maar wel over een tijdje kijken of de mediabox terecht aanstaat -->
-                    <to uri="direct:delayedSetOnAutoOffMediabox"/>
-                    <!-- En zet de mediabox aan -->
-                    <to uri="direct:zetMediaboxAan"/>
+                    <log message="calcMediaboxOn: it should be on"/>
+                    <bean ref="DelayMediaboxOff" method="cancel"/>
+                    <choice>
+                        <when>
+                            <groovy>
+                                "OFF".equals(headers.OHItemsResult[2]) /* mediabox is off */
+                                &amp;&amp; "ON".equals(headers.OHItemsResult[3]) /* autoOnMediabox */
+                            </groovy>
+                            <log message="calcMediaboxOn, turning it on"/>
+                            <!-- En zet de mediabox aan -->
+                            <to uri="direct:zetMediaboxAan"/>
+                        </when>
+                    </choice>
                 </when>
             </choice>
         </route>
@@ -1232,14 +1243,15 @@ camel v 3.5.0 oct 2020
             <!-- REST calls to OpenHab -->
             <setHeader name="OHItems">
                 <groovy>new
-                    String[]{"bg_w_tv_w","bg_w_chromecast_audio","Plug_GF_Mediabox","AutoOffMediaboxEnabled","pir_hue1_motion"}
+                    String[]{"bg_w_tv_w","bg_w_chromecast_audio","Plug_GF_Mediabox","AutoOffMediaboxEnabled","pir_hue1_motion",
+                    "pir_gf_achterdeur17"}
                 </groovy>
             </setHeader>
             <to uri="direct:getOHItems"/>
             <!-- Results are in header OHItemsResult, it is probably a String[] -->
             <to uri="direct:logOHItemsAndResults"/>
-            <setHeader name="DelayAutoOffMediabox">
-                <method ref="DelayAutoOffMediabox" method="isRunning"/>
+            <setHeader name="DelayMediaboxOff">
+                <method ref="DelayMediaboxOff" method="isRunning"/>
             </setHeader>
             <choice>
                 <when>
@@ -1247,24 +1259,33 @@ camel v 3.5.0 oct 2020
                         (
                         "OFF".equals(request.headers.OHItemsResult[0]) /* tv */
                         &amp;&amp; "OFF".equals(request.headers.OHItemsResult[1]) /* chromecast_audio */
+                        &amp;&amp;"OFF".equals(headers.OHItemsResult[4]) /* pir hue1 (hall) */
+                        &amp;&amp;"CLOSED".equals(headers.OHItemsResult[5]) /* pir achterdeur, normally CLOSED */
                         )
                         &amp;&amp;
-                        ("ON".equals(request.headers.OHItemsResult[2])) /* autoOffMediabox */
+                        ("ON".equals(request.headers.OHItemsResult[3])) /* autoOffMediabox */
+                        &amp;&amp; "ON".equals(headers.OHItemsResult[2]) /* mediabox is on */
                     </groovy>
                     <choice>
                         <when>
-                            <groovy>headers.DelayAutoOffMediabox</groovy>
-                            <!-- Do not turn off Mediabox, tv or chromecast was turned off too recently -->
+                            <groovy>headers.DelayMediaboxOff</groovy>
+                            <!-- Is already going to be turned off, timer is running -->
                         </when>
                         <otherwise>
                             <!-- tv or chromecast is/are off -->
                             <!-- mediabox mag uit -->
-                            <log message="mediabox gaat uit"/>
-                            <to uri="direct:zetMediaboxUit"/>
+                            <log message="mediabox gaat uit (na een delay)"/>
+                            <to uri="direct:delayedMediaboxOff"/>
                         </otherwise>
                     </choice>
                 </when>
             </choice>
+        </route>
+
+        <route id="calcMediabox" autoStartup="true">
+            <from uri="direct:calcMediabox"/>
+            <to uri="direct:calcMediaboxOn"/>
+            <to uri="direct:calcMediaboxOff"/>
         </route>
 
         <route id="cronAutoOnMediabox" autoStartup="true">
@@ -1278,7 +1299,7 @@ camel v 3.5.0 oct 2020
             <to uri="direct:setOHItem"/>
             <to uri="direct:calcMediaboxOn"/>
         </route>
-        <!-- Because tv will turn off in the night (to update software), disable
+        <!-- Because tv will turn on in the night (to update software), disable
         the autoOnMediabox at night -->
         <route id="cronAutoOnMediaboxOff" autoStartup="true">
             <from uri="quartz://groep/timerAutoOnMediaboxOff?cron=9+57+23+*+*+?"/>
@@ -1289,18 +1310,6 @@ camel v 3.5.0 oct 2020
                 <constant>AutoOnMediaboxEnabled</constant>
             </setHeader>
             <to uri="direct:setOHItem"/>
-        </route>
-        <!-- the callback code, this is not useful -->
-        <route id="delayAutoOnMediabox">
-            <from uri="direct:delayAutoOnMediabox"/>
-            <setBody>
-                <constant>ON</constant>
-            </setBody>
-            <setHeader name="OHItem">
-                <constant>AutoOnMediaboxEnabled</constant>
-            </setHeader>
-            <to uri="direct:setOHItem"/>
-            <to uri="direct:calcMediaboxOn"/>
         </route>
         <route id="cronAutoOffMediabox" autoStartup="true">
             <from uri="quartz://groep/timerAutoOffMediabox?cron=7+37+22+*+*+?"/>
@@ -1314,43 +1323,21 @@ camel v 3.5.0 oct 2020
             <to uri="direct:setOHItem"/>
             <to uri="direct:calcMediaboxOff"/>
         </route>
-        <!-- the callback code from a delay bean, AutoOffMediabox will be turned ON -->
-        <route id="delayAutoOffMediabox">
-            <from uri="direct:delayAutoOffMediabox"/>
-            <!-- do not change the item AutoOffMediaboxEnabled
-            -->
-            <to uri="direct:calcMediaboxOff"/>
-        </route>
-        <!-- er is een tijdje geen beweging geweest op pir hue1.
-         Het automatisch aanzetten wordt uitgezet -->
-        <route id="delayPirHue1">
-            <from uri="direct:delayPirHue1"/>
-            <setHeader name="OHItem">
-                <constant>AutoOnMediaboxEnabled</constant>
-            </setHeader>
-            <setBody>
-                <constant>OFF</constant>
-            </setBody>
-            <to uri="direct:setOHItem"/>
-            <!-- moet mediabox uit? -->
-            <to uri="direct:calcMediaboxOff"/>
+        <!-- the callback code from a delay bean, AutoOffMediabox will be turned OFF -->
+        <route id="DelayMediaboxOff">
+            <from uri="direct:DelayMediaboxOff"/>
+            <to uri="direct:zetMediaboxUit"/>
         </route>
         <route id="ZetMediaboxAan">
             <from uri="direct:zetMediaboxAan"/>
+            <!-- cancel timer that would turn Mediabox off -->
+            <bean ref="DelayMediaboxOff" method="cancel"/>
             <setHeader name="OHItem">
                 <groovy>"Plug_GF_Mediabox"
                 </groovy>
             </setHeader>
             <setBody>
                 <constant>ON</constant>
-            </setBody>
-            <to uri="direct:setOHItem"/>
-            <setHeader name="OHItem">
-                <groovy>"AutoOnMediaboxEnabled"
-                </groovy>
-            </setHeader>
-            <setBody>
-                <constant>OFF</constant>
             </setBody>
             <to uri="direct:setOHItem"/>
         </route>
@@ -1419,15 +1406,9 @@ camel v 3.5.0 oct 2020
     <bean id="DelaySetHueStableTrue" class="nl.vandenzen.iot.beans.ExtendableDelay">
         <argument value="direct:set_HueStable_true"/>
     </bean>
-    <bean id="DelayAutoOnMediabox" class="nl.vandenzen.iot.beans.ExtendableDelay">
-        <argument value="direct:delayAutoOnMediabox"/>
-    </bean>
-    <!-- While running, do not turn off the Mediabox -->
-    <bean id="DelayAutoOffMediabox" class="nl.vandenzen.iot.beans.ExtendableDelay">
-        <argument value="direct:delayAutoOffMediabox"/>
-    </bean>
-    <bean id="DelayPirHue1" class="nl.vandenzen.iot.beans.ExtendableDelay">
-        <argument value="direct:delayPirHue1"/>
+    <!-- Turn off the mediabox after some time -->
+    <bean id="DelayMediaboxOff" class="nl.vandenzen.iot.beans.ExtendableDelay">
+        <argument value="direct:DelayMediaboxOff"/>
     </bean>
     <!-- For memory size reporting -->
     <bean id="Runtime" class="java.lang.Runtime"
