@@ -1211,10 +1211,16 @@ camel v 3.5.0 oct 2020
                 <when>
                     <groovy>
                         (
-                        "ON".equals(headers.OHItemsResult[0]) /* tv */
-                        ||"ON".equals(headers.OHItemsResult[1]) /* chromecast_audio */
-                        ||"ON".equals(headers.OHItemsResult[4]) /* pir hue1 (hall) */
-                        ||"OPEN".equals(headers.OHItemsResult[5]) /* pir achterdeur, normally CLOSED */
+                            "ON".equals(headers.OHItemsResult[0]) /* tv */
+                            ||"ON".equals(headers.OHItemsResult[1]) /* chromecast_audio */
+                        )
+                        ||
+                        (
+                            (
+                                 "ON".equals(headers.OHItemsResult[4]) /* pir hue1 (hall) */
+                                 ||"OPEN".equals(headers.OHItemsResult[5]) /* pir achterdeur, normally CLOSED */
+                            )
+                            &amp;&amp; "ON".equals(headers.OHItemsResult[3]) /* autoOnMediabox */
                         )
                     </groovy>
                     <log message="calcMediaboxOn: it should be on"/>
@@ -1223,7 +1229,6 @@ camel v 3.5.0 oct 2020
                         <when>
                             <groovy>
                                 "OFF".equals(headers.OHItemsResult[2]) /* mediabox is off */
-                                &amp;&amp; "ON".equals(headers.OHItemsResult[3]) /* autoOnMediabox */
                             </groovy>
                             <log message="calcMediaboxOn, turning it on"/>
                             <!-- En zet de mediabox aan -->
