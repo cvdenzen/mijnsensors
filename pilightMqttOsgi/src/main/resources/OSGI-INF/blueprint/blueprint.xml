@@ -1207,11 +1207,17 @@ camel v 3.5.0 oct 2020
             <setHeader name="HueStable">
                 <method ref="HueStable" method="getValue"/>
             </setHeader>
+            <setHeader name="bg_tv_w_enable_on">
+                <method ref="bg_tv_w_enable_on" method="getValue"/>
+            </setHeader>
             <choice>
                 <when>
                     <groovy>
                         (
-                            "ON".equals(headers.OHItemsResult[0]) /* tv */
+                            (
+                                "ON".equals(headers.OHItemsResult[0]) /* tv */
+                                &amp;&amp; headers.bg_tv_w_enable_on
+                            )
                             ||"ON".equals(headers.OHItemsResult[1]) /* chromecast_audio */
                         )
                         ||
@@ -1284,6 +1290,11 @@ camel v 3.5.0 oct 2020
                         </otherwise>
                     </choice>
                 </when>
+                <otherwise>
+                    <!-- Something happened and mediabox should not be turned off -->
+                    <log message="Timer cancelled, mediabox gaat niet uit (na een delay)"/>
+                    <bean ref="DelayMediaboxOff" method="cancel"/>
+                </otherwise>
             </choice>
         </route>
 
@@ -1293,8 +1304,10 @@ camel v 3.5.0 oct 2020
             <to uri="direct:calcMediaboxOff"/>
         </route>
 
+        <!-- Enable automatic switching on mediabox. Only works on PIR sensors,
+        for tv and chromecast the mediabox is always turned on. -->
         <route id="cronAutoOnMediabox" autoStartup="true">
-            <from uri="quartz://groep/timerAutoOnMediabox?cron=7+25+7+*+*+?"/>
+            <from uri="quartz://groep/timerAutoOnMediabox?cron=7+1+9+*+*+?"/>
             <setBody>
                 <constant>ON</constant>
             </setBody>
@@ -1358,6 +1371,22 @@ camel v 3.5.0 oct 2020
             <to uri="direct:setOHItem"/>
         </route>
 
+        <!-- do not turn on mediabox if tv turns on at night for software updates -->
+        <route id="tv_do_not_turn_on_mediabox" autoStartup="true">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz://groep/timertvnight1?cron=4+0+3+*+*+?"/>
+            <setBody><constant>false</constant></setBody>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_tv_w_enable_on" method="setValue"/>
+        </route>
+        <route id="tv_do_turn_on_mediabox" autoStartup="true">
+            <!-- s m h day-of-month month day-of-week year(optional) -->
+            <from uri="quartz://groep/timertvnight2?cron=4+0+6+*+*+?"/>
+            <setBody><constant>true</constant></setBody>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_tv_w_enable_on" method="setValue"/>
+        </route>
+
         <route id="logOHItemsAndResults" autoStartup="true">
             <!-- debug -->
             <from uri="direct:logOHItemsAndResults"/>
@@ -1415,6 +1444,9 @@ camel v 3.5.0 oct 2020
     <bean id="DelayMediaboxOff" class="nl.vandenzen.iot.beans.ExtendableDelay">
         <argument value="direct:DelayMediaboxOff"/>
     </bean>
+
+    <!-- tv will turn on every night for software updates, do not turn on mediabox! -->
+    <bean id="bg_tv_w_enable_on" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- For memory size reporting -->
     <bean id="Runtime" class="java.lang.Runtime"
           factory-method="getRuntime"/>
