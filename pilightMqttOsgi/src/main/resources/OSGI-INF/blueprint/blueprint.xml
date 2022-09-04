@@ -651,14 +651,7 @@ camel v 3.5.0 oct 2020
         </route>
         <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz://groep/timer2?cron=47+50+22+*+*+?"/>
-            <!-- deprecated, now in OpenHab dec 2020 -->
-            <!--
-            <setBody>
-                <constant>true</constant>
-            </setBody>
-            <bean ref="AutoOffEnabled" method="setValue"/>
-            -->
+            <from uri="quartz://groep/timer2?cron=47+50+0+*+*+?"/>
             <setBody>
                 <constant>ON</constant>
             </setBody>
