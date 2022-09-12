@@ -582,8 +582,9 @@ camel v 3.5.0 oct 2020
         </route>
 
         <!-- not used 17 jan 2020
-         Used again 23 may 2022 -->
-        <route id="listenPir_gf_achterdeur17" autoStartup="true" startupOrder="209">
+         Used again 23 may 2022
+          Not used 12 sept 2022 -->
+        <route id="listenPir_gf_achterdeur17" autoStartup="false" startupOrder="209">
             <from uri="paho:oh/all/pir_gf_achterdeur17/state?connectionTimeout=600"/>
             <log message="listenPir_gf_achterdeur17 body=${body}"/>
             <convertBodyTo type="java.lang.String"/>

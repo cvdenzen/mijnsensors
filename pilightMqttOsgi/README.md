@@ -3,7 +3,7 @@ This files describes the actions to take for the separate karaf instance, NOT fo
 
 
 # 20210410 artemis is not good, use activemq copy activemq.xml from password manager (BitWarden in apr 2021) to /usr/share/karaf/etc/activemq.xml
-# rpiX: chmod g+w /usr/share/apache-karaf/deploy
+# rpiX: chmod g+w /usr/share/karaf/deploy
 scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vandenzen.iot/pilightmqttosgi.properties pi@rpi3:/usr/share/karaf/etc/
 # deprecated, needed if deploy is not writable by user pi: cp ~/gitrepos/mijnsensors/pilightMqttOsgi/ pi@rpi2:/usr/share/apache-karaf/deploy
 # On raspberry:
