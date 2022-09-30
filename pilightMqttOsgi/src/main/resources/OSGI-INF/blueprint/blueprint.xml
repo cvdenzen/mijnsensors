@@ -509,7 +509,8 @@ camel v 3.5.0 oct 2020
             <to uri="direct:listen_bg_w_tv_w"/>
         </route>
 
-        <route id="listen_bg_w_tv_w_timer" autoStartup="true" startupOrder="217">
+        <!-- trust mqtt messages, do not poll -->
+        <route id="listen_bg_w_tv_w_timer" autoStartup="false" startupOrder="217">
             <from uri="quartz://groep/timer_bg_w_tv_w_?cron=3/15+*+*+*+*+?"/>
             <setHeader name="OHItem">
                 <constant>bg_w_tv_w</constant>
@@ -618,6 +619,7 @@ camel v 3.5.0 oct 2020
             <bean ref="pir_gf_achterdeur17" method="setValue"/>
             <!-- Turn on lights? -->
             <to uri="direct:calcOneLightOn"/>
+            <to uri="direct:calcMediabox"/>
         </route>
 
         <!-- This doesn't seem to work, group gGFActivity -->
@@ -642,6 +644,7 @@ camel v 3.5.0 oct 2020
             <bean ref="AutoOnEnabled" method="setValue"/>
             <log message="bean AutoOnEnabled set to ${body}"/>
             -->
+            <log message="AutoOnEnabled_aan: going to set OHItem AutoOnEnabled to ON"/>
             <setBody>
                 <constant>ON</constant>
             </setBody>
@@ -649,6 +652,7 @@ camel v 3.5.0 oct 2020
                 <constant>AutoOnEnabled</constant>
             </setHeader>
             <to uri="direct:setOHItem"/>
+            <log message="AutoOnEnabled_aan: OHItem AutoOnEnabled set to ON"/>
         </route>
         <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->
@@ -1245,6 +1249,7 @@ camel v 3.5.0 oct 2020
         -->
         <route id="calcMediaboxOff" autoStartup="true">
             <from uri="direct:calcMediaboxOff"/>
+            <log message="Start calcMediaboxOff"/>
             <!-- REST calls to OpenHab -->
             <setHeader name="OHItems">
                 <groovy>new
@@ -1294,6 +1299,7 @@ camel v 3.5.0 oct 2020
 
         <route id="calcMediabox" autoStartup="true">
             <from uri="direct:calcMediabox"/>
+            <log message="Start calcMediabox"/>
             <to uri="direct:calcMediaboxOn"/>
             <to uri="direct:calcMediaboxOff"/>
         </route>
