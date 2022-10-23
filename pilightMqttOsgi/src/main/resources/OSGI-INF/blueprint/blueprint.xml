@@ -633,7 +633,7 @@ camel v 3.5.0 oct 2020
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
-        <route id="AutoOnEnabled_aan" autoStartup="true" startupOrder="301">
+        <route id="AutoOnEnabled_aan" autoStartup="false" startupOrder="301">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer1?cron=0+0+12+*+*+?"/>
             <!-- deprecated, now in OpenHab dec 2020 -->
