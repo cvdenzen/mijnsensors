@@ -21,7 +21,7 @@ camel v 3.5.0 oct 2020
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="blueprintcontext">
         <dataFormats>
             <json id="jsonJsonOHRestItem" library="Gson"
-                  unmarshalTypeName="nl.vandenzen.iot.json.JsonOHRestItem"/>
+                  unmarshalType="nl.vandenzen.iot.json.JsonOHRestItem"/>
             <!-- unmarshal to List<Map> is supported by Jackson json -->
             <json id="jsonjackson" library="Jackson" useList="true"/>
         </dataFormats>
