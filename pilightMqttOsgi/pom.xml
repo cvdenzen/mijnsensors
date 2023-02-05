@@ -16,7 +16,7 @@
         <pi4j.version>1.2</pi4j.version>
         <camel.groupId>org.apache.camel</camel.groupId>
         <camel.version>3.14.6</camel.version>
-        <pigpioj-java.version>2.5.7</pigpioj-java.version>
+        <pigpioj-java.version>2.6.1</pigpioj-java.version>
     </properties>
     <repositories>
         <repository>

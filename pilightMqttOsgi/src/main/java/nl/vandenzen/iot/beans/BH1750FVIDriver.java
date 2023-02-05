@@ -90,7 +90,7 @@ public class BH1750FVIDriver {
         try {
             i2cDevice = new PigpioSocket();
             ((PigpioSocket)i2cDevice).connect("ip6-localhost");
-        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
             LOG.log(Level.SEVERE,logPrefix + ex);
         }
     }

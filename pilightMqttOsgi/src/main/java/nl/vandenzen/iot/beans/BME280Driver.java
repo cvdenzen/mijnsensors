@@ -158,7 +158,7 @@ public class BME280Driver {
         try {
             i2cDevice = new PigpioSocket();
             i2cDevice.connect("ip6-localhost");
-        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
             LOG.log(Level.SEVERE,logPrefix + ex);
         }
         LOG.setLevel(Level.FINEST);

@@ -161,7 +161,7 @@ import Adafruit_GPIO.PWM as PWM
         this.gpio = new PigpioSocket();
         try {
             gpio.connect("ip6-localhost");
-        } catch (InterruptedException ignored) {
+        } catch (Exception ignored) {
         }
         this.cols = cols;
         this.lines = lines;
