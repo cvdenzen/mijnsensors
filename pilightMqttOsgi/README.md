@@ -182,7 +182,7 @@ crontab -e, crontab.txt file (restart camel every week, there is a memory leak s
 Inloggen met bin/client werkt niet in v4.4.2. Werkt: ssh localhost -p 8102log
 
 =====================================================================================================================
-Install pipgpio daemon, see https://github.com/mattjlewis/pigpioj
+Install pipgpio daemon, see also https://github.com/mattjlewis/pigpioj:
 sudo apt update && sudo apt -y install pigpio pigpio-tools pigpiod
 sudo systemctl enable pigpiod.service
 sudo systemctl start pigpiod.service

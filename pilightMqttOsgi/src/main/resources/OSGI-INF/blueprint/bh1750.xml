@@ -5,14 +5,12 @@
              http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="BH1750FVI">
-
-
-        <route id="Init" autoStartup="false" startupOrder="1">
+        <route id="Init" autoStartup="true" startupOrder="1">
             <from uri="timer:inittimerBH1750?repeatCount=1"/>
             <bean ref="pigpioBH1750" method="open()"/>
         </route>
-        <route id="BH1750" autoStartup="false" startupOrder="100">
-            <from uri="quartzBH1750://groep/timerBH1750?cron=0/10+*+*+*+*+?"/>
+        <route id="BH1750" autoStartup="true" startupOrder="100">
+            <from uri="quartzBH1750://groep/timerBH1750?cron=0/30+*+*+*+*+?"/>
             <setBody>
                 <constant>false</constant>
             </setBody>
