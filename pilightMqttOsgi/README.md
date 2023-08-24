@@ -148,7 +148,7 @@ systemctl edit grafana-server
   ExecStartPre=sleep 300
 =====================================================================================================================
 Install Karaf (for pilightMqttOsgi): (nov 2022 4.3.1->4.4.2)
-sudo systemctl stop karaf
+sudo systemctl stop karaf (blijft soms hangen)
 sudo systemctl stop openhab
 Download karaf jar. 
 wget https://downloads.apache.org/karaf/4.3.1/apache-karaf-4.3.1.tar.gz
@@ -165,7 +165,7 @@ karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
 Run in subdir bin/contrib sudo ./karaf-service.sh -k /usr/share/karaf
 (more info https://karaf.apache.org/manual/latest/#_integration_in_the_operating_system)
 sudo vi karaf.service, change User/Group to karaf / karaf
-# zit in script? sudo cp karaf.service /lib/systemd/system
+# zit in script? Nee, maar is vaak ongewijzigd. sudo cp karaf.service /lib/systemd/system
 sudo systemctl enable karaf.service
 # if already in use by e.g. openhab, change ssh port in systemctl edit (see next lines) from 8101 in e.g. 8102.
 # and etc/jetty.xml change secure.port to e.g. 8444.
@@ -179,7 +179,7 @@ TimeoutSec=infinity
 ExecStartPre=sleep 10
 #==== end edit
 crontab -e, crontab.txt file (restart camel every week, there is a memory leak somewhere)
-Inloggen met bin/client werkt niet in v4.4.2. Werkt: ssh localhost -p 8102log
+Inloggen met bin/client werkt niet in v4.4.2. Werkt: ssh localhost -p 8102
 
 =====================================================================================================================
 Install pipgpio daemon, see also https://github.com/mattjlewis/pigpioj:
@@ -188,10 +188,10 @@ sudo systemctl enable pigpiod.service
 sudo systemctl start pigpiod.service
 =====================================================================================================================
 Install camel in karaf
-repo-add camel x.y.z (apr 2021 version camel 3.9.0, nov 2023 3.14.6)
+repo-add camel x.y.z : apr 2021 version camel 3.9.0, nov 2023 3.14.6, aug 2023 3.21.0, versie 4 moet java 17
 feature:install camel
 #Install activemq in karaf
-repo-add activemq
+repo-add activemq ** aug 2023 artemis 2.30 geprobeerd
 feature:install activemq-broker
 edit etc/activemq.xml, add to transportConnecors:
 <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
@@ -201,11 +201,11 @@ repo-add cellar
 feature:install cellar
 
 - karaf, install camel
-Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy)
+Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy), see next lines
   - pigpioj-java-2.5.5.jar !No, is in lib subdir
-scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/lib/*.jar pi@rpi3:/usr/share/karaf/deploy
-cd $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi;mvn clean install && scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
-scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/target/classes/nl/vandenzen.iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy
+scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/lib/*.jar pi@rpi3.home:/usr/share/karaf/deploy
+cd $HOME/IdeaProjects/mijnsensors_github/pilightMqttOsgi;mvn clean install && scp $HOME/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
+scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy
 
 
 feature:install pilightmqttosgi
@@ -273,6 +273,6 @@ See https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-press
 
 Lightsensor i2c address 0x23 BH1750
 
-jmx: artemis jconsole rpi3:21601
-jmx karaf jconsole rpi3:21602
-ssh karaf: ssh rpi3 -p 8102
+jmx: artemis jconsole rpi3.home:21601
+jmx karaf jconsole rpi3.home:21602
+ssh karaf: ssh rpi3.home -p 8102
