@@ -157,7 +157,7 @@ in /usr/share: sudo tar -xzf /home/pi/Downloads/apache-karaf-4.4.4.tar.gz
 Make a symlink: sudo rm karaf; sudo ln -s apache-karaf-x.y.z karaf
 sudo chown karaf.karaf karaf
 sudo chown -R karaf.karaf apache-karaf-x.y.z
-sudo chmod g+w /usr/share/karaf/etc
+sudo chmod g+w /usr/share/karaf/etc /usr/share/karaf/data /usr/share/karaf/data/* /usr/share/apache-karaf-4.4.4
 sudo chmod g+w /usr/share/karaf/deploy (niet nodig?)
 
 Install karaf as service in systemd in Linux: see web site karaf:
@@ -209,6 +209,9 @@ Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/
 scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/lib/*.jar pi@rpi3.home:/usr/share/karaf/deploy *** no files sept 2023
 cd $HOME/IdeaProjects/mijnsensors_github/pilightMqttOsgi;mvn clean install && scp $HOME/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
 scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy
+
+Split logging for mqtt:
+view org.ops4j.pax.logging.cfg:
 
 
 feature:install pilightmqttosgi
