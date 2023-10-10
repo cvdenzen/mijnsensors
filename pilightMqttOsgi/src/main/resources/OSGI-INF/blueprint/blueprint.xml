@@ -405,6 +405,7 @@ camel v 3.5.0 oct 2020
             <convertBodyTo type="java.lang.Float"/>
             <log message="LichtIntensiteit_Woonkamer updated (oh/.../state): header.LichtIntensiteit_Woonkamer=${body}"/>
             <to uri="direct:Enable_lights_on_by_daylight"/>
+            <to uri="direct:calcOneLightOn"/>
         </route>
 
         <route id="calcOneLightOn" autoStartup="true" startupOrder="201">
@@ -619,6 +620,8 @@ camel v 3.5.0 oct 2020
                 <constant>true</constant>
             </setHeader>
             <!-- Turn on lights? -->
+            <!-- Check whether all lights should be turned on due to lighting condition -->
+            <to uri="direct:Enable_lights_on_by_daylight"/>
             <to uri="direct:calcOneLightOn"/>
             <to uri="direct:calcMediabox"/>
         </route>
@@ -634,6 +637,9 @@ camel v 3.5.0 oct 2020
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
+        <!-- Set AutoOnEnabled_aan to true. This will be done somewhere in the day.
+        This setting will also be available in OpenHab, and can be manipulated there
+        if needed. We will listen (somewhere else) to mqtt messages from OpenHab -->
         <route id="AutoOnEnabled_aan" autoStartup="false" startupOrder="301">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer1?cron=0+0+12+*+*+?"/>
@@ -1427,6 +1433,7 @@ camel v 3.5.0 oct 2020
     <bean id="bg_x_imac3" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac4" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="gGFActivity" class="nl.vandenzen.iot.util.MutableInteger"/>
+    <bean id="bg_lights_are_on" classe="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_w_chromecast_audio" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of tv and imac is stable -->
     <bean id="Stable" class="nl.vandenzen.iot.util.MutableBoolean"/>
