@@ -1288,7 +1288,7 @@ camel v 3.5.0 oct 2020
                     <choice>
                         <when>
                             <groovy>headers.DelayMediaboxOff</groovy>
-                            <!-- Is already going to be turned off, timer is running -->
+                            <log message="mediabox already running, headers.DelayMediaboxOff (isRunning)=${headers.DelayMediaboxOff}"/>
                         </when>
                         <otherwise>
                             <!-- tv or chromecast is/are off -->
@@ -1433,7 +1433,7 @@ camel v 3.5.0 oct 2020
     <bean id="bg_x_imac3" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac4" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="gGFActivity" class="nl.vandenzen.iot.util.MutableInteger"/>
-    <bean id="bg_lights_are_on" classe="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="bg_lights_are_on" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_w_chromecast_audio" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of tv and imac is stable -->
     <bean id="Stable" class="nl.vandenzen.iot.util.MutableBoolean"/>
