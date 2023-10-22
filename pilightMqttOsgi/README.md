@@ -147,23 +147,24 @@ systemctl edit grafana-server
   TimeoutSec=infinity
   ExecStartPre=sleep 300
 =====================================================================================================================
-Install Karaf (for pilightMqttOsgi): (nov 2022 4.3.1->4.4.2)
+Install Karaf (for pilightMqttOsgi): (nov 2022 4.3.1->4.4.2) sep 2023 4.4.3->4.4.4
 sudo systemctl stop karaf (blijft soms hangen)
 sudo systemctl stop openhab
 Download karaf jar. 
-wget https://downloads.apache.org/karaf/4.3.1/apache-karaf-4.3.1.tar.gz
-Untar in /usr/share/apache-karaf-x.y.z
-in /usr/share: sudo tar -xzf /home/pi/Downloads/apache-karaf-4.3.1.tar.gz
+wget https://downloads.apache.org/karaf/4.4.4/apache-karaf-x.y.z.tar.gz
+Untar in /usr/share/apache-karaf-x.y.z:
+in /usr/share: sudo tar -xzf /home/pi/Downloads/apache-karaf-4.4.4.tar.gz
 Make a symlink: sudo rm karaf; sudo ln -s apache-karaf-x.y.z karaf
 sudo chown karaf.karaf karaf
 sudo chown -R karaf.karaf apache-karaf-x.y.z
-sudo chmod g+w /usr/share/karaf/etc
-sudo chmod g+w /usr/share/karaf/deploy
+sudo chmod g+w /usr/share/karaf/etc /usr/share/karaf/data /usr/share/karaf/data/* /usr/share/apache-karaf-4.4.4
+sudo chmod g+w /usr/share/karaf/deploy (niet nodig?)
 
 Install karaf as service in systemd in Linux: see web site karaf:
 karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
 Run in subdir bin/contrib sudo ./karaf-service.sh -k /usr/share/karaf
 (more info https://karaf.apache.org/manual/latest/#_integration_in_the_operating_system)
+Vind karaf.service door sudo systemclt status karaf, en dan zie je loaded: /usr (of /lib) .... service
 sudo vi karaf.service, change User/Group to karaf / karaf
 # zit in script? Nee, maar is vaak ongewijzigd. sudo cp karaf.service /lib/systemd/system
 sudo systemctl enable karaf.service
@@ -172,14 +173,14 @@ sudo systemctl enable karaf.service
 sudo systemctl edit karaf, add next lines:
 [Service]
 # next line only for old karaf version (<4.3)
-Environment="ORG_APACHE_KARAF_SSH_SSHPORT=8102"
 Environment="ORG_APACHE_KARAF_SHELL_SSHPORT=8102"
 Environment="JAVA_OPTS=-Dcom.sun.management.jmxremote.port=21602 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
 TimeoutSec=infinity
 ExecStartPre=sleep 10
 #==== end edit
+user karaf, vi etc/user.properties, enable user karaf, vi bin/client set port to 8102
 crontab -e, crontab.txt file (restart camel every week, there is a memory leak somewhere)
-Inloggen met bin/client werkt niet in v4.4.2. Werkt: ssh localhost -p 8102
+Inloggen met bin/client -a 8102 of ssh localhost -p 8102
 
 =====================================================================================================================
 Install pipgpio daemon, see also https://github.com/mattjlewis/pigpioj:
@@ -188,24 +189,29 @@ sudo systemctl enable pigpiod.service
 sudo systemctl start pigpiod.service
 =====================================================================================================================
 Install camel in karaf
-repo-add camel x.y.z : apr 2021 version camel 3.9.0, nov 2023 3.14.6, aug 2023 3.21.0, versie 4 moet java 17
+repo-add camel x.y.z : apr 2021 version camel 3.9.0, nov 2023 3.14.6, aug 2023 3.21.0, sep 2023 3.21.1
+versie 4 moet java 17 en kan dus nog niet in karaf (die is java 11)
 feature:install camel
 #Install activemq in karaf
-repo-add activemq ** aug 2023 artemis 2.30 geprobeerd
-feature:install activemq-broker
-edit etc/activemq.xml, add to transportConnecors:
+repo-add artemis 2.31.0 sep 2023
+feature:install artemis (werkt) of artemis-mqtt, -core?
+** artemis not needed, default mqtt. Users???? edit etc/activemq.xml, add to transportConnecors:
 <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
+artemis: security-enabled property to false in etc/artemis.xml (the broker.xml file):
+<security-enabled>false</security-enabled>
+<security-settings>
+
 and many other settings, like users
-# cellar distributed karaf support, not useful (summer 2020)
-repo-add cellar
-feature:install cellar
 
 - karaf, install camel
 Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy), see next lines
   - pigpioj-java-2.5.5.jar !No, is in lib subdir
-scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/lib/*.jar pi@rpi3.home:/usr/share/karaf/deploy
+scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/lib/*.jar pi@rpi3.home:/usr/share/karaf/deploy *** no files sept 2023
 cd $HOME/IdeaProjects/mijnsensors_github/pilightMqttOsgi;mvn clean install && scp $HOME/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
 scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy
+
+Split logging for mqtt:
+view org.ops4j.pax.logging.cfg:
 
 
 feature:install pilightmqttosgi
@@ -267,7 +273,7 @@ lcd:
 backlight led: 5V 23mA (isolated from rest), high=on, with transistor
 RS=register select
 RW=H=read, L=write. USE WRITE ONLY, otherwise 5V will be supplied to raspberry pins!
-pwm, resistor, transistor.
+pwm, resistor, transistor. (backlight led)
 2019-03-11 BME280 added (i2c address 0x76, python bme280.py displays values TEMP HUM PRESSURE).
 See https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python/
 

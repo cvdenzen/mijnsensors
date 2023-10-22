@@ -405,6 +405,7 @@ camel v 3.5.0 oct 2020
             <convertBodyTo type="java.lang.Float"/>
             <log message="LichtIntensiteit_Woonkamer updated (oh/.../state): header.LichtIntensiteit_Woonkamer=${body}"/>
             <to uri="direct:Enable_lights_on_by_daylight"/>
+            <to uri="direct:calcOneLightOn"/>
         </route>
 
         <route id="calcOneLightOn" autoStartup="true" startupOrder="201">
@@ -415,7 +416,7 @@ camel v 3.5.0 oct 2020
             <log message="header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
             <log message="header.LightsOnIntensityThreshold=${header.LightsOnIntensityThreshold}"/>
             <log message="header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm=${header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm}"/>
-            <log message="header.pir_gf_achterdeur17=${header.pir_gf_achterdeur17}"/>
+            <log message="header.pir_gf_achterdeur17_triggered=${header.pir_gf_achterdeur17_triggered}"/>
 
             <setHeader name="HueStable">
                 <method ref="HueStable" method="getValue"/>
@@ -427,7 +428,7 @@ camel v 3.5.0 oct 2020
                     </simple>
                     <log message="calcOneLightOn, HueStable is true, continuing"/>
                     <when>
-                        <simple>${header.pir_gf_achterdeur17}</simple>
+                        <simple>${header.pir_gf_achterdeur17_triggered}</simple>
                         <log message="pir is true"/>
                         <when>
                             <!-- it is dark -->
@@ -603,7 +604,6 @@ camel v 3.5.0 oct 2020
                 </otherwise>
             </choice>
             <convertBodyTo type="java.lang.Boolean"/>
-            <bean ref="pir_gf_achterdeur17" method="setValue"/>
             <!-- Turn on lights? -->
             <to uri="direct:calcOneLightOn"/>
             <to uri="direct:calcMediabox"/>
@@ -615,9 +615,13 @@ camel v 3.5.0 oct 2020
             <from uri="paho:mysensors/all/153/1/1/0/2?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
             <log message="listenPir_gf_achterdeur17a locA is ${body}"/>
-            <to uri="direct:convert_body_to_boolean"/>
-            <bean ref="pir_gf_achterdeur17" method="setValue"/>
+            <!-- only the trigger is important -->
+            <setHeader name="pir_gf_achterdeur17_triggered">
+                <constant>true</constant>
+            </setHeader>
             <!-- Turn on lights? -->
+            <!-- Check whether all lights should be turned on due to lighting condition -->
+            <to uri="direct:Enable_lights_on_by_daylight"/>
             <to uri="direct:calcOneLightOn"/>
             <to uri="direct:calcMediabox"/>
         </route>
@@ -633,6 +637,9 @@ camel v 3.5.0 oct 2020
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
         </route>
+        <!-- Set AutoOnEnabled_aan to true. This will be done somewhere in the day.
+        This setting will also be available in OpenHab, and can be manipulated there
+        if needed. We will listen (somewhere else) to mqtt messages from OpenHab -->
         <route id="AutoOnEnabled_aan" autoStartup="false" startupOrder="301">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer1?cron=0+0+12+*+*+?"/>
@@ -853,10 +860,6 @@ camel v 3.5.0 oct 2020
             <setHeader name="AutoOffEnabled">
                 <groovy>request.body</groovy>
             </setHeader>
-            <setHeader name="pir_gf_achterdeur17">
-                <method ref="pir_gf_achterdeur17" method="getValue"/>
-            </setHeader>
-            <log message="SetHeader: header.pir_gf_achterdeur17=${header.pir_gf_achterdeur17}"/>
             <setHeader name="bg_w_tv_w">
                 <method ref="bg_w_tv_w" method="getValue"/>
             </setHeader>
@@ -1129,6 +1132,10 @@ camel v 3.5.0 oct 2020
             <from uri="paho:oh/all/pir_hue1_motion/state?connectionTimeout=600"/>
             <to uri="direct:convert_body_to_boolean"/>
             <log message="listenpir_hue1_motion, body=${body}"/>
+            <!-- only the trigger is important -->
+            <setHeader name="pir_hue1_motion_triggered">
+                <constant>true</constant>
+            </setHeader>
             <to uri="direct:calcMediabox"/>
         </route>
 
@@ -1192,11 +1199,12 @@ camel v 3.5.0 oct 2020
         <route id="calcMediaboxOn" autoStartup="true">
             <from uri="direct:calcMediaboxOn"/>
             <log message="Start calcMediaboxOn"/>
+            <log message="calcMediaboxOn, headers.pir_hue1_motion_triggered    =${headers.pir_hue1_motion_triggered}"/>
+            <log message="calcMediaboxOn, headers.pir_gf_achterdeur17_triggered=${headers.pir_gf_achterdeur17_triggered}"/>
             <!-- REST calls to OpenHab -->
             <setHeader name="OHItems">
                 <groovy>new
-                    String[]{"bg_w_tv_w","bg_w_chromecast_audio","Plug_GF_Mediabox","AutoOnMediaboxEnabled","pir_hue1_motion",
-                    "pir_gf_achterdeur17"}
+                    String[]{"bg_w_tv_w","bg_w_chromecast_audio","Plug_GF_Mediabox","AutoOnMediaboxEnabled"}
                 </groovy>
             </setHeader>
             <to uri="direct:getOHItems"/>
@@ -1221,8 +1229,8 @@ camel v 3.5.0 oct 2020
                         ||
                         (
                             (
-                                 "ON".equals(headers.OHItemsResult[4]) /* pir hue1 (hall) */
-                                 ||"OPEN".equals(headers.OHItemsResult[5]) /* pir achterdeur, normally CLOSED */
+                                 headers.pir_hue1_motion_triggered /* pir hue1 (hall) */
+                                 ||headers.pir_gf_achterdeur17_triggered /* pir achterdeur, normally CLOSED */
                             )
                             &amp;&amp; "ON".equals(headers.OHItemsResult[3]) /* autoOnMediabox */
                         )
@@ -1250,11 +1258,12 @@ camel v 3.5.0 oct 2020
         <route id="calcMediaboxOff" autoStartup="true">
             <from uri="direct:calcMediaboxOff"/>
             <log message="Start calcMediaboxOff"/>
+            <log message="calcMediaboxOff, headers.pir_hue1_motion_triggered    =${headers.pir_hue1_motion_triggered}"/>
+            <log message="calcMediaboxOff, headers.pir_gf_achterdeur17_triggered=${headers.pir_gf_achterdeur17_triggered}"/>
             <!-- REST calls to OpenHab -->
             <setHeader name="OHItems">
                 <groovy>new
-                    String[]{"bg_w_tv_w","bg_w_chromecast_audio","Plug_GF_Mediabox","AutoOffMediaboxEnabled","pir_hue1_motion",
-                    "pir_gf_achterdeur17"}
+                    String[]{"bg_w_tv_w","bg_w_chromecast_audio","Plug_GF_Mediabox","AutoOffMediaboxEnabled"}
                 </groovy>
             </setHeader>
             <to uri="direct:getOHItems"/>
@@ -1269,8 +1278,8 @@ camel v 3.5.0 oct 2020
                         (
                         "OFF".equals(request.headers.OHItemsResult[0]) /* tv */
                         &amp;&amp; "OFF".equals(request.headers.OHItemsResult[1]) /* chromecast_audio */
-                        &amp;&amp;"OFF".equals(headers.OHItemsResult[4]) /* pir hue1 (hall) */
-                        &amp;&amp;"CLOSED".equals(headers.OHItemsResult[5]) /* pir achterdeur, normally CLOSED */
+                        &amp;&amp; !headers.pir_hue1_motion_triggered /* pir hue1 (hall) */
+                        &amp;&amp; !headers.pir_gf_achterdeur17_triggered /* pir achterdeur, normally CLOSED */
                         )
                         &amp;&amp;
                         ("ON".equals(request.headers.OHItemsResult[3])) /* autoOffMediabox */
@@ -1279,7 +1288,7 @@ camel v 3.5.0 oct 2020
                     <choice>
                         <when>
                             <groovy>headers.DelayMediaboxOff</groovy>
-                            <!-- Is already going to be turned off, timer is running -->
+                            <log message="mediabox already running, headers.DelayMediaboxOff (isRunning)=${headers.DelayMediaboxOff}"/>
                         </when>
                         <otherwise>
                             <!-- tv or chromecast is/are off -->
@@ -1409,7 +1418,6 @@ camel v 3.5.0 oct 2020
     <!-- bean id="autoOnEnabled" class="java.util.concurrent.atomic.AtomicReference"/ -->
     <bean id="AutoOnEnabled" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="AutoOffEnabled" class="nl.vandenzen.iot.util.MutableBoolean"/>
-    <bean id="pir_gf_achterdeur17" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="LightsEnableIntensityThreshold" class="nl.vandenzen.iot.util.MutableInteger">
         <property name="value" value="31"/>
     </bean>
@@ -1425,6 +1433,7 @@ camel v 3.5.0 oct 2020
     <bean id="bg_x_imac3" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac4" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="gGFActivity" class="nl.vandenzen.iot.util.MutableInteger"/>
+    <bean id="bg_lights_are_on" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_w_chromecast_audio" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of tv and imac is stable -->
     <bean id="Stable" class="nl.vandenzen.iot.util.MutableBoolean"/>
