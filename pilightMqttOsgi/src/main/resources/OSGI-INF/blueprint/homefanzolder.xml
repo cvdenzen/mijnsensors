@@ -120,7 +120,7 @@
         </route>
 
         <route id="ListenHotWaterTemp" autoStartup="true">
-            <from uri="paho:mysensors/all/156/0/1/0/0?connectionTimeout=600"/>
+            <from uri="paho:mysensors/all/156/21/+/+/+?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Float"/>
             <bean ref="hotWaterTemperature" method="setValue"/>
