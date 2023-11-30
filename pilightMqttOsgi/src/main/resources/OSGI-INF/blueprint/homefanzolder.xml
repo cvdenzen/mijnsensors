@@ -130,7 +130,7 @@
                 <when>
                     <groovy>result=java.lang.Float.valueOf(request.body)>45.1f</groovy>
                     <log message="ListenHotWaterTemp: Start fan, body=${body}"/>
-                        <bean ref="homeFan" method="getTimerHotwaterMinutes"/>
+                    <bean ref="homeFan" method="getTimerHotwaterMinutes"/>
                     <setBody>
                         <!-- 1000*60*10 is 10 minutes nalooptijd -->
                         <groovy>result=1000*60*request.body</groovy>
@@ -212,39 +212,39 @@
     int commandStop=4;
     -->
         <route id="setTimerToiletMinutes" autoStartup="true">
-            <from uri="paho:+/f2_ne/fan/timerToiletMinutes"/>
+            <from uri="paho:+/f2_ne/fan/timerToiletMinutes?connectionTimeout=600"/>
             <bean ref="homeFan" method="setTimerToiletMinutes(${body})"/>
         </route>
         <route id="setTimerHotwaterMinutes" autoStartup="true">
-            <from uri="paho:+/f2_ne/fan/timerHotwaterMinutes"/>
+            <from uri="paho:+/f2_ne/fan/timerHotwaterMinutes?connectionTimeout=600"/>
             <bean ref="homeFan" method="setTimerHotwaterMinutes(${body})"/>
         </route>
         <route id="setruntimeFanMinutes" autoStartup="true">
-            <from uri="paho:+/f2_ne/fan/runtimeFanMinutes"/>
+            <from uri="paho:+/f2_ne/fan/runtimeFanMinutes?connectionTimeout=600"/>
             <bean ref="homeFan" method="setRuntimeFanMinutes(${body})"/>
         </route>
         <route id="commandStart1" autoStartup="true">
-            <from uri="paho:+/f2_ne/fan/commandStart1"/>
+            <from uri="paho:+/f2_ne/fan/commandStart1?connectionTimeout=600"/>
             <bean ref="homeFan" method="setCommandStart1(${body})"/>
         </route>
         <route id="commandStart2" autoStartup="true">
-            <from uri="paho:+/f2_ne/fan/commandStart2"/>
+            <from uri="paho:+/f2_ne/fan/commandStart2?connectionTimeout=600"/>
             <bean ref="homeFan" method="setCommandStart2(${body})"/>
         </route>
         <route id="commandStart3" autoStartup="true">
-            <from uri="paho:+/f2_ne/fan/commandStart3"/>
+            <from uri="paho:+/f2_ne/fan/commandStart3?connectionTimeout=600"/>
             <bean ref="homeFan" method="setCommandStart3(${body})"/>
         </route>
         <route id="commandStop" autoStartup="true">
-            <from uri="paho:+/f2_ne/fan/commandStop"/>
+            <from uri="paho:+/f2_ne/fan/commandStop?connectionTimeout=600"/>
             <bean ref="homeFan" method="setCommandStop(${body})"/>
         </route>
         <route id="setHotWaterTemperatureThreshold">
-            <from uri="paho:+/f2_ne/fan/hotWaterTemperatureThreshold"/>
+            <from uri="paho:+/f2_ne/fan/hotWaterTemperatureThreshold?connectionTimeout=600"/>
             <bean ref="homeFan" method="setHotWaterTemperatureThreshold"/>
         </route>
         <route id="listenForFanSettingCommandsDebug">
-            <from uri="paho:+/f2_ne/fan/#"/>
+            <from uri="paho:+/f2_ne/fan/#?connectionTimeout=600"/>
             <log message="listenForFanSettingCommandsDebug, CamelMqttTopic={header.CamelMqttTopic}"/>
         </route>
 

@@ -81,6 +81,13 @@ public class HomeFan {
         this.hotWaterTemperatureThreshold = hotWaterTemperatureThreshold;
     }
 
+    public float getHotWaterTemperatureDifference() {
+        return hotWaterTemperatureDifference;
+    }
+
+    public void setHotWaterTemperatureDifference(float hotWaterTemperatureDifference) {
+        this.hotWaterTemperatureDifference = hotWaterTemperatureDifference;
+    }
     int timerToiletMinutes=16;
     int timerHotwaterMinutes=20;
     int runtimeFanMinutes=8; // if Timer1 command is issued, fan will run for approx. 10 minutes. So restart it before this time
@@ -89,4 +96,5 @@ public class HomeFan {
     int commandStart3=0; // not needed
     int commandStop=4;
     float hotWaterTemperatureThreshold=45.1f; // degrees centigrade, above fan will run
+    float hotWaterTemperatureDifference=15.0f; // difference between hot and cold water, above fan will run
 }
