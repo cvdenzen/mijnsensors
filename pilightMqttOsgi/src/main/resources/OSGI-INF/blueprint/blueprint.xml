@@ -510,17 +510,6 @@ camel v 3.5.0 oct 2020
             <to uri="direct:listen_bg_w_tv_w"/>
         </route>
 
-        <!-- trust mqtt messages, do not poll -->
-        <route id="listen_bg_w_tv_w_timer" autoStartup="false" startupOrder="217">
-            <from uri="quartz://groep/timer_bg_w_tv_w_?cron=3/15+*+*+*+*+?"/>
-            <setHeader name="OHItem">
-                <constant>bg_w_tv_w</constant>
-            </setHeader>
-            <!-- Get state of OpenHab item -->
-            <to uri="direct:getOHItem"/>
-            <to uri="direct:listen_bg_w_tv_w"/>
-        </route>
-
         <!-- Input is body with value ON of OFF for tv -->
         <route id="listen_bg_w_tv_w" autoStartup="true" startupOrder="218">
             <from uri="direct:listen_bg_w_tv_w"/>
@@ -583,32 +572,6 @@ camel v 3.5.0 oct 2020
             <to uri="direct:LightsOffCalc"/>
         </route>
 
-        <!-- not used 17 jan 2020
-         Used again 23 may 2022
-          Not used 12 sept 2022 -->
-        <route id="listenPir_gf_achterdeur17" autoStartup="false" startupOrder="209">
-            <from uri="paho:oh/all/pir_gf_achterdeur17/state?connectionTimeout=600"/>
-            <log message="listenPir_gf_achterdeur17 body=${body}"/>
-            <convertBodyTo type="java.lang.String"/>
-            <choice>
-                <when>
-                    <simple>${in.body} == "CLOSED" || ${body} == "1"</simple>
-                    <setBody>
-                        <constant>true</constant>
-                    </setBody>
-                </when>
-                <otherwise>
-                    <setBody>
-                        <constant>false</constant>
-                    </setBody>
-                </otherwise>
-            </choice>
-            <convertBodyTo type="java.lang.Boolean"/>
-            <!-- Turn on lights? -->
-            <to uri="direct:calcOneLightOn"/>
-            <to uri="direct:calcMediabox"/>
-        </route>
-
         <!-- Listen to mysensors mqtt gateway, 17 jan 2020, not to openhab item.
              This could be faster (no openhab action in between) -->
         <route id="listenPir_gf_achterdeur17a" autoStartup="true" startupOrder="220">
@@ -636,30 +599,6 @@ camel v 3.5.0 oct 2020
             <bean ref="gGFActivity" method="setValue"/>
             <!-- check whether to turn lights off -->
             <to uri="direct:LightsOffCalc"/>
-        </route>
-        <!-- Set AutoOnEnabled_aan to true. This will be done somewhere in the day.
-        This setting will also be available in OpenHab, and can be manipulated there
-        if needed. We will listen (somewhere else) to mqtt messages from OpenHab -->
-        <route id="AutoOnEnabled_aan" autoStartup="false" startupOrder="301">
-            <!-- s m h day-of-month month day-of-week year(optional) -->
-            <from uri="quartz://groep/timer1?cron=0+0+12+*+*+?"/>
-            <!-- deprecated, now in OpenHab dec 2020 -->
-            <!--
-            <setBody>
-                <constant>true</constant>
-            </setBody>
-            <bean ref="AutoOnEnabled" method="setValue"/>
-            <log message="bean AutoOnEnabled set to ${body}"/>
-            -->
-            <log message="AutoOnEnabled_aan: going to set OHItem AutoOnEnabled to ON"/>
-            <setBody>
-                <constant>ON</constant>
-            </setBody>
-            <setHeader name="OHItem">
-                <constant>AutoOnEnabled</constant>
-            </setHeader>
-            <to uri="direct:setOHItem"/>
-            <log message="AutoOnEnabled_aan: OHItem AutoOnEnabled set to ON"/>
         </route>
         <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->

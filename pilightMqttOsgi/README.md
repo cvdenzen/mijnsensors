@@ -207,8 +207,8 @@ and many other settings, like users
 Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy), see next lines
   - pigpioj-java-2.5.5.jar !No, is in lib subdir
 scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/lib/*.jar pi@rpi3.home:/usr/share/karaf/deploy *** no files sept 2023
-cd $HOME/IdeaProjects/mijnsensors_github/pilightMqttOsgi;mvn clean install && scp $HOME/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
-scp /home/carl/IdeaProjects/mijnsensors_github/pilightMqttOsgi/target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy
+cd $(git rev-parse --show-toplevel)/pilightMqttOsgi;mvn clean install && scp $(git rev-parse --show-toplevel)/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
+scp cd $(git rev-parse --show-toplevel)/pilightMqttOsgi/pilightMqttOsgi/target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy
 
 Split logging for mqtt:
 view org.ops4j.pax.logging.cfg:
