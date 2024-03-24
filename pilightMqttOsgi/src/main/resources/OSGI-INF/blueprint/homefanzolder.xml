@@ -109,16 +109,6 @@
             <log message="listen to messages meant for HomeFan, mqtt topic +/mysensors/156/8/1/0/24, body=${body}"/>
         </route>
 
-        <!-- do not use this hue sensor anymore, autoStartup disabled -->
-        <route id="listenPir_gf_toilet_hue_motion_sensor" autoStartup="false">
-            <from uri="paho:oh/all/pir_toilet_motion/state?connectionTimeout=600"/>
-            <convertBodyTo type="java.lang.String"/>
-            <log message="listenPir_gf_toilet_hue_motion locA is ${body}"/>
-            <to uri="direct:convert_body_to_boolean"/>
-            <!-- simply always start fan -->
-            <to uri="direct:startHomeFan"/>
-        </route>
-
         <route id="ListenHotWaterTemp" autoStartup="true">
             <from uri="paho:mysensors/all/156/21/+/+/+?connectionTimeout=600"/>
             <convertBodyTo type="java.lang.String"/>
