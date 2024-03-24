@@ -24,27 +24,17 @@ sudo systemctl enable /usr/share/karaf/bin/contrib/karaf.service
 And then client, repo-add etc (see sowewhere else in this README.md).
 ====================================================================================================================
 Install Raspberry PI OS (previously called Raspbian) (oct 2020)
-laptop Debian:
-gparted (of lsblk)
-unmount the disk partitions
-sudo dd bs=4M if=<your image file>.img of=/dev/<disk# from lsblk>
-(duurt ca 3min voor 1.8Gb, the lite version)
-remove/reinsert card (it will be mounted automatically)
-cd to mount point parent
-touch boot/ssh
-sudo vi rootfs/etc/hostname, set e.g. to rpi2
-sudo vi rootfs/etc/dphys-swapfile rasp OS swap size default is 100Mb, too small
-2000 Mb maken
-sudo umount the 2 partitions (boot and rootfs)
 
 rpi:
 sudo apt-get update
 sudo apt-get upgrade
 ====================================================================================================================
-Install Java. sudo apt install default-jdk (oct 2020: java 11).
+Install Java. sudo apt install default-jdk (jan 2024: v17).
 ====================================================================================================================
-Install artemis.
+sudo install artemis
 sudo adduser artemis
+# add to group artemis
+sudo adduser artemis artemis
 Edit service file to make service run as user artemis, group artemis
 sudo systemctl edit artemis
 [Service]
@@ -69,11 +59,12 @@ GRANT ALL ON "openhab" TO "openhab"
 user list (add users, finally set login auth-enabled to yes, see lastpass for accounts)
 ====================================================================================================================
 install openhab:
-sudo apt install openhab2, openhab2-addons, see web site openhab.
+See openhab website for apt repo setup.
+sudo apt install openhab, openhab-addons, see web site openhab.
 https://www.openhab.org/docs/installation/linux.html#package-repository-installation:
 backup/restore settings
 sudo systemctl daemon-reload
-sudo systemctl enable openhab2
+sudo systemctl enable openhab
 delay, influxd must be up to retrieve the latest values for e.g. lightOnIntensity (if persisted)
 systemctl edit openhab2,
 [Service]
@@ -83,8 +74,8 @@ systemctl edit openhab2,
 System users on karaf/openhab server (raspberry)
 
 sudo adduser karaf
-sudo adduser pi openhab
-sudo adduser pi karaf
+sudo adduser $USER openhab
+sudo adduser $USER karaf
 sudo adduser openhab kmem
 sudo adduser openhab i2c
 sudo adduser openhab gpio
@@ -95,11 +86,11 @@ sudo adduser karaf i2c
 sudo adduser karaf gpio
 sudo adduser karaf spi
 
-sudo adduser activemq
-sudo adduser pi activemq
-# not used (apr 2021), artemis is not stable, use activemq
+#sudo adduser activemq
+#sudo adduser $USER activemq
+# Since 2023:
 sudo adduser artemis
-sudo adduser pi artemis
+sudo adduser $USER artemis
 
 ====================================================================================================================
 Deprecated (nov 2020), replaced by pigpiod and diozero
@@ -127,16 +118,18 @@ MySensors:
 gateway on rpi:
 git clone https://github.com/mysensors/MySensors.git
 cd MySensors
+git switch carl
+edit/restore Makefile.inc
 edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197 (or in commandline, see next line)
-ss
 # <PASS>: see password manager (BitWarden/LastPass etc.), activemq.xml, user mysensors, passwd. Do not use strange characters like #^&$ (?),
 # shell/make can be confused.
 make
 sudo make install
+# follow the instructions, like systemctl enable mysgw and systemctl start. It will run as root user for now (march 2024)
 # Maybe do this: systemctl edit mysgw:
 [Service]
   TimeoutSec=infinity
-  ExecStartPre=sleep 240
+  ExecStartPre=sleep 40
 # edit /etc/mysensors.conf, set logging to syslog
 ====================================================================================================================
 Install grafana, https://grafana.com/tutorials/install-grafana-on-raspberry-pi/#1
