@@ -8,3 +8,4 @@ target/**
 /pilightMqttOsgi/target/
 /pilightMqttOsgi/lib/
 /pilightMqttOsgi/openhab-backup-*.zip
+*.class
