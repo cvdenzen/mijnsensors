@@ -4,6 +4,7 @@
 lib/**
 
 target/**
+target/
 /mqttPilight/pilightMqttOsgi/target/
 /pilightMqttOsgi/target/
 /pilightMqttOsgi/lib/
