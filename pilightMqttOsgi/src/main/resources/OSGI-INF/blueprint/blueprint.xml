@@ -680,8 +680,6 @@ camel v 3.5.0 oct 2020
                         "ON".equals(headers.AutoOffEnabled)
                         &amp;&amp; headers.bg_w_tv_w == false
                         &amp;&amp; headers.Stable == true
-                        &amp;&amp; headers.bg_x_imac3 == false
-                        &amp;&amp; headers.bg_x_imac4 == false <!-- // and imac is off -->
                         &amp;&amp; headers.gGFActivity == 0 <!-- number of active devices like tv, imac, .. -->
                     </groovy>
                     <log message="Licht gaat uit."/>
