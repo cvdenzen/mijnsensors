@@ -41,7 +41,7 @@ camel v 3.5.0 oct 2020
 
             <!-- REST calls to OpenHab -->
             <setHeader name="OHItems">
-                <groovy>new String[]{"bg_w_tv_w","bg_x_imac3","bg_x_imac4","gGFActivity"}
+                <groovy>new String[]{"bg_w_tv_w","bg_x_imac3","bg_x_imac4"}
                 </groovy>
             </setHeader>
             <to uri="direct:getOHItems"/>
@@ -67,13 +67,6 @@ camel v 3.5.0 oct 2020
             <convertBodyTo type="java.lang.String"/>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_x_imac4" method="setValue"/>
-
-            <setBody>
-                <groovy>request.headers.OHItemsResult[3]</groovy>
-            </setBody>
-            <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Integer"/>
-            <bean ref="gGFActivity" method="setValue"/>
 
         </route>
 
@@ -589,17 +582,6 @@ camel v 3.5.0 oct 2020
             <to uri="direct:calcMediabox"/>
         </route>
 
-        <!-- This doesn't seem to work, group gGFActivity -->
-        <route id="listen_gGFActivity" autoStartup="true" startupOrder="210">
-            <from uri="paho:oh/all/gGFActivity/state?connectionTimeout=600"/>
-            <!-- from byte[] -->
-            <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Integer"/>
-            <log message="listen_gGFActivity is ${body}"/>
-            <bean ref="gGFActivity" method="setValue"/>
-            <!-- check whether to turn lights off -->
-            <to uri="direct:LightsOffCalc"/>
-        </route>
         <route id="AutoOffEnabled_aan" autoStartup="true" startupOrder="302">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timer2?cron=47+50+0+*+*+?"/>
@@ -673,14 +655,12 @@ camel v 3.5.0 oct 2020
             <log message="LightsOff, header.Stable          =${header.Stable}"/>
             <log message="LightsOff, header.bg_x_imac3      =${header.bg_x_imac3}"/>
             <log message="LightsOff, header.bg_x_imac4      =${header.bg_x_imac4}"/>
-            <log message="LightsOff, header.gGFActivity      =${header.gGFActivity}"/>
             <choice>
                 <when>
                     <groovy>
                         "ON".equals(headers.AutoOffEnabled)
                         &amp;&amp; headers.bg_w_tv_w == false
                         &amp;&amp; headers.Stable == true
-                        &amp;&amp; headers.gGFActivity == 0 <!-- number of active devices like tv, imac, .. -->
                     </groovy>
                     <log message="Licht gaat uit."/>
                     <!-- disable automatic turning off the lights -->
@@ -701,7 +681,7 @@ camel v 3.5.0 oct 2020
                     <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
                 </when>
                 <otherwise>
-                    <log message="Licht gaat niet uit."/>
+                    <log message="Licht gaat niet uit omdat:"/>
                     <choice>
                         <when>
                             <groovy>!"ON".equals(headers.AutoOffEnabled)</groovy>
@@ -720,27 +700,6 @@ camel v 3.5.0 oct 2020
                             <log message="!headers.Stable == true"/>
                         </when>
                     </choice>
-                    <choice>
-                        <when>
-                            <groovy>!headers.bg_x_imac3 == false</groovy>
-                            <log message="!headers.bg_x_imac3 == false"/>
-                        </when>
-                    </choice>
-                    <choice>
-                        <when>
-                            <groovy>!headers.bg_x_imac4 == false</groovy>
-                            <log message="!headers.bg_x_imac4 == false"/>
-                        </when>
-                    </choice>
-                    <choice>
-                        <when>
-                            <groovy>!headers.gGFActivity.toString() == "0"</groovy>
-                            <log message="!headers.gGFActivity == 0"/>
-                        </when>
-                        <otherwise>
-                            <log message="headers.gGFActivity == 0; it is ${headers.gGFActivity} or (header) ${header.gGFActivity}"/>
-                        </otherwise>
-                    </choice>
                 </otherwise>
             </choice>
         </route>
@@ -753,19 +712,6 @@ camel v 3.5.0 oct 2020
                 <simple>${body}</simple>
             </setHeader>
             <log message="Start SetHeaders"/>
-
-
-            <setHeader name="OHItem">
-                <constant>gGFActivity</constant>
-            </setHeader>
-            <to uri="direct:getOHItem"/>
-            <setHeader name="gGFActivity">
-                <groovy>Integer.valueOf(request.body)</groovy>
-            </setHeader>
-            <log message="setHeaders gGFActivity is ${body}"/>
-            <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Integer"/>
-            <bean ref="gGFActivity" method="setValue"/>
 
             <setHeader name="OHItem">
                 <constant>LichtIntensiteit_Woonkamer</constant>
@@ -1253,7 +1199,7 @@ camel v 3.5.0 oct 2020
         <!-- Enable automatic switching on mediabox. Only works on PIR sensors,
         for tv and chromecast the mediabox is always turned on. -->
         <route id="cronAutoOnMediabox" autoStartup="true">
-            <from uri="quartz://groep/timerAutoOnMediabox?cron=7+1+9+*+*+?"/>
+            <from uri="quartz://groep/timerAutoOnMediabox?cron=7+31+8+*+*+?"/>
             <setBody>
                 <constant>ON</constant>
             </setBody>
@@ -1369,7 +1315,6 @@ camel v 3.5.0 oct 2020
     <bean id="bg_x_imac2" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac4" class="nl.vandenzen.iot.util.MutableBoolean"/>
-    <bean id="gGFActivity" class="nl.vandenzen.iot.util.MutableInteger"/>
     <bean id="bg_lights_are_on" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_w_chromecast_audio" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of tv and imac is stable -->
