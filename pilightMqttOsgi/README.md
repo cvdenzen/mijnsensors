@@ -1,10 +1,8 @@
 
 This files describes the actions to take for the separate karaf instance, NOT for the openhab instance.
 
-
-# 20210410 artemis is not good, use activemq copy activemq.xml from password manager (BitWarden in apr 2021) to /usr/share/karaf/etc/activemq.xml
 # rpiX: chmod g+w /usr/share/karaf/deploy
-scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vandenzen.iot/pilightmqttosgi.properties pi@rpi3:/usr/share/karaf/etc/
+scp ~/IdeaProjects/mijnsensors_github/pilightMqttOsgi/src/main/resources/nl/vandenzen/iot/pilightmqttosgi.properties pi@rpi3.home:/usr/share/karaf/etc/
 # deprecated, needed if deploy is not writable by user pi: cp ~/gitrepos/mijnsensors/pilightMqttOsgi/ pi@rpi2:/usr/share/apache-karaf/deploy
 # On raspberry:
 #sudo -s -E -u openhab
@@ -31,7 +29,7 @@ sudo apt-get upgrade
 ====================================================================================================================
 Install Java. sudo apt install default-jdk (jan 2024: v17).
 ====================================================================================================================
-sudo install artemis
+sudo apt install artemis
 sudo adduser artemis
 # add to group artemis
 sudo adduser artemis artemis
@@ -116,7 +114,7 @@ bh1750 (light), bme280 (humidity, temperature, pressure), lcd display 2x16)
 ====================================================================================================================
 MySensors:
 gateway on rpi:
-git clone https://github.com/mysensors/MySensors.git
+git clone  https://github.com/cvdenzen/MySensors.git
 cd MySensors
 git switch carl
 edit/restore Makefile.inc
@@ -188,7 +186,7 @@ feature:install camel
 #Install activemq in karaf
 repo-add artemis 2.31.0 sep 2023
 feature:install artemis (werkt) of artemis-mqtt, -core?
-** artemis not needed, default mqtt. Users???? edit etc/activemq.xml, add to transportConnecors:
+** artemis not needed, default mqtt. Users???? edit etc/activemq.xml, add to transportConnectors:
 <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
 artemis: security-enabled property to false in etc/artemis.xml (the broker.xml file):
 <security-enabled>false</security-enabled>
@@ -275,3 +273,51 @@ Lightsensor i2c address 0x23 BH1750
 jmx: artemis jconsole rpi3.home:21601
 jmx karaf jconsole rpi3.home:21602
 ssh karaf: ssh rpi3.home -p 8102
+
+========================================================================================
+rpi4 (dec 2024)
+gy49 light sensor sda-scl-gnd-vin
+GY-BME/PM 280
+BL-412 pir sensor, 4 pinnen
+
+flat cable van rpi naar extern: pin 1 is zwart (aan zijkant van rpi, pin 40 is in het midden van rpi)
+
+Kleuren:
+0     zwart
++3.3v rood
+
+SDA1  geel
+SCL.1 blauw
+
+LCD.D4 geel
+LCD.D5 groen
+LCD.D6 blauw
+LCD.D7 paars
+
+RFM.dio0 bruin
+RFM.nss  grijs
+
+LCD.pwm  oranje
+LCD.en   wit
+LCD.rs   grijs
+
+PIR   groen (pin#1 0v pin#2 0v=2 seconden zwart, pin#3 3.3v rood, pin#4 output groen)
+
+lcd 1602A
+pin 1 (rand) t/m 16
+ 1 Vss (gnd) zwart
+ 2 Vdd (+5V) rood
+ 3 VO (contrast) oranje
+ 4 RS grijs
+ 5 RW zwart (aan ground voor write, never read om 5V in rpi te voorkomen)
+ 6 E  wit
+ 7 D0 
+ 8 D1
+ 9 D2
+10 D3
+11 D4 geel
+12 D5 groen
+13 D6 blauw
+14 D7 paars
+15 A (led +5V) rood
+16 K (led 0V)  bruin

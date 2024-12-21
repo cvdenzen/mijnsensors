@@ -196,6 +196,7 @@ camel v 3.5.0 oct 2020
                         <log message="OHItem na split and restore is ${header.OHItem}"/>
                         <log message="body na split and restore is ${body}"/>
                         <log message="ERROR: multiple items is NOT SUPPORTED, too difficult dynamic header name"/>
+                        <log message="ERROR: Maybe with dynamic routing?"/>
                         <!-- to uri="direct:getOHItem"/ -->
                     </split>
                 </when>
@@ -294,15 +295,28 @@ camel v 3.5.0 oct 2020
 
         <route id="achterlichtUit2020" autoStartup="true">
             <from uri="direct:achterlichtuit2020"/>
-            <log message="achterlichtuit2020"/>
-            <to uri="direct:set_HueStable_false"/>
-            <setHeader name="OHItem">
-                <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle</constant>
-            </setHeader>
             <setBody>
-                <constant>OFF</constant>
+                <method ref="bg_lights_on" method="getValue"/>
             </setBody>
-            <to uri="direct:setOHItem"/>
+            <choice>
+                <when>
+                    <groovy>
+                        ${body} == true
+                    </groovy>
+                    <log message="Achterdeurlicht gaat niet uit, want de andere lichten zijn aan"/>
+                </when>
+                <otherwise>
+                    <log message="Achterdeurlicht gaat uit."/>
+                    <to uri="direct:set_HueStable_false"/>
+                    <setHeader name="OHItem">
+                        <constant>Light_GF_Huiskamer_Achterdeur_Schemerlamp_Toggle</constant>
+                    </setHeader>
+                    <setBody>
+                        <constant>OFF</constant>
+                    </setBody>
+                    <to uri="direct:setOHItem"/>
+                </otherwise>
+            </choice>
         </route>
 
         <!-- set header and bean -->
@@ -331,6 +345,11 @@ camel v 3.5.0 oct 2020
         <route id="ZetLichtenAan" autoStartup="true" startupOrder="101">
             <from uri="direct:ZetLichtenAan"/>
             <log message="Lichten gaan aan!"/>
+            <setBody>
+                <constant>ON</constant>
+            </setBody>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_lights_on" method="setValue"/>
             <to uri="direct:set_HueStable_false"/>
             <setHeader name="OHItem">
                 <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle,"
@@ -357,6 +376,11 @@ camel v 3.5.0 oct 2020
             <from uri="direct:ZetLichtenUit"/>
             <log message="Lichten gaan uit!"/>
             <to uri="direct:set_HueStable_false"/>
+            <setBody>
+                <constant>OFF</constant>
+            </setBody>
+            <to uri="direct:convert_body_to_boolean"/>
+            <bean ref="bg_lights_on" method="setValue"/>
             <setHeader name="OHItem">
                 <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle,"
                     .concat("Light_GF_Huiskamer_Kerstboom")
@@ -477,6 +501,10 @@ camel v 3.5.0 oct 2020
             <from uri="paho:oh/all/LightsOnIntensityThreshold/state?connectionTimeout=600"/>
             <log message="paho:oh/all/LightsOnIntensityThreshod changed to ${body}"/>
             <convertBodyTo type="java.lang.String"/>
+            <!-- It is an Openhab QuantityType, value is String, e.g. "6 lx" (6 lux) -->
+            <setBody>
+                <groovy>result=request.body.replaceAll(" .*","")</groovy>
+            </setBody>
             <to uri="log:nl.vandenzen.iot?level=INFO"/>
             <convertBodyTo type="java.lang.Float"/>
             <convertBodyTo type="java.lang.Integer"/>
@@ -726,7 +754,7 @@ camel v 3.5.0 oct 2020
             </setHeader>
             <to uri="direct:getOHItem"/>
             <setHeader name="LightsOnIntensityThreshold">
-                <groovy>request.body</groovy>
+                <groovy>request.body.replaceAll(" .*","")</groovy>
             </setHeader>
 
             <setHeader name="OHItem">
@@ -1103,19 +1131,19 @@ camel v 3.5.0 oct 2020
                 <when>
                     <groovy>
                         (
-                            (
-                                "ON".equals(headers.OHItemsResult[0]) /* tv */
-                                &amp;&amp; headers.bg_tv_w_enable_on
-                            )
-                            ||"ON".equals(headers.OHItemsResult[1]) /* chromecast_audio */
+                        (
+                        "ON".equals(headers.OHItemsResult[0]) /* tv */
+                        &amp;&amp; headers.bg_tv_w_enable_on
+                        )
+                        ||"ON".equals(headers.OHItemsResult[1]) /* chromecast_audio */
                         )
                         ||
                         (
-                            (
-                                 headers.pir_hue1_motion_triggered /* pir hue1 (hall) */
-                                 ||headers.pir_gf_achterdeur17_triggered /* pir achterdeur, normally CLOSED */
-                            )
-                            &amp;&amp; "ON".equals(headers.OHItemsResult[3]) /* autoOnMediabox */
+                        (
+                        headers.pir_hue1_motion_triggered /* pir hue1 (hall) */
+                        ||headers.pir_gf_achterdeur17_triggered /* pir achterdeur, normally CLOSED */
+                        )
+                        &amp;&amp; "ON".equals(headers.OHItemsResult[3]) /* autoOnMediabox */
                         )
                     </groovy>
                     <log message="calcMediaboxOn: it should be on"/>
@@ -1267,14 +1295,18 @@ camel v 3.5.0 oct 2020
         <route id="tv_do_not_turn_on_mediabox" autoStartup="true">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timertvnight1?cron=4+0+3+*+*+?"/>
-            <setBody><constant>false</constant></setBody>
+            <setBody>
+                <constant>false</constant>
+            </setBody>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_tv_w_enable_on" method="setValue"/>
         </route>
         <route id="tv_do_turn_on_mediabox" autoStartup="true">
             <!-- s m h day-of-month month day-of-week year(optional) -->
             <from uri="quartz://groep/timertvnight2?cron=4+0+6+*+*+?"/>
-            <setBody><constant>true</constant></setBody>
+            <setBody>
+                <constant>true</constant>
+            </setBody>
             <to uri="direct:convert_body_to_boolean"/>
             <bean ref="bg_tv_w_enable_on" method="setValue"/>
         </route>
@@ -1315,7 +1347,7 @@ camel v 3.5.0 oct 2020
     <bean id="bg_x_imac2" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac3" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_x_imac4" class="nl.vandenzen.iot.util.MutableBoolean"/>
-    <bean id="bg_lights_are_on" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="bg_lights_on" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <bean id="bg_w_chromecast_audio" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of tv and imac is stable -->
     <bean id="Stable" class="nl.vandenzen.iot.util.MutableBoolean"/>
