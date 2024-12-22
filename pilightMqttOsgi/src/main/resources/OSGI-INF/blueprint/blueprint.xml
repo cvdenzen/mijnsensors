@@ -444,39 +444,37 @@ camel v 3.5.0 oct 2020
                         ${header.HueStable}
                     </simple>
                     <log message="calcOneLightOn, HueStable is true, continuing"/>
-                    <when>
-                        <simple>${header.pir_gf_achterdeur17_triggered}</simple>
-                        <log message="pir is true"/>
+                    <choice>
                         <when>
-                            <!-- it is dark -->
-                            <groovy>
-                                java.lang.Float.valueOf(headers.LichtIntensiteit_Woonkamer)
-                                &lt; java.lang.Float.valueOf(headers.LightsOnIntensityThreshold)
-                            </groovy>
-                            <log message="lichtinsiteit woonkamer&lt;threshold"/>
-                            <when>
-                                <simple>${header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm} &lt; 1</simple>
-                                <setBody>
-                                    <simple>het licht is uit</simple>
-                                </setBody>
-                                <to uri="log:nl.vandenzen.iot?level=INFO"/>
-                                <to uri="direct:achterlichtaan2020"/>
-                                <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-                                <convertBodyTo type="java.lang.String"/>
-                                <convertBodyTo type="java.lang.Long"/>
-                                <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
-                                <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="schedule"/>
-                            </when>
+                            <simple>${header.pir_gf_achterdeur17_triggered}</simple>
+                            <log message="pir is true"/>
+                            <choice>
+                                <when>
+                                    <!-- it is dark -->
+                                    <groovy>
+                                        java.lang.Float.valueOf(headers.LichtIntensiteit_Woonkamer)
+                                        &lt; java.lang.Float.valueOf(headers.LightsOnIntensityThreshold)
+                                    </groovy>
+                                    <log message="lichtintensiteit woonkamer&lt;threshold"/>
+                                    <choice>
+                                        <when>
+                                            <simple>${header.Light_GF_Huiskamer_Achterdeur_Schemerlamp_Dimm} &lt; 1
+                                            </simple>
+                                            <log message="Het licht is uit"/>
+                                            <to uri="direct:achterlichtaan2020"/>
+                                            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
+                                            <convertBodyTo type="java.lang.String"/>
+                                            <convertBodyTo type="java.lang.Long"/>
+                                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
+                                            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="schedule"/>
+                                        </when>
+                                    </choice>
+                                </when>
+                            </choice>
                         </when>
-                    </when>
+                    </choice>
                 </when>
             </choice>
-            <!-- delay, extend with each action on pir -->
-            <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-            <convertBodyTo type="java.lang.String"/>
-            <convertBodyTo type="java.lang.Long"/>
-            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
-            <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="extend"/>
         </route>
 
         <!-- This is used, AutoOffEnabled -->
