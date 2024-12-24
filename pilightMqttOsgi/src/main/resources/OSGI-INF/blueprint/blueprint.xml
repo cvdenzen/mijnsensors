@@ -85,15 +85,15 @@ camel v 3.5.0 oct 2020
                 <when>
                     <groovy>
                         java.util.logging.Logger logger = java.util.logging.Logger.getLogger("");
-                        logger.info ("I am a test info log");
+                        /* logger.info ("I am a test info log"); */
                         if ("1".equals(request.body)) logger.info("\"1\".equals(request.body) is true");
                         if (request.body == 1) {logger.info("request.body == 1 is true");}
                         if (request.body == true) {logger.info("request.body == true is true");}
                         if ('ON'.equals(request.body)) {logger.info("'ON'.equals(request.body) is true");}
                         if ("ON".equals(request.body)) {logger.info("\"ON\".equals(request.body) is true");}
                         if ("true".equals(request.body)) {logger.info("\"true\".equals(request.body) is true");}
-                        logger.info("class is "+request.body.getClass().toString());
-                        logger.info("class van byte[] is "+byte[].class.toString());
+                        /* logger.info("class is "+request.body.getClass().toString()); */
+                        /* logger.info("class van byte[] is "+byte[].class.toString()); */
                         "1".equals(request.body)
                         || request.body == 1
                         || request.body == true
@@ -301,7 +301,7 @@ camel v 3.5.0 oct 2020
             <choice>
                 <when>
                     <groovy>
-                        ${body} == true
+                        request.body
                     </groovy>
                     <log message="Achterdeurlicht gaat niet uit, want de andere lichten zijn aan"/>
                 </when>
@@ -474,6 +474,9 @@ camel v 3.5.0 oct 2020
                         </when>
                     </choice>
                 </when>
+                <otherwise>
+                    <log message="calcOneLightOn, HueStable is false, no action"/>
+                </otherwise>
             </choice>
         </route>
 
@@ -818,6 +821,8 @@ camel v 3.5.0 oct 2020
             <convertBodyTo type="java.lang.Long"/>
             <bean ref="DelaySetStableTrue" method="setDelay"/>
             <bean ref="DelaySetStableTrue" method="restartTimer"/>
+            <!-- Assure that HueStable will be true after some time -->
+            <to uri="direct:set_HueStable_false"/>
         </route>
 
 
@@ -1350,7 +1355,11 @@ camel v 3.5.0 oct 2020
     <!-- only after some time the state of tv and imac is stable -->
     <bean id="Stable" class="nl.vandenzen.iot.util.MutableBoolean"/>
     <!-- only after some time the state of hue is stable, polling time is 10 seconds! -->
-    <bean id="HueStable" class="nl.vandenzen.iot.util.MutableBoolean"/>
+    <bean id="HueStable" class="nl.vandenzen.iot.util.MutableBoolean">
+        <!-- argument value false is default, that is allright. The problem that is was supposed
+        to solve is now solved in the initialization route -->
+        <argument value="false"/>
+    </bean>
     <bean id="DelayHuiskamerAchterdeurSchemerlamp" class="nl.vandenzen.iot.beans.ExtendableDelay">
         <!-- The uri to call when delay has finished -->
         <argument value="direct:achterlichtuit2020"/>
