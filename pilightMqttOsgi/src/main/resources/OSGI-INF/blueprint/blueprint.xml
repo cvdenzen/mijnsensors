@@ -1381,9 +1381,5 @@ camel v 3.5.0 oct 2020
     <bean id="Runtime" class="java.lang.Runtime"
           factory-method="getRuntime"/>
 
-
-    <bean id="quartz" class="org.apache.camel.component.quartz.QuartzComponent">
-    </bean>
-
-
+    <bean id="quartz" class="org.apache.camel.component.quartz.QuartzComponent"/>
 </blueprint>
