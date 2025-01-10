@@ -44,7 +44,11 @@ public class AbstractMutableAny<T> {
                 }
             }
         }
-        LOG.info(name + " changed from " + this.value + " to " + value);
+        if (value!=null && value.equals(this.value)) {
+            LOG.info(name + " no change:" + value);
+        } else {
+            LOG.info(name + " changed from " + this.value + " to " + value);
+        }
         this.value = value;
     }
 
