@@ -383,15 +383,9 @@ camel v 3.5.0 oct 2020
             <bean ref="bg_lights_on" method="setValue"/>
             <setHeader name="OHItem">
                 <groovy>"Light_GF_Huiskamer_LampGroteKast_Toggle,Light_GF_Huiskamer_LampLadenkastje_Toggle,"
-                    .concat("Light_GF_Huiskamer_Kerstboom")
+                    .concat("Light_GF_Huiskamer_Kerstboom,")
+                    .concat("Light_GF_Huiskamer_Achter_Staandelamp")
                 </groovy>
-            </setHeader>
-            <setBody>
-                <constant>OFF</constant>
-            </setBody>
-            <to uri="direct:setOHItem"/>
-            <setHeader name="OHItem">
-                <constant>Light_GF_Huiskamer_Achter_Staandelamp</constant>
             </setHeader>
             <setBody>
                 <constant>OFF</constant>
@@ -401,6 +395,8 @@ camel v 3.5.0 oct 2020
             <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
             <convertBodyTo type="java.lang.String"/>
             <convertBodyTo type="java.lang.Long"/>
+            <!-- remove header that might be here -->
+            <removeHeader name="pir_gf_achterdeur17_triggered"/>
             <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
             <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
         </route>
@@ -462,6 +458,8 @@ camel v 3.5.0 oct 2020
                                             </simple>
                                             <log message="Het licht is uit"/>
                                             <to uri="direct:achterlichtaan2020"/>
+                                            <!-- remove the header -->
+                                            <removeHeader name="pir_gf_achterdeur17_triggered"/>
                                             <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
                                             <convertBodyTo type="java.lang.String"/>
                                             <convertBodyTo type="java.lang.Long"/>
@@ -702,12 +700,6 @@ camel v 3.5.0 oct 2020
                     <to uri="direct:setOHItem"/>
                     <!-- alle lampen direct uitzetten, achterdeurlamp pas na een delay -->
                     <to uri="direct:ZetLichtenUit"/>
-                    <!-- delay for only one light (achterdeur)-->
-                    <bean ref="GF_Passenger_minutes" method="getMilliSeconds"/>
-                    <convertBodyTo type="java.lang.String"/>
-                    <convertBodyTo type="java.lang.Long"/>
-                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="setDelay"/>
-                    <bean ref="DelayHuiskamerAchterdeurSchemerlamp" method="restartTimer"/>
                 </when>
                 <otherwise>
                     <log message="Licht gaat niet uit omdat:"/>
