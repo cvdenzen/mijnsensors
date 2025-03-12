@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class ExtendableDelay {
 
     // Inject a dummy uri. This is the easiest way to initialize a producer.
-    @EndpointInject(uri = "direct:foo.bar")
+    @EndpointInject("direct:foo.bar")
     ProducerTemplate producer;
 
     /**
