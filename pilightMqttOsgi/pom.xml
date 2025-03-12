@@ -11,11 +11,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+<!--        <maven.compiler.source>11</maven.compiler.source>-->
+<!--        <maven.compiler.target>11</maven.compiler.target>-->
         <pi4j.version>1.2</pi4j.version>
         <camel.groupId>org.apache.camel</camel.groupId>
-        <camel.version>3.14.6</camel.version>
+        <camel.version>4.9.0</camel.version>
         <pigpioj-java.version>2.6.1</pigpioj-java.version>
     </properties>
     <repositories>
@@ -51,9 +51,9 @@
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-core-osgi -->
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>org.apache.camel.karaf</groupId>
             <artifactId>camel-core-osgi</artifactId>
-            <version>3.1.0</version>
+            <version>${camel.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/asm/asm-commons -->
