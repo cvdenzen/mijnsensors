@@ -29,29 +29,28 @@ sudo apt-get upgrade
 ====================================================================================================================
 Install Java. sudo apt install default-jdk (jan 2024: v17).
 ====================================================================================================================
-sudo apt install artemis
-sudo adduser artemis
-# add to group artemis
-sudo adduser artemis artemis
-Edit service file to make service run as user artemis, group artemis
-sudo systemctl edit artemis
-[Service]
-  Environment="ARTEMIS_CLUSTER_PROPS=-Dcom.sun.management.jmxremote.port=21601 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+Install prometheus (mrt 2025, instead of influxdb)
+https://github.com/prometheus/prometheus/releases/download/v3.2.1/prometheus-3.2.1.linux-arm64.tar.gz
+sudo adduser prometheus
+sudo adduser prometheus prometheus
 ====================================================================================================================
-Install influxdb (oct 2020: v1.6.4-1)
-sudo apt install influxdb
-sudo apt install influxdb-client
+Install influxdb (oct 2020: v1.6.4-1) (mrt 2025: v 2.7.11-1)
+sudo apt install influxdb2
+sudo apt install influxdb-2client
 influxd backup -portable -database openhab -host ip6-localhost:8088 /tmp/mysnapshot
 rsync -avz pi@xxx:/tmp/ldfk tmp dit naar de target
 backup/restore ?
 Backup: set port 8088, see https://docs.influxdata.com/influxdb/v1.6/administration/backup_and_restore
 sudo vi /etc/influxdb/influxdb.conf, set backup to ip6-localhost:8088
 influxd restore -portable tmp/mysnapshot
-influx
-CREATE USER admin WITH PASSWORD '<password>' WITH ALL PRIVILEGES (password from Lastpass)
-create database "openhab"
-CREATE USER grafana WITH PASSWORD '<password>' (password from Lastpass)
-CREATE USER openhab WITH PASSWORD '<password>' (password from Lastpass)
+influx (v2)
+-- No user admin CREATE USER admin WITH PASSWORD '<password>' WITH ALL PRIVILEGES (password from Lastpass)
+create openhab organization in ui
+-- Organization openhab is initial organization, bucket autogen -- create database "openhab"
+influx auth create --org openhab --operator # create operator token
+# old: v1 CREATE USER grafana WITH PASSWORD '<password>' (password from Lastpass)
+influx user create --name grafana --org openhab --token xxx --password yyy # password from bitwarden
+-- created in ui in v2, this is old (v1): CREATE USER openhab WITH PASSWORD '<password>' (password from Lastpass)
 GRANT READ ON "openhab" TO "grafana"
 GRANT ALL ON "openhab" TO "openhab"
 user list (add users, finally set login auth-enabled to yes, see lastpass for accounts)
@@ -116,11 +115,17 @@ MySensors:
 gateway on rpi:
 git clone  https://github.com/cvdenzen/MySensors.git
 cd MySensors
-git switch carl
+git switch carl-gpiod1 # (mrt 2025)
 edit/restore Makefile.inc
-edit MyConfig.h, #define MY_RFM69_NETWORKID (100): change to 197 (or in commandline, see next line)
+edit MyConfig.h,
+* #define MY_RADIO_RFM69
+* #define MY_RFM69_NETWORKID (100): change to 197 (or in commandline, see next line)
+* #define MY_RFM69_NEW_DRIVER
 # <PASS>: see password manager (BitWarden/LastPass etc.), activemq.xml, user mysensors, passwd. Do not use strange characters like #^&$ (?),
 # shell/make can be confused.
+sudo apt-get install libgpiod-dev
+sudo apt-get install libgpiod # to run
+./configure --my-gateway=mqtt --my-controller-ip-address=127.0.0.1 --my-mqtt-publish-topic-prefix=mysensors/all --my-mqtt-subscribe-topic-prefix=+/mysensors --my-mqtt-client-id=rpi4 --my-transport=rfm69 --my-rfm69-frequency=868 --my-rfm69-cs-pin=GPIO8
 make
 sudo make install
 # follow the instructions, like systemctl enable mysgw and systemctl start. It will run as root user for now (march 2024)
@@ -128,7 +133,7 @@ sudo make install
 [Service]
   TimeoutSec=infinity
   ExecStartPre=sleep 40
-# edit /etc/mysensors.conf, set logging to syslog
+# edit /etc/mysensors.conf, set logging to syslog (syslog=0 -> syslog=1)
 ====================================================================================================================
 Install grafana, https://grafana.com/tutorials/install-grafana-on-raspberry-pi/#1
 backup/restore ? /var/lib/grafana/grafana.db
@@ -138,16 +143,16 @@ systemctl edit grafana-server
   TimeoutSec=infinity
   ExecStartPre=sleep 300
 =====================================================================================================================
-Install Karaf (for pilightMqttOsgi): (nov 2022 4.3.1->4.4.2) sep 2023 4.4.3->4.4.4
+Install Karaf (for pilightMqttOsgi): mrt 2025 v 4.4.7
 sudo systemctl stop karaf (blijft soms hangen)
 sudo systemctl stop openhab
 Download karaf jar. 
 wget https://downloads.apache.org/karaf/4.4.4/apache-karaf-x.y.z.tar.gz
 Untar in /usr/share/apache-karaf-x.y.z:
-in /usr/share: sudo tar -xzf /home/pi/Downloads/apache-karaf-4.4.4.tar.gz
+in /usr/share: sudo tar -xzf ~/downloads/apache-karaf-4.4.7.tar.gz
 Make a symlink: sudo rm karaf; sudo ln -s apache-karaf-x.y.z karaf
-sudo chown karaf.karaf karaf
-sudo chown -R karaf.karaf apache-karaf-x.y.z
+sudo chown karaf:karaf karaf
+sudo chown -R karaf:karaf apache-karaf-x.y.z
 sudo chmod g+w /usr/share/karaf/etc /usr/share/karaf/data /usr/share/karaf/data/* /usr/share/apache-karaf-4.4.4
 sudo chmod g+w /usr/share/karaf/deploy (niet nodig?)
 
@@ -155,8 +160,7 @@ Install karaf as service in systemd in Linux: see web site karaf:
 karaf runtime, documentation, Service Script Templates (NOT WRAPPER!)
 Run in subdir bin/contrib sudo ./karaf-service.sh -k /usr/share/karaf
 (more info https://karaf.apache.org/manual/latest/#_integration_in_the_operating_system)
-Vind karaf.service door sudo systemclt status karaf, en dan zie je loaded: /usr (of /lib) .... service
-sudo vi karaf.service, change User/Group to karaf / karaf
+sudo ln -s $(pwd)/karaf.service /etc/systemd/system/karaf.service
 # zit in script? Nee, maar is vaak ongewijzigd. sudo cp karaf.service /lib/systemd/system
 sudo systemctl enable karaf.service
 # if already in use by e.g. openhab, change ssh port in systemctl edit (see next lines) from 8101 in e.g. 8102.
@@ -165,26 +169,44 @@ sudo systemctl edit karaf, add next lines:
 [Service]
 # next line only for old karaf version (<4.3)
 Environment="ORG_APACHE_KARAF_SHELL_SSHPORT=8102"
+Environment="JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64"
 Environment="JAVA_OPTS=-Dcom.sun.management.jmxremote.port=21602 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
 TimeoutSec=infinity
 ExecStartPre=sleep 10
+User=karaf
+Group=karaf
+
 #==== end edit
 user karaf, vi etc/user.properties, enable user karaf, vi bin/client set port to 8102
 crontab -e, crontab.txt file (restart camel every week, there is a memory leak somewhere)
 Inloggen met bin/client -a 8102 of ssh localhost -p 8102
 
 =====================================================================================================================
+20250312: https://github.com/mk868/lib-jgpio ?? Based on linux gpiod (gpio device). Also in use for my MySensors.
+apt install libgpiod (already done for MySensors)
+echo 'System.getProperty("java.library.path")' | jshell --feedback concise # display the search path for java
+sudo mkdir -p /usr/java/packages/lib
+ldconfig -p | grep libgpiod.so # outputs the path of the libs
+ln -s /lib/aarch64-linux-gnu/libgpiod.so.2 /usr/java/packages/lib/libgpiod.so
+maven:
+<dependency>
+<groupId>eu.soft-pol.lib.jgpio</groupId>
+<artifactId>jgpio</artifactId>
+<version>1.1.0</version>
+</dependency>
+
+Old:
 Install pipgpio daemon, see also https://github.com/mattjlewis/pigpioj:
+(this is old code, it is not guaranteed to run on rpi4, last activity year 2020? https://github.com/joan2937/pigpio)
 sudo apt update && sudo apt -y install pigpio pigpio-tools pigpiod
 sudo systemctl enable pigpiod.service
 sudo systemctl start pigpiod.service
 =====================================================================================================================
 Install camel in karaf
-repo-add camel x.y.z : apr 2021 version camel 3.9.0, nov 2023 3.14.6, aug 2023 3.21.0, sep 2023 3.21.1
-versie 4 moet java 17 en kan dus nog niet in karaf (die is java 11)
+repo-add camel mrt 2025 versie 4.9.0
 feature:install camel
 #Install activemq in karaf
-repo-add artemis 2.31.0 sep 2023
+repo-add artemis mrt 2025 versie 2.39.0 2.31.0 sep 2023
 feature:install artemis (werkt) of artemis-mqtt, -core?
 ** artemis not needed, default mqtt. Users???? edit etc/activemq.xml, add to transportConnectors:
 <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
@@ -196,11 +218,12 @@ and many other settings, like users
 
 - karaf, install camel
 Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy), see next lines
-  - pigpioj-java-2.5.5.jar !No, is in lib subdir
-scp $HOME/IdeaProjects/mijnsensors/pilightMqttOsgi/lib/*.jar pi@rpi3.home:/usr/share/karaf/deploy *** no files sept 2023
-cd $(git rev-parse --show-toplevel)/pilightMqttOsgi;mvn clean install && scp $(git rev-parse --show-toplevel)/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar pi@rpi3.home:/usr/share/karaf/deploy
-scp cd $(git rev-parse --show-toplevel)/pilightMqttOsgi/pilightMqttOsgi/target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml  pi@rpi3.home:/usr/share/karaf/deploy
-
+  - pigpioj-java-2.6.1 (maven dependency)
+#scp $HOME/IdeaProjects/mijnsensors-github/pilightMqttOsgi/lib/*.jar pi@rpi3.home:/usr/share/karaf/deploy *** no files sept 2023
+pushd $(git rev-parse --show-toplevel)/pilightMqttOsgi;mvn clean install && scp $(git rev-parse --show-toplevel)/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar $(cat ~/.ssh/userrpi4)@rpi4.home:/usr/share/karaf/deploy;popd
+scp $(git rev-parse --show-toplevel)/pilightMqttOsgi/target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml  $(cat ~/.ssh/userrpi4)@rpi4.home:/usr/share/karaf/deploy
+rpi4_karaf: feature:install pilightmqttosgixml??? error: No matching features for pilightmqttosgixml/0
+  - rpi4_karaf: feature:install camel-netty ???
 Split logging for mqtt:
 view org.ops4j.pax.logging.cfg:
 
@@ -214,7 +237,7 @@ feature:install pilightmqttosgi
 
 ============================================================================
 rpi board connection (as of dec 2018), should be usable on rpi2 and rpi3.
-pi@rpi3:~ $ gpio readall
+pi@rpi3:~ $ gpio readall # ook handig: gpioinfo
                 +-----+-----+---------+------+---+---Pi 3---+---+------+---------+-----+-----+
                 | BCM | wPi |   Name  | Mode | V | Physical | V | Mode | Name    | wPi | BCM |
                 +-----+-----+---------+------+---+----++----+---+------+---------+-----+-----+
@@ -265,8 +288,6 @@ backlight led: 5V 23mA (isolated from rest), high=on, with transistor
 RS=register select
 RW=H=read, L=write. USE WRITE ONLY, otherwise 5V will be supplied to raspberry pins!
 pwm, resistor, transistor. (backlight led)
-2019-03-11 BME280 added (i2c address 0x76, python bme280.py displays values TEMP HUM PRESSURE).
-See https://www.raspberrypi-spy.co.uk/2016/07/using-bme280-i2c-temperature-pressure-sensor-in-python/
 
 Lightsensor i2c address 0x23 BH1750
 
@@ -276,9 +297,19 @@ ssh karaf: ssh rpi3.home -p 8102
 
 ========================================================================================
 rpi4 (dec 2024)
-gy49 light sensor sda-scl-gnd-vin
-GY-BME/PM 280
+gy49 light sensor sda-scl-gnd-vin (i2c address 0x4a)
+GY-BME/PM 280 (i2c address 0x76)
 BL-412 pir sensor, 4 pinnen
+root@rpi4:/var/log# i2cdetect -y 1
+0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:                         -- -- -- -- -- -- -- --
+10: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+40: -- -- -- -- -- -- -- -- -- -- 4a -- -- -- -- --
+50: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+70: -- -- -- -- -- -- 76 --
 
 flat cable van rpi naar extern: pin 1 is zwart (aan zijkant van rpi, pin 40 is in het midden van rpi)
 
@@ -321,3 +352,132 @@ pin 1 (rand) t/m 16
 14 D7 paars
 15 A (led +5V) rood
 16 K (led 0V)  bruin
+
+pi@rpi4:~/project/MySensors $ sudo gpioinfo
+gpiochip0 - 58 lines:
+line   0:     "ID_SDA"       unused   input  active-high
+line   1:     "ID_SCL"       unused   input  active-high
+line   2:      "GPIO2"       unused   input  active-high
+line   3:      "GPIO3"       unused   input  active-high
+line   4:      "GPIO4"       unused   input  active-high
+line   5:      "GPIO5"       unused   input  active-high
+line   6:      "GPIO6"       unused   input  active-high
+line   7:      "GPIO7"       unused   input  active-high
+line   8:      "GPIO8"       unused   input  active-high
+line   9:      "GPIO9"       unused   input  active-high
+line  10:     "GPIO10"       unused   input  active-high
+line  11:     "GPIO11"       unused   input  active-high
+line  12:     "GPIO12"       unused   input  active-high LCDPWM (is dus niet gpio26)
+line  13:     "GPIO13"       unused   input  active-high
+line  14:     "GPIO14"       unused   input  active-high
+line  15:     "GPIO15"       unused   input  active-high
+line  16:     "GPIO16"       unused   input  active-high
+line  17:     "GPIO17"       unused   input  active-high
+line  18:     "GPIO18"       unused   input  active-high
+line  19:     "GPIO19"       unused   input  active-high
+line  20:     "GPIO20"       unused   input  active-high
+line  21:     "GPIO21"       unused   input  active-high
+line  22:     "GPIO22"       unused   input  active-high
+line  23:     "GPIO23"       unused   input  active-high
+line  24:     "GPIO24"       unused   input  active-high
+line  25:     "GPIO25"       unused   input  active-high
+line  26:     "GPIO26"       unused   input  active-high
+line  27:     "GPIO27"       unused   input  active-high
+line  28: "RGMII_MDIO"       unused   input  active-high
+line  29:  "RGMIO_MDC"       unused   input  active-high
+line  30:       "CTS0"       unused   input  active-high
+line  31:       "RTS0"       unused   input  active-high
+line  32:       "TXD0"       unused   input  active-high
+line  33:       "RXD0"       unused   input  active-high
+line  34:    "SD1_CLK"       unused   input  active-high
+line  35:    "SD1_CMD"       unused   input  active-high
+line  36:  "SD1_DATA0"       unused   input  active-high
+line  37:  "SD1_DATA1"       unused   input  active-high
+line  38:  "SD1_DATA2"       unused   input  active-high
+line  39:  "SD1_DATA3"       unused   input  active-high
+line  40:  "PWM0_MISO"       unused   input  active-high
+line  41:  "PWM1_MOSI"       unused   input  active-high
+line  42: "STATUS_LED_G_CLK" "ACT" output active-high [used]
+line  43: "SPIFLASH_CE_N" unused input active-high
+line  44:       "SDA0"       unused   input  active-high
+line  45:       "SCL0"       unused   input  active-high
+line  46: "RGMII_RXCLK" unused input active-high
+line  47: "RGMII_RXCTL" unused input active-high
+line  48: "RGMII_RXD0"       unused   input  active-high
+line  49: "RGMII_RXD1"       unused   input  active-high
+line  50: "RGMII_RXD2"       unused   input  active-high
+line  51: "RGMII_RXD3"       unused   input  active-high
+line  52: "RGMII_TXCLK" unused input active-high
+line  53: "RGMII_TXCTL" unused input active-high
+line  54: "RGMII_TXD0"       unused   input  active-high
+line  55: "RGMII_TXD1"       unused   input  active-high
+line  56: "RGMII_TXD2"       unused   input  active-high
+line  57: "RGMII_TXD3"       unused   input  active-high
+gpiochip1 - 8 lines:
+line   0:      "BT_ON"   "shutdown"  output  active-high [used]
+line   1:      "WL_ON"       unused  output  active-high
+line   2: "PWR_LED_OFF" "PWR" output active-low [used]
+line   3: "GLOBAL_RESET" unused output active-high
+line   4: "VDD_SD_IO_SEL" "vdd-sd-io" output active-high [used]
+line   5:   "CAM_GPIO" "cam1_regulator" output active-high [used]
+line   6:  "SD_PWR_ON" "regulator-sd-vcc" output active-high [used]
+line   7:    "SD_OC_N"       unused   input  active-high
+gpiochip0 - 58 lines:
+line   0:     "ID_SDA"       unused   input  active-high
+line   1:     "ID_SCL"       unused   input  active-high
+line   2:      "GPIO2"       unused   input  active-high
+line   3:      "GPIO3"       unused   input  active-high
+line   4:      "GPIO4"       unused   input  active-high
+line   5:      "GPIO5"       unused   input  active-high
+line   6:      "GPIO6"       unused   input  active-high
+line   7:      "GPIO7"       unused   input  active-high
+line   8:      "GPIO8"       unused   input  active-high
+line   9:      "GPIO9"       unused   input  active-high
+line  10:     "GPIO10"       unused   input  active-high
+line  11:     "GPIO11"       unused   input  active-high
+line  12:     "GPIO12"       unused   input  active-high
+line  13:     "GPIO13"       unused   input  active-high
+line  14:     "GPIO14"       unused   input  active-high
+line  15:     "GPIO15"       unused   input  active-high
+line  16:     "GPIO16"       unused   input  active-high
+line  17:     "GPIO17"       unused   input  active-high
+line  18:     "GPIO18"       unused   input  active-high
+line  19:     "GPIO19"       unused   input  active-high
+line  20:     "GPIO20"       unused   input  active-high
+line  21:     "GPIO21"       unused   input  active-high
+line  22:     "GPIO22"       unused   input  active-high
+line  23:     "GPIO23"       unused   input  active-high
+line  24:     "GPIO24"       unused   input  active-high
+line  25:     "GPIO25"       unused   input  active-high
+line  26:     "GPIO26"       unused   input  active-high
+line  27:     "GPIO27"       unused   input  active-high
+line  28: "RGMII_MDIO"       unused   input  active-high
+line  29:  "RGMIO_MDC"       unused   input  active-high
+line  30:       "CTS0"       unused   input  active-high
+line  31:       "RTS0"       unused   input  active-high
+line  32:       "TXD0"       unused   input  active-high
+line  33:       "RXD0"       unused   input  active-high
+line  34:    "SD1_CLK"       unused   input  active-high
+line  35:    "SD1_CMD"       unused   input  active-high
+line  36:  "SD1_DATA0"       unused   input  active-high
+line  37:  "SD1_DATA1"       unused   input  active-high
+line  38:  "SD1_DATA2"       unused   input  active-high
+line  39:  "SD1_DATA3"       unused   input  active-high
+line  40:  "PWM0_MISO"       unused   input  active-high
+line  41:  "PWM1_MOSI"       unused   input  active-high
+line  42: "STATUS_LED_G_CLK" "ACT" output active-high [used]
+line  43: "SPIFLASH_CE_N" unused input active-high
+line  44:       "SDA0"       unused   input  active-high
+line  45:       "SCL0"       unused   input  active-high
+line  46: "RGMII_RXCLK" unused input active-high
+line  47: "RGMII_RXCTL" unused input active-high
+line  48: "RGMII_RXD0"       unused   input  active-high
+line  49: "RGMII_RXD1"       unused   input  active-high
+line  50: "RGMII_RXD2"       unused   input  active-high
+line  51: "RGMII_RXD3"       unused   input  active-high
+line  52: "RGMII_TXCLK" unused input active-high
+line  53: "RGMII_TXCTL" unused input active-high
+line  54: "RGMII_TXD0"       unused   input  active-high
+line  55: "RGMII_TXD1"       unused   input  active-high
+line  56: "RGMII_TXD2"       unused   input  active-high
+line  57: "RGMII_TXD3"       unused   input  active-high

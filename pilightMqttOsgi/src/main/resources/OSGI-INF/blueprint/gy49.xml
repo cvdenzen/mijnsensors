@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="
+             http://www.osgi.org/xmlns/blueprint/v1.0.0 https://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+             http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint" id="gy49">
+
+
+        <route id="Init" autoStartup="true" startupOrder="1">
+            <from uri="timer:inittimer?repeatCount=1"/>
+            <bean ref="i2cgy49" method="open()"/>
+        </route>
+
+        <route id="gy49" autoStartup="true" startupOrder="100">
+
+            <from uri="quartzGy49://groep/timerGy49?cron=0/10+*+*+*+*+?"/>
+            <setBody>
+                <constant>false</constant>
+            </setBody>
+            <!-- pigpioBme280.MODE_PI_OUTPUT = 1 -->
+            <bean ref="i2cgy49" method="getSensorValue()"/>
+            <!-- Now we have a float -->
+            <!-- temp -->
+            <setHeader name="p0">
+                <groovy>request.body</groovy>
+            </setHeader>
+
+            <!-- bean ref="pigpioBme280" method="write(12,true)"/ -->
+
+            <setBody>
+                <groovy>headers.p0.toString()</groovy>
+            </setBody>
+            <log message="lux is ${body}"/>
+            <to uri="paho:f1_nw/all/light?connectionTimeout=180"/>
+        </route>
+
+        <route id="debug1" startupOrder="1000" autoStartup="false">
+            <from uri="paho:+/f1_nw/light?connectionTimeout=180"/>
+            <log message="f1_nw/lux=${body}"/>
+        </route>
+
+    </camelContext>
+
+    <!-- <bean id="pigpioBme280" class="uk.pigpioj.PigpioSocket"> </bean> -->
+    <bean id="i2cgy49" class="nl.vandenzen.iot.beans.GY49Driver"
+          factory-method="getInstance">
+        <argument value="1"/> <!-- i2c bus number -->
+        <argument value="0x4a"/> <!-- i2c address of bme280 sensor -->
+    </bean>
+    <bean id="quartzGy49" class="org.apache.camel.component.quartz.QuartzComponent">
+    </bean>
+
+
+</blueprint>
