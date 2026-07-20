@@ -28,11 +28,7 @@ sudo apt-get update
 sudo apt-get upgrade
 ====================================================================================================================
 Install Java. sudo apt install default-jdk (jan 2024: v17).
-====================================================================================================================
-Install prometheus (mrt 2025, instead of influxdb)
-https://github.com/prometheus/prometheus/releases/download/v3.2.1/prometheus-3.2.1.linux-arm64.tar.gz
-sudo adduser prometheus
-sudo adduser prometheus prometheus
+
 ====================================================================================================================
 Install influxdb (oct 2020: v1.6.4-1) (mrt 2025: v 2.7.11-1)
 sudo apt install influxdb2
@@ -125,7 +121,7 @@ edit MyConfig.h,
 # shell/make can be confused.
 sudo apt-get install libgpiod-dev
 sudo apt-get install libgpiod # to run
-./configure --my-gateway=mqtt --my-controller-ip-address=127.0.0.1 --my-mqtt-publish-topic-prefix=mysensors/all --my-mqtt-subscribe-topic-prefix=+/mysensors --my-mqtt-client-id=rpi4 --my-transport=rfm69 --my-rfm69-frequency=868 --my-rfm69-cs-pin=GPIO8
+./configure --my-gateway=mqtt --my-controller-ip-address=127.0.0.1 --my-mqtt-publish-topic-prefix=mysensors/all --my-mqtt-subscribe-topic-prefix=+/mysensors --my-mqtt-client-id=rpi4 --my-transport=rfm69 --my-rfm69-frequency=868 --my-rfm69-cs-pin=GPIO25
 make
 sudo make install
 # follow the instructions, like systemctl enable mysgw and systemctl start. It will run as root user for now (march 2024)
@@ -143,17 +139,17 @@ systemctl edit grafana-server
   TimeoutSec=infinity
   ExecStartPre=sleep 300
 =====================================================================================================================
-Install Karaf (for pilightMqttOsgi): mrt 2025 v 4.4.7
+Install Karaf (for pilightMqttOsgi): jul 2026 v 4.4.11 mrt 2025 v 4.4.7
 sudo systemctl stop karaf (blijft soms hangen)
 sudo systemctl stop openhab
-Download karaf jar. 
-wget https://downloads.apache.org/karaf/4.4.4/apache-karaf-x.y.z.tar.gz
+Download karaf jar, normal user, in ~/downloads
+export KARAF_VERSION=4.4.11;wget https://downloads.apache.org/karaf/$KARAF_VERSION/apache-karaf-$KARAF_VERSION.tar.gz
 Untar in /usr/share/apache-karaf-x.y.z:
 in /usr/share: sudo tar -xzf ~/downloads/apache-karaf-4.4.7.tar.gz
-Make a symlink: sudo rm karaf; sudo ln -s apache-karaf-x.y.z karaf
+Make a symlink: sudo rm karaf; sudo ln -s apache-karaf-$KARAF_VERSION karaf
 sudo chown karaf:karaf karaf
-sudo chown -R karaf:karaf apache-karaf-x.y.z
-sudo chmod g+w /usr/share/karaf/etc /usr/share/karaf/data /usr/share/karaf/data/* /usr/share/apache-karaf-4.4.4
+sudo chown -R karaf:karaf apache-karaf-$KARAF_VERSION
+sudo chmod g+w /usr/share/karaf/etc /usr/share/karaf/data /usr/share/karaf/data/* /usr/share/apache-karaf-$KARAF_VERSION
 sudo chmod g+w /usr/share/karaf/deploy (niet nodig?)
 
 Install karaf as service in systemd in Linux: see web site karaf:
@@ -173,11 +169,9 @@ Environment="JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64"
 Environment="JAVA_OPTS=-Dcom.sun.management.jmxremote.port=21602 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
 TimeoutSec=infinity
 ExecStartPre=sleep 10
-User=karaf
-Group=karaf
 
 #==== end edit
-user karaf, vi etc/user.properties, enable user karaf, vi bin/client set port to 8102
+user karaf, vi etc/users.properties, enable user karaf, vi bin/client set port to 8102
 crontab -e, crontab.txt file (restart camel every week, there is a memory leak somewhere)
 Inloggen met bin/client -a 8102 of ssh localhost -p 8102
 
@@ -203,13 +197,14 @@ sudo systemctl enable pigpiod.service
 sudo systemctl start pigpiod.service
 =====================================================================================================================
 Install camel in karaf
-repo-add camel mrt 2025 versie 4.9.0
+repo-add camel jul 2026 4.18.2 mrt 2025 versie 4.9.0
 feature:install camel
 #Install activemq in karaf
-repo-add artemis mrt 2025 versie 2.39.0 2.31.0 sep 2023
+repo-add artemis mrt 2025 versie 2.44.0 (loopt 10 versies achter op maven versie!) 2.31.0 sep 2023
+?? feature:repo-add mvn:org.apache.activemq/artemis-features/2.44.0/xml/features
 feature:install artemis (werkt) of artemis-mqtt, -core?
-** artemis not needed, default mqtt. Users???? edit etc/activemq.xml, add to transportConnectors:
-<transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
+** artemis used not mqtt. Users???? edit etc/activemq.xml, add to transportConnectors:
+niet nodig in artemis: <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
 artemis: security-enabled property to false in etc/artemis.xml (the broker.xml file):
 <security-enabled>false</security-enabled>
 <security-settings>
@@ -217,13 +212,13 @@ artemis: security-enabled property to false in etc/artemis.xml (the broker.xml f
 and many other settings, like users
 
 - karaf, install camel
-Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy), see next lines
+Install the features with pilightmqttosgi-features.xml (scp/rsync to /usr/share/karaf/deploy), see next lines, on debian linux server.
   - pigpioj-java-2.6.1 (maven dependency)
 #scp $HOME/IdeaProjects/mijnsensors-github/pilightMqttOsgi/lib/*.jar pi@rpi3.home:/usr/share/karaf/deploy *** no files sept 2023
 pushd $(git rev-parse --show-toplevel)/pilightMqttOsgi;mvn clean install && scp $(git rev-parse --show-toplevel)/pilightMqttOsgi/target/pilightMqttOsgi-1.0-SNAPSHOT.jar $(cat ~/.ssh/userrpi4)@rpi4.home:/usr/share/karaf/deploy;popd
 scp $(git rev-parse --show-toplevel)/pilightMqttOsgi/target/classes/nl/vandenzen/iot/pilightmqttosgi-features.xml  $(cat ~/.ssh/userrpi4)@rpi4.home:/usr/share/karaf/deploy
 rpi4_karaf: feature:install pilightmqttosgixml??? error: No matching features for pilightmqttosgixml/0
-  - rpi4_karaf: feature:install camel-netty ???
+  - rpi4_karaf: feature:install camel-netty camel-quartz ???
 Split logging for mqtt:
 view org.ops4j.pax.logging.cfg:
 
