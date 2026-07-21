@@ -199,16 +199,18 @@ sudo systemctl start pigpiod.service
 Install camel in karaf
 repo-add camel jul 2026 4.18.2 mrt 2025 versie 4.9.0
 feature:install camel
-#Install activemq in karaf
-repo-add artemis mrt 2025 versie 2.44.0 (loopt 10 versies achter op maven versie!) 2.31.0 sep 2023
+#Install activemq/artemis in karaf
+repo-add artemis jul 2026 versie 2.44.0 (loopt 10 versies achter op maven versie!) mrt 2025 2.31.0 sep 2023
 ?? feature:repo-add mvn:org.apache.activemq/artemis-features/2.44.0/xml/features
 feature:install artemis (werkt) of artemis-mqtt, -core?
-** artemis used not mqtt. Users???? edit etc/activemq.xml, add to transportConnectors:
-niet nodig in artemis: <transportConnector name="mqtt" uri="mqtt+nio://0.0.0.0:1883"/>
 artemis: security-enabled property to false in etc/artemis.xml (the broker.xml file):
 <security-enabled>false</security-enabled>
 <security-settings>
-
+feature:install groovy ?
+feature:install camel-groovy
+feature:install camel-paho
+feature:install camel-gson
+feature:install camel-jackson
 and many other settings, like users
 
 - karaf, install camel

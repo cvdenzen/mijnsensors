@@ -651,25 +651,27 @@ camel v 3.5.0 oct 2020
                         || "ON".equals(headers.AutoOnEnabled)
                     </groovy>
                     <log message="header.AutoOnEnabled==true=${header.AutoOnEnabled}"/>
-                    <when>
-                        <!-- it is dark -->
-                        <groovy>
-                            java.lang.Float.valueOf(headers.LichtIntensiteit_Woonkamer)
-                            &lt; java.lang.Float.valueOf(headers.LightsOnIntensityThreshold)
-                        </groovy>
-                        <log message="Start Enable_lights_on_by_daylight, header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
-                        <log message="Start Enable_lights_on_by_daylight, header.LightsOnIntensityThreshold=${header.LightsOnIntensityThreshold}"/>
-                        <log message="Licht gaat aan!"/>
-                        <to uri="direct:ZetLichtenAan"/>
-                        <!-- disable automatic turning on the lights -->
-                        <setBody>
-                            <constant>OFF</constant>
-                        </setBody>
-                        <setHeader name="OHItem">
-                            <constant>AutoOnEnabled</constant>
-                        </setHeader>
-                        <to uri="direct:setOHItem"/>
-                    </when>
+                    <choice>
+                        <when>
+                            <!-- it is dark -->
+                            <groovy>
+                                java.lang.Float.valueOf(headers.LichtIntensiteit_Woonkamer)
+                                &lt; java.lang.Float.valueOf(headers.LightsOnIntensityThreshold)
+                            </groovy>
+                            <log message="Start Enable_lights_on_by_daylight, header.LichtIntensiteit_Woonkamer=${header.LichtIntensiteit_Woonkamer}"/>
+                            <log message="Start Enable_lights_on_by_daylight, header.LightsOnIntensityThreshold=${header.LightsOnIntensityThreshold}"/>
+                            <log message="Licht gaat aan!"/>
+                            <to uri="direct:ZetLichtenAan"/>
+                            <!-- disable automatic turning on the lights -->
+                            <setBody>
+                                <constant>OFF</constant>
+                            </setBody>
+                            <setHeader name="OHItem">
+                                <constant>AutoOnEnabled</constant>
+                            </setHeader>
+                            <to uri="direct:setOHItem"/>
+                        </when>
+                    </choice>
                 </when>
             </choice>
         </route>
@@ -875,15 +877,17 @@ camel v 3.5.0 oct 2020
             <from uri="direct:testsplit"/>
             <!-- als body een komma bevat, dan splitsen, anders niet. Test met groovy -->
             <log message="Start testsplit, body=${body}, header OHItem=${header.OHItem}"/>
-            <when>
-                <groovy>headers.OHItem.contains(",")</groovy>
-                <log message="header contains ,"/>
-                <split>
-                    <simple>${header.OHItem}</simple>
-                    <log message="OHItem na split is ${header.OHItem}"/>
-                    <log message="body na split is ${body}"/>
-                </split>
-            </when>
+            <choice>
+                <when>
+                    <groovy>headers.OHItem.contains(",")</groovy>
+                    <log message="header contains ,"/>
+                    <split>
+                        <simple>${header.OHItem}</simple>
+                        <log message="OHItem na split is ${header.OHItem}"/>
+                        <log message="body na split is ${body}"/>
+                    </split>
+                </when>
+            </choice>
         </route>
 
 
