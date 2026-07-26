@@ -163,7 +163,7 @@ camel v 3.5.0 oct 2020
                     </setHeader>
                     <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} to ${body}"/>
                     <recipientList>
-                        <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+                        <groovy>"http://127.0.0.1:8080/rest/items/".concat(header.OHItem)</groovy>
                     </recipientList>
                     <log message="setOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/>
                 </otherwise>
@@ -212,7 +212,7 @@ camel v 3.5.0 oct 2020
                     </setHeader>
                     <!-- log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem}"/ -->
                     <recipientList>
-                        <simple>http://127.0.0.1:8080/rest/items/${header.OHItem}</simple>
+                        <groovy>"http://127.0.0.1:8080/rest/items/".concat(header.OHItem)</groovy>
                     </recipientList>
                     <!-- log message="getOHItem http://127.0.0.1:8080/rest/items/${header.OHItem} result ${body}"/ -->
                     <unmarshal>
